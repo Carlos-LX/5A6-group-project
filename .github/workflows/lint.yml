@@ -27,6 +27,13 @@ jobs:
           key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle') }}
           restore-keys: |
             ${{ runner.os }}-gradle-
+            
+    - name: Make Gradlew Executable
+      run: chmod +x gradlew
+    
+    - name: Use the correct Gradle Wrapper
+      run: ./gradlew wrapper --gradle-version 8.0
+        
     - name: Run Kotlin Linter
       run: ./gradlew ktlintStagingDebugCheck
 
