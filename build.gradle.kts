@@ -5,12 +5,7 @@ plugins {
     id("org.jlleitschuh.gradle.ktlint") version "7.1.0" apply false
 }
 
-buildscript {
-    repositories {
-        mavenCentral()
-    }
-    dependencies {
-        classpath("org.jlleitschuh.gradle:ktlint-gradle:10.1.0")
-    }
+repositories {
+    // Required to download KtLint
+    mavenCentral()
 }
-
