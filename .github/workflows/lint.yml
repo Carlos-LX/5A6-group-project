@@ -1,7 +1,7 @@
 name: Lint Checking
 
 on:
-  push: #for testing
+  pull-request: #for testing
     branches:
       - main
 
