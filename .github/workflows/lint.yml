@@ -22,7 +22,8 @@ jobs:
         java-version: '17'
         cache: 'gradle'
 
-    - name: Run Kotlin Linterremoving this job until everything else works
+    - name: Run Kotlin Linter
+      run: ./gradlew ktlintStagingDebugCheck
 
     #- name: Run Android Linter
      # run: ./gradlew lintStagingDebug
