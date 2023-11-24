@@ -5,6 +5,7 @@ import androidx.compose.material.icons.filled.PieChart
 import androidx.compose.material.icons.rounded.Book
 import androidx.compose.material.icons.rounded.Person
 import androidx.compose.material.icons.rounded.Settings
+import androidx.compose.material.icons.rounded.Store
 import androidx.compose.ui.graphics.vector.ImageVector
 
 /**
@@ -24,8 +25,8 @@ object Settings : ReadifyDestination {
     override val icon = Icons.Rounded.Settings
     override val route = "settings"
 }
-object About : ReadifyDestination {
-    override val icon =  Icons.Rounded.Person
-    override val route = "about"
+object Library : ReadifyDestination {
+    override val icon =  Icons.Rounded.Store
+    override val route = "library"
 }
-val ReadifyScreens = listOf(Settings, BookCollection, About)
+val ReadifyScreens = listOf(Settings, BookCollection, Library)

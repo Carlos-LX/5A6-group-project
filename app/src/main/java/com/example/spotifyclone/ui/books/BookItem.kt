@@ -32,6 +32,10 @@ import com.example.woof.data.Book
  * Composable function for adding a new book item.
  * @param onAddBookClick Callback when the "Add" button is clicked.
  */
+/**
+ * Composable function for adding a new book item.
+ * @param onAddBookClick Callback when the "Add" button is clicked.
+ */
 @Composable
 fun AddBookItem(
     onAddBookClick: (Book) -> Unit,
@@ -39,6 +43,7 @@ fun AddBookItem(
     // State variables for managing user input
     var isExpanded by remember { mutableStateOf(false) }
     var bookName by remember { mutableStateOf("") }
+    var bookAuthor by remember { mutableStateOf("")}
     var releaseDate by remember { mutableStateOf("") }
     var description by remember { mutableStateOf("") }
 
@@ -95,7 +100,7 @@ fun AddBookItem(
                 Button(
                     onClick = {
                         // Validates user input and create a new Book object
-                        val newBook = createBook(bookName, releaseDate, description)
+                        val newBook = createBook(bookName, bookAuthor, releaseDate, description)
                         if (newBook != null) {
                             // Add the new book to the list
                             onAddBookClick(newBook)
@@ -124,7 +129,7 @@ fun AddBookItem(
  * @param description The description of the book.
  * @return The created Book object or null if input is invalid.
  */
-private fun createBook(bookName: String, releaseDateStr: String, description: String): Book? {
+private fun createBook(bookName: String, bookAuthor: String, releaseDateStr: String, description: String): Book? {
     val releaseDate = releaseDateStr.toIntOrNull()
     if (releaseDate == null || bookName.isEmpty() || description.isEmpty()) {
         // Handles validation errors here
@@ -132,7 +137,7 @@ private fun createBook(bookName: String, releaseDateStr: String, description: St
     }
 
     // Creates and return a new Book object
-    return Book(R.drawable.ph, bookName, releaseDate, description)
+    return Book(R.drawable.ph, bookName, bookAuthor, releaseDate, description)
 }
 
 /**
@@ -164,7 +169,7 @@ fun BookItem(
                 // Displays the book icon
                 BookIcon(book.imageResourceId)
                 // Displays book information
-                BookInformation(book.name, book.releaseDate)
+                BookInformation(book.name, book.author, book.releaseDate)
             }
 
             // Displays the book.description when expanded
@@ -177,6 +182,7 @@ fun BookItem(
         }
     }
 }
+
 
 
 
@@ -216,6 +222,7 @@ fun BookIcon(
 @Composable
 fun BookInformation(
     bookName: String,
+    bookAuthor: String,
     releaseDate: Int,
     modifier: Modifier = Modifier
 ) {
