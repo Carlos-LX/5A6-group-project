@@ -28,6 +28,7 @@ import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -82,6 +83,11 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavGraph.Companion.findStartDestination
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
 import com.codelab.basics.R
 import com.example.spotifyclone.data.About
 import com.example.spotifyclone.data.questions
@@ -100,7 +106,7 @@ class MainActivity : ComponentActivity() {
 
             SpotifyCloneTheme {
                 // Initialize the main app UI
-                Screen(modifier = Modifier.fillMaxSize())
+                MyApp(modifier = Modifier.fillMaxSize())
             }
         }
     }
@@ -114,30 +120,99 @@ class MainActivity : ComponentActivity() {
  */
 @Composable
 fun MyApp(modifier: Modifier = Modifier) {
-    Surface(
-        modifier = modifier.fillMaxSize(),
-    ) {
-        // Initializes and manages the book list state
-        val (bookList, setBookList) = remember { mutableStateOf(books) }
 
-        Scaffold() { it ->
-            LazyColumn(contentPadding = it) {
-                item {
-                    // Displays the "Add Book" card
-                    AddBookItem(
-                        onAddBookClick = { newBook ->
-                            setBookList(bookList + newBook)
-                        }
-                    )
-                }
-                items(bookList) { book ->
-                    // Displays individual book items
-                    BookItem(
-                        book = book,
-                        modifier = Modifier.padding(dimensionResource(R.dimen.padding_small))
-                    )
+    //TODO: move the screens to the appropriate place
+
+    val navController = rememberNavController()
+
+    Scaffold(
+        modifier = Modifier,
+        topBar = { BookTopAppBar() },
+        bottomBar = {
+            BottomAppBar(
+                modifier = Modifier,
+
+                ) {
+                Row {
+                    NavigationBarItem(selected = false, onClick = { navController.navigateSingleTopTo("settings")}, icon = {
+                        Icon(
+                            Icons.Rounded.Settings,
+                            contentDescription = "Home Icon",
+                            tint = Color.White
+                        )
+                    })
+                    NavigationBarItem(selected = false, onClick = {  navController.navigateSingleTopTo("bookCollection")}, icon = {
+                        Icon(
+                            Icons.Rounded.Book,
+                            contentDescription = "Book icon",
+                            tint = Color.White
+                        )
+                    })
+                    NavigationBarItem(selected = false, onClick = {  navController.navigateSingleTopTo("about")}, icon = {
+                        Icon(
+                            Icons.Rounded.Person,
+                            contentDescription = "About us icon",
+                            tint = Color.White
+
+                        )
+                    })
                 }
             }
+        }
+    ) {innerPadding ->
+        NavHost(navController = navController,
+            startDestination = "bookCollection",
+            modifier = Modifier.padding(innerPadding)
+        ) {
+            composable(route = "bookCollection") {
+                BookCollection()
+            }
+            composable(route = "settings") {
+                Settings()
+            }
+            composable(route = "about") {
+                AboutUs()
+            }
+
+        }
+
+    }
+
+    }
+
+
+
+fun NavHostController.navigateSingleTopTo(route: String) =
+    this.navigate(route) {
+        popUpTo(
+            this@navigateSingleTopTo.graph.findStartDestination().id
+        ) {
+            saveState = true
+        }
+        launchSingleTop = true
+        restoreState = true
+    }
+
+
+@Composable
+fun BookCollection(modifier: Modifier = Modifier) {
+
+    val (bookList, setBookList) = remember { mutableStateOf(books) }
+    LazyColumn(modifier = modifier) {
+        item {
+            // Displays the "Add Book" card
+            AddBookItem(
+                onAddBookClick = { newBook ->
+                    setBookList(bookList + newBook)
+                }
+            )
+        }
+        items(bookList) { book ->
+            // Displays individual book items
+            BookItem(
+                book = book,
+                modifier = Modifier.padding(dimensionResource(R.dimen.padding_small))
+            )
         }
     }
 }
@@ -420,7 +495,7 @@ fun BookInformation(
 @Composable
 fun MyAppPreview() {
     SpotifyCloneTheme {
-        Screen(Modifier.fillMaxSize())
+        MyApp(Modifier.fillMaxSize())
     }
 }
 
@@ -495,65 +570,6 @@ fun BookTopAppBar(
         )
     }
 }
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun Screen(modifier: Modifier = Modifier) {
-    var currentScreen by remember { mutableStateOf(0) }
-
-    Scaffold(
-        modifier = Modifier,
-        topBar = { BookTopAppBar() },
-        bottomBar = {
-            BottomAppBar(
-                modifier = Modifier,
-
-                ) {
-                Row {
-                    NavigationBarItem(selected = false, onClick = { currentScreen = 0 }, icon = {
-                        Icon(
-                            Icons.Rounded.Settings,
-                            contentDescription = "Home Icon",
-                            tint = Color.White
-                        )
-                    })
-                    NavigationBarItem(selected = false, onClick = { currentScreen = 1 }, icon = {
-                        Icon(
-                            Icons.Rounded.Book,
-                            contentDescription = "Book icon",
-                            tint = Color.White
-                        )
-                    })
-                    NavigationBarItem(selected = false, onClick = { currentScreen = 2 }, icon = {
-                        Icon(
-                            Icons.Rounded.Person,
-                            contentDescription = "About us icon",
-                            tint = Color.White
-
-                        )
-                    })
-                }
-            }
-        }
-    ) { innerPadding ->
-        Column(
-            modifier = Modifier
-                .padding(innerPadding)
-
-        ) {
-            if (currentScreen == 0) {
-                Settings()
-
-            }
-            if (currentScreen == 1) {
-                MyApp()
-            }
-            if (currentScreen == 2) {
-                AboutUs()
-            }
-        }
-    }
-}
-
 
 @Composable
 fun AboutUs(modifier: Modifier = Modifier) {
