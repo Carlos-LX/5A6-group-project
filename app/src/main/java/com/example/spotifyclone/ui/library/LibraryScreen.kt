@@ -52,7 +52,7 @@ fun Library(modifier: Modifier = Modifier) {
             ) {
                 // Adds a title to the top of the page
                 Text(
-                    text = "LIBRARY",
+                    text = "STORE",
                     style = MaterialTheme.typography.titleLarge
                         .copy(fontWeight = FontWeight.Bold
                             ,fontFamily = FontFamily.Default),
