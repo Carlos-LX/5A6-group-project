@@ -43,9 +43,11 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Book
 import androidx.compose.material.icons.rounded.Home
+import androidx.compose.material.icons.rounded.Menu
 import androidx.compose.material.icons.rounded.Person
 import androidx.compose.material.icons.rounded.Place
 import androidx.compose.material.icons.rounded.Settings
+import androidx.compose.material.icons.rounded.Store
 import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
@@ -79,6 +81,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -97,7 +100,6 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-
             SpotifyCloneTheme {
                 // Initialize the main app UI
                 Screen(modifier = Modifier.fillMaxSize())
@@ -476,17 +478,13 @@ fun BookTopAppBar(
                             painter = painterResource(R.drawable.bookcraftlogo),
                             contentDescription = null,
                         )
-                    }
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        modifier = Modifier.weight(1f),
-                    ) {
                         Text(
                             text = stringResource(R.string.app_name),
                             style = MaterialTheme.typography.headlineLarge,
-                            fontSize = 25.sp,
+                            fontSize = 18.sp,
+                            textAlign = TextAlign.Start,
                             fontFamily = FontFamily.Serif,
-                            fontWeight = FontWeight.Black,
+                            fontWeight = FontWeight.SemiBold,
                             color = Color.LightGray
                         )
                     }
@@ -509,11 +507,12 @@ fun Screen(modifier: Modifier = Modifier) {
 
                 ) {
                 Row {
-                    NavigationBarItem(selected = false, onClick = { currentScreen = 0 }, icon = {
+                    NavigationBarItem(selected = false, onClick = { currentScreen = 2 }, icon = {
                         Icon(
-                            Icons.Rounded.Settings,
-                            contentDescription = "Home Icon",
+                            Icons.Rounded.Store,
+                            contentDescription = "Library icon",
                             tint = Color.White
+
                         )
                     })
                     NavigationBarItem(selected = false, onClick = { currentScreen = 1 }, icon = {
@@ -523,12 +522,11 @@ fun Screen(modifier: Modifier = Modifier) {
                             tint = Color.White
                         )
                     })
-                    NavigationBarItem(selected = false, onClick = { currentScreen = 2 }, icon = {
+                    NavigationBarItem(selected = false, onClick = { currentScreen = 0 }, icon = {
                         Icon(
-                            Icons.Rounded.Person,
-                            contentDescription = "About us icon",
+                            Icons.Rounded.Settings,
+                            contentDescription = "Settings Icon",
                             tint = Color.White
-
                         )
                     })
                 }

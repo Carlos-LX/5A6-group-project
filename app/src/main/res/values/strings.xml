@@ -6,7 +6,8 @@
     <dimen name="image_size">140dp</dimen>
     <dimen name="height">220dp</dimen>
     <dimen name="width">140dp</dimen>
-    <dimen name="logo_size">84dp</dimen>
+    <dimen name="logo_size">64dp</dimen>
+    <dimen name="logo_size_2">12dp</dimen>
     <dimen name="padding_small">8dp</dimen>
     <string name="book_name_1">"To Kill a Mockingbird" by Harper Lee</string>
     <string name="book_name_2">"1984" by George Orwell</string>

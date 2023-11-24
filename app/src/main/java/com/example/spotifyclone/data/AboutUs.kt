@@ -19,7 +19,4 @@ val questions = listOf(
     About("What school are you going to?", answer = "John Abbott College."),
     About("Why are you making this app?", answer = "This is part of our course outline for Application Development 2." ),
     About("How long will it take to complete?", answer = "We aim to complete this project by December."),
-
-
-
     )
