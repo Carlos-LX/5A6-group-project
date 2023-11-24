@@ -23,7 +23,6 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.annotation.DrawableRes
-import androidx.annotation.StringRes
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
@@ -32,20 +31,18 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.selection.selectable
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Book
-import androidx.compose.material.icons.rounded.Home
-import androidx.compose.material.icons.rounded.Menu
-import androidx.compose.material.icons.rounded.Person
-import androidx.compose.material.icons.rounded.Place
 import androidx.compose.material.icons.rounded.Settings
 import androidx.compose.material.icons.rounded.Store
 import androidx.compose.material3.BottomAppBar
@@ -62,10 +59,7 @@ import androidx.compose.material3.Slider
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
-import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -75,22 +69,23 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.modifier.modifierLocalConsumer
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.codelab.basics.R
-import com.example.spotifyclone.data.About
+import com.example.spotifyclone.data.Library
 import com.example.spotifyclone.data.questions
 import com.example.spotifyclone.ui.theme.SpotifyCloneTheme
 import com.example.woof.data.Book
 import com.example.woof.data.books
+
 
 enum class Theme {
     Light, Dark
@@ -206,6 +201,7 @@ fun AddBookItem(
     // State variables for managing user input
     var isExpanded by remember { mutableStateOf(false) }
     var bookName by remember { mutableStateOf("") }
+    var bookAuthor by remember { mutableStateOf("")}
     var releaseDate by remember { mutableStateOf("") }
     var description by remember { mutableStateOf("") }
 
@@ -262,7 +258,7 @@ fun AddBookItem(
                 Button(
                     onClick = {
                         // Validates user input and create a new Book object
-                        val newBook = createBook(bookName, releaseDate, description)
+                        val newBook = createBook(bookName, bookAuthor, releaseDate, description)
                         if (newBook != null) {
                             // Add the new book to the list
                             onAddBookClick(newBook)
@@ -291,7 +287,7 @@ fun AddBookItem(
  * @param description The description of the book.
  * @return The created Book object or null if input is invalid.
  */
-private fun createBook(bookName: String, releaseDateStr: String, description: String): Book? {
+private fun createBook(bookName: String, bookAuthor: String, releaseDateStr: String, description: String): Book? {
     val releaseDate = releaseDateStr.toIntOrNull()
     if (releaseDate == null || bookName.isEmpty() || description.isEmpty()) {
         // Handles validation errors here
@@ -299,7 +295,7 @@ private fun createBook(bookName: String, releaseDateStr: String, description: St
     }
 
     // Creates and return a new Book object
-    return Book(R.drawable.ph, bookName, releaseDate, description)
+    return Book(R.drawable.ph, bookName, bookAuthor, releaseDate, description)
 }
 
 /**
@@ -331,7 +327,7 @@ fun BookItem(
                 // Displays the book icon
                 BookIcon(book.imageResourceId)
                 // Displays book information
-                BookInformation(book.name, book.releaseDate)
+                BookInformation(book.name, book.author, book.releaseDate)
             }
 
             // Displays the book.description when expanded
@@ -353,7 +349,7 @@ fun BookItem(
  */
 @Composable
 fun TextItem(
-    text: About,
+    text: Library,
     modifier: Modifier = Modifier
 ) {
     // State variable for expanding/collapsing book description
@@ -399,6 +395,7 @@ fun TextItem(
 @Composable
 fun BookInformation(
     bookName: String,
+    bookAuthor: String,
     releaseDate: Int,
     modifier: Modifier = Modifier
 ) {
@@ -540,13 +537,12 @@ fun Screen(modifier: Modifier = Modifier) {
         ) {
             if (currentScreen == 0) {
                 Settings()
-
             }
             if (currentScreen == 1) {
                 MyApp()
             }
             if (currentScreen == 2) {
-                AboutUs()
+                Library()
             }
         }
     }
@@ -554,22 +550,52 @@ fun Screen(modifier: Modifier = Modifier) {
 
 
 @Composable
-fun AboutUs(modifier: Modifier = Modifier) {
-
-    val (textList) = remember { mutableStateOf(questions) }
-
+fun Library(modifier: Modifier = Modifier) {
     Surface(
         modifier = modifier.fillMaxSize(),
     ) {
-        LazyColumn(modifier = modifier.fillMaxSize()) {
+        val (bookList, setBookList) = remember { mutableStateOf(books) }
 
-            items(textList) { question ->
-                // Displays individual book items
-                TextItem(
-                    text = question,
-                    modifier = Modifier.padding(10.dp)
+        Scaffold() { it ->
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(it)
+            ) {
+                // Adds a title to the top of the page
+                Text(
+                    text = "LIBRARY",
+                    style = MaterialTheme.typography.titleLarge
+                        .copy(fontWeight = FontWeight.Bold
+                             ,fontFamily = FontFamily.Default),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 8.dp, horizontal = 16.dp),
+                    textAlign = TextAlign.Center
                 )
+
+                LazyVerticalGrid(GridCells.Fixed(3)) {
+                    items(bookList) { book ->
+                        // Displays individual book items with text below
+                        Column {
+                            BookItem(
+                                book = book,
+                                modifier = Modifier.padding(dimensionResource(R.dimen.padding_small))
+                                    .height(120.dp)
+                            )
+                            Spacer(modifier = Modifier.height(8.dp)) // Adjust spacing as needed
+                            Text(
+                                text = "${book.name}", // or any other information
+                                textAlign = TextAlign.Center,
+                                modifier = Modifier.fillMaxWidth()
+
+                            )
+                        }
+                    }
+                }
             }
         }
     }
 }
+
+
