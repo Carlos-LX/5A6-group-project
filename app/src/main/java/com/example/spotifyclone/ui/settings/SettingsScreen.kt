@@ -19,33 +19,40 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.example.spotifyclone.Theme
 
 @Composable
-fun Settings(modifier: Modifier = Modifier) {
-    var sliderValue by remember { mutableStateOf(0f) }
+fun Settings(selectedTheme: Theme, onThemeChange: (Theme) -> Unit, modifier: Modifier = Modifier) {
+    var sliderValue by remember { mutableStateOf(16f) } // Initial font size
+
     Surface(
         modifier = modifier.fillMaxSize(),
     ) {
-        Column() {
-            selectTheme()
+        Column {
+            Text(text = "   Theme")
+            selectTheme(selectedTheme, onThemeChange)
+            Text(text = "   Font Size")
             Slider(
                 value = sliderValue,
                 onValueChange = {
                     sliderValue = it
                 },
-                valueRange = 0f..100f, // Define the range for the slider
-                steps = 100 // Number of steps within the range
+                valueRange = 12f..36f, // Adjust the range based on your preference
+                steps = 24 // Adjust the number of steps based on your preference
+            )
+            Text(
+                text = "Font Size: ${sliderValue.toInt()} sp",
+                fontSize = sliderValue.sp,
+                modifier = Modifier.padding(16.dp)
             )
         }
-
     }
 }
 
 @Composable
-fun selectTheme(modifier: Modifier = Modifier) {
+fun selectTheme(selectedTheme: Theme, onThemeChange: (Theme) -> Unit, modifier: Modifier = Modifier) {
     val radioOptions = listOf(Theme.Light, Theme.Dark)
-    var (selectedTheme, onThemeChange) = remember { mutableStateOf(Theme.Light ) }
     Column {
         radioOptions.forEach { theme ->
             Row(
@@ -65,7 +72,6 @@ fun selectTheme(modifier: Modifier = Modifier) {
                 )
                 Spacer(modifier = Modifier.width(8.dp))
                 Text(text = theme.name, modifier = Modifier.padding(start = 16.dp))
-
             }
         }
     }
