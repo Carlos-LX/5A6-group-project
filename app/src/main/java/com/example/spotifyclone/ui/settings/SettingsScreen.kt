@@ -22,13 +22,14 @@ import androidx.compose.ui.unit.dp
 import com.example.spotifyclone.Theme
 
 @Composable
-fun Settings(modifier: Modifier = Modifier) {
+fun Settings(selectedTheme: Theme, onThemeChange: (Theme) -> Unit, modifier: Modifier = Modifier) {
     var sliderValue by remember { mutableStateOf(0f) }
     Surface(
         modifier = modifier.fillMaxSize(),
     ) {
         Column() {
-            selectTheme()
+            // Call the modified selectTheme composable and pass the selected theme and onThemeChange callback
+            selectTheme(selectedTheme, onThemeChange)
             Slider(
                 value = sliderValue,
                 onValueChange = {
@@ -38,14 +39,12 @@ fun Settings(modifier: Modifier = Modifier) {
                 steps = 100 // Number of steps within the range
             )
         }
-
     }
 }
 
 @Composable
-fun selectTheme(modifier: Modifier = Modifier) {
+fun selectTheme(selectedTheme: Theme, onThemeChange: (Theme) -> Unit, modifier: Modifier = Modifier) {
     val radioOptions = listOf(Theme.Light, Theme.Dark)
-    var (selectedTheme, onThemeChange) = remember { mutableStateOf(Theme.Light ) }
     Column {
         radioOptions.forEach { theme ->
             Row(
@@ -65,7 +64,6 @@ fun selectTheme(modifier: Modifier = Modifier) {
                 )
                 Spacer(modifier = Modifier.width(8.dp))
                 Text(text = theme.name, modifier = Modifier.padding(start = 16.dp))
-
             }
         }
     }

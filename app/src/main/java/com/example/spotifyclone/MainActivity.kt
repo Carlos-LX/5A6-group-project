@@ -83,10 +83,17 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
+            var selectedTheme by remember { mutableStateOf(Theme.Light) }
 
-            SpotifyCloneTheme {
+            SpotifyCloneTheme(darkTheme = selectedTheme == Theme.Dark) {
                 // Initialize the main app UI
-                MyApp(modifier = Modifier.fillMaxSize())
+                MyApp(
+                    modifier = Modifier.fillMaxSize(),
+                    selectedTheme = selectedTheme,
+                    onThemeChange = { newTheme ->
+                        selectedTheme = newTheme
+                    }
+                )
             }
         }
     }
@@ -99,14 +106,14 @@ class MainActivity : ComponentActivity() {
  * @param modifier Modifier for the Surface composable.
  */
 @Composable
-fun MyApp(modifier: Modifier = Modifier) {
+fun MyApp(modifier: Modifier = Modifier, selectedTheme: Theme, onThemeChange: (Theme) -> Unit) {
+    // TODO: Add any additional setup or components specific to your app
 
-    //TODO: move the screens to the appropriate place
-
+    // Initialize the navigation controller
     val navController = rememberNavController()
 
     Scaffold(
-        modifier = Modifier,
+        modifier = modifier,
         topBar = { BookTopAppBar() },
         bottomBar = {
             BottomAppBar(
@@ -114,20 +121,25 @@ fun MyApp(modifier: Modifier = Modifier) {
 
                 ) {
                 Row {
+                    // Existing code for navigation items
                     ReadifyScreens.forEach { readifyDestination ->
-
-                        NavigationBarItem(selected = false, onClick = { navController.navigateSingleTopTo(readifyDestination.route) }, icon = {
-                            Icon(
-                                readifyDestination.icon,
-                                contentDescription = "${readifyDestination.route} icon",
-                                tint = Color.White
-                            )
-                        })
+                        NavigationBarItem(
+                            selected = false,
+                            onClick = { navController.navigateSingleTopTo(readifyDestination.route) },
+                            icon = {
+                                Icon(
+                                    readifyDestination.icon,
+                                    contentDescription = "${readifyDestination.route} icon",
+                                    tint = Color.White
+                                )
+                            }
+                        )
                     }
                 }
             }
         }
-    ) {innerPadding ->
+    ) { innerPadding ->
+        // Existing code for navigation
         NavHost(navController = navController,
             startDestination = "bookCollection",
             modifier = Modifier.padding(innerPadding)
@@ -136,17 +148,21 @@ fun MyApp(modifier: Modifier = Modifier) {
                 BookCollection()
             }
             composable(route = "settings") {
-                Settings()
+                // Pass selectedTheme and onThemeChange to the Settings composable
+                Settings(
+                    selectedTheme = selectedTheme,
+                    onThemeChange = onThemeChange,
+                    modifier = Modifier.fillMaxSize()
+                )
             }
             composable(route = "library") {
                 Library()
             }
-
         }
-
     }
+}
 
-    }
+
 
 
 fun NavHostController.navigateSingleTopTo(route: String) =
@@ -177,8 +193,16 @@ fun NavHostController.navigateSingleTopTo(route: String) =
 @Preview
 @Composable
 fun MyAppPreview() {
-    SpotifyCloneTheme {
-        MyApp(Modifier.fillMaxSize())
+    var selectedTheme by remember { mutableStateOf(Theme.Light) }
+
+    SpotifyCloneTheme(darkTheme = selectedTheme == Theme.Dark) {
+        MyApp(
+            modifier = Modifier.fillMaxSize(),
+            selectedTheme = selectedTheme,
+            onThemeChange = { newTheme ->
+                selectedTheme = newTheme
+            }
+        )
     }
 }
 
