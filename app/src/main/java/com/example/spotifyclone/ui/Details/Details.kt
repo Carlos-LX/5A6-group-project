@@ -24,6 +24,8 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.example.spotifyclone.ui.theme.md_theme_dark_errorContainer
+import com.example.spotifyclone.ui.theme.md_theme_dark_onSecondary
+import com.example.spotifyclone.ui.theme.md_theme_dark_tertiary
 import com.example.spotifyclone.ui.theme.md_theme_dark_tertiaryContainer
 import com.example.spotifyclone.ui.theme.md_theme_light_onPrimaryContainer
 import com.example.spotifyclone.ui.theme.md_theme_light_onTertiaryContainer
@@ -48,7 +50,7 @@ fun BookItemCard(bookItem: Book) {
             contentScale = ContentScale.Crop
         )
         Spacer(modifier = Modifier.height(16.dp))
-        Text(text = bookItem.name, style = MaterialTheme.typography.headlineMedium)
+        Text(text = bookItem.name + " " + bookItem.author, style = MaterialTheme.typography.headlineMedium)
         Spacer(modifier = Modifier.height(8.dp))
         Row(
             modifier = Modifier.fillMaxWidth(),
@@ -62,7 +64,7 @@ fun BookItemCard(bookItem: Book) {
             verticalAlignment = Alignment.CenterVertically
         ) {
             Spacer(modifier = Modifier.width(4.dp))
-            Text(text = bookItem.description, style = MaterialTheme.typography.headlineMedium)
+            Text(text = bookItem.description, style = MaterialTheme.typography.headlineSmall)
         }
     }
 }
@@ -96,9 +98,9 @@ fun Details(book: Book) {
             println(libraryBooks.last())
         },
         modifier = Modifier
-            .fillMaxWidth()
+            .width(170.dp)
             .padding(16.dp),
-        colors = ButtonDefaults.buttonColors(md_theme_dark_errorContainer)
+        colors = ButtonDefaults.buttonColors(md_theme_dark_tertiary)
     ) {
         Text(text = "ADD BOOK")
     }
