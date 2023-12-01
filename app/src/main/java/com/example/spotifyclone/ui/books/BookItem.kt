@@ -25,6 +25,9 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.onClick
+import androidx.compose.ui.semantics.semantics
 import com.codelab.basics.R
 import com.example.woof.data.Book
 
@@ -53,6 +56,7 @@ fun AddBookItem(
             .clickable { isExpanded = !isExpanded }
             .padding(dimensionResource(R.dimen.padding_small))
             .animateContentSize()
+
     ) {
         Column(
             modifier = Modifier.fillMaxWidth()
@@ -152,13 +156,19 @@ fun BookItem(
 ) {
     // State variable for expanding/collapsing book description
     var isExpanded by remember { mutableStateOf(false) }
-
+    val expandBookLabel = stringResource(id = R.string.expand_book_content_description)
     Card(
         modifier = modifier
             .fillMaxWidth()
             .clickable { isExpanded = !isExpanded } // Toggle isExpanded on click
             .padding(dimensionResource(R.dimen.padding_small))
             .animateContentSize() // Animates the content size change
+            .semantics {
+                onClick(
+                    label = expandBookLabel,
+                    action = null
+                )
+            }
     ) {
         Column(
             modifier = Modifier.fillMaxWidth()

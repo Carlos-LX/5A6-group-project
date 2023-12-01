@@ -24,6 +24,7 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -33,6 +34,7 @@ import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
@@ -52,6 +54,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.onClick
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -63,12 +67,12 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.codelab.basics.R
 import com.example.spotifyclone.ui.theme.SpotifyCloneTheme
 import com.example.spotifyclone.ui.books.BookCollection
 import com.example.spotifyclone.ui.settings.Settings
 import com.example.spotifyclone.ui.library.Library
 import kotlinx.coroutines.*
+import com.codelab.basics.R as R
 
 
 enum class Theme {
@@ -142,14 +146,19 @@ fun MyApp(modifier: Modifier = Modifier, selectedTheme: Theme, onThemeChange: (T
                         // Existing code for navigation items
                         ReadifyScreens.forEach { readifyDestination ->
                             NavigationBarItem(
+                                modifier = modifier.semantics {
+                                    onClick(label = "Navigate to ${readifyDestination.route} screen", action = null)
+
+                                },
                                 selected = false,
-                                onClick = { navController.navigateSingleTopTo(readifyDestination.route) },
+                                onClick = {navController.navigateSingleTopTo(readifyDestination.route)},
                                 icon = {
-                                    Icon(
-                                        readifyDestination.icon,
-                                        contentDescription = "${readifyDestination.route} icon",
-                                        tint = Color.White
-                                    )
+                                        Icon(
+                                            readifyDestination.icon,
+                                            contentDescription = "${readifyDestination.route} icon",
+                                            tint = Color.White
+                                        )
+
                                 }
                             )
                         }
