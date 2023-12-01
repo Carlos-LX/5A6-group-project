@@ -68,10 +68,16 @@ import com.example.spotifyclone.ui.Details.Details
 import com.example.spotifyclone.ui.theme.SpotifyCloneTheme
 import com.example.spotifyclone.ui.books.BookCollection
 import com.example.spotifyclone.ui.settings.Settings
+import com.example.spotifyclone.ui.login.LoginScreen
+import com.example.spotifyclone.ui.login.SignUpScreen
 import com.example.spotifyclone.ui.library.Library
 import com.example.woof.data.focusedBook
 import com.example.woof.data.storeBooks
 import kotlinx.coroutines.*
+import com.example.woof.data.Book
+import com.example.woof.data.books
+import androidx.compose.material.icons.filled.AccountCircle
+import androidx.compose.material.icons.filled.Add
 
 
 enum class Theme {
@@ -85,6 +91,10 @@ private val Context.dataStore by preferencesDataStore(
     name = USER_PREFERENCES_NAME
 )
 class MainActivity : ComponentActivity() {
+    /* Always be able to access the module ("static") */
+    companion object {
+        lateinit var appModule: AppModule
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -130,6 +140,7 @@ class MainActivity : ComponentActivity() {
  * The main composable function that defines the app's UI.
  * @param modifier Modifier for the Surface composable.
  */
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MyApp(modifier: Modifier = Modifier, selectedTheme: Theme, onThemeChange: (Theme) -> Unit, userfontSize: Float, onFontChange: (Float) -> Unit) {
     // TODO: Add any additional setup or components specific to your app
@@ -190,6 +201,12 @@ fun MyApp(modifier: Modifier = Modifier, selectedTheme: Theme, onThemeChange: (T
                 composable(route = Details.route) {
                     Details(focusedBook)
                 }
+            }
+            composable(route = "login") {
+                LoginScreen(navController = navController)
+            }
+            composable(route = "signUp") {
+                SignUpScreen(navController = navController)
             }
         }
     }

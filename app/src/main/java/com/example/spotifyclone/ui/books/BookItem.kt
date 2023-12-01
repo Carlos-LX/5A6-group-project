@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
@@ -36,6 +37,7 @@ import com.example.woof.data.Book
  * Composable function for adding a new book item.
  * @param onAddBookClick Callback when the "Add" button is clicked.
  */
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AddBookItem(
     onAddBookClick: (Book) -> Unit,

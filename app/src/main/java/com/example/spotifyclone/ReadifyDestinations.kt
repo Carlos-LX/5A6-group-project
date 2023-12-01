@@ -1,3 +1,4 @@
+// ReadifyDestination.kt
 package com.example.spotifyclone
 
 import androidx.compose.material.icons.Icons
@@ -33,3 +34,15 @@ object Details : ReadifyScreen {
     override val route = "details"
 }
 val ReadifyScreens = listOf(Settings, BookCollection, Library)
+
+object Login : ReadifyDestination {
+    override val icon = Icons.Rounded.Person
+    override val route = "login"
+}
+
+object SignUp : ReadifyDestination {
+    override val icon = Icons.Rounded.Person
+    override val route = "signUp"
+}
+
+val ReadifyScreens = listOf(Settings, BookCollection, Library, Login, SignUp)

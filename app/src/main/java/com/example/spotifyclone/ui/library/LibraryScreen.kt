@@ -13,6 +13,7 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.material3.Card
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -42,6 +43,7 @@ import com.example.woof.data.focusedBook
 import com.example.woof.data.libraryBooks
 import com.example.woof.data.storeBooks
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun Library(navController: NavHostController) {
     val (bookList, setBookList) = remember { mutableStateOf(libraryBooks) }
