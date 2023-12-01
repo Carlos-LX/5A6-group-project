@@ -13,6 +13,8 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -28,10 +30,17 @@ fun SignUpScreen(navController: NavController) {
                 .padding(16.dp)
         ) {
             Text("Sign-Up Screen", style = MaterialTheme.typography.headlineSmall)
-            TextField(value = "", onValueChange = {}, label = { Text("Username") })
-            TextField(value = "", onValueChange = {}, label = { Text("Email") })
-            TextField(value = "", onValueChange = {}, label = { Text("Password") })
-            TextField(value = "", onValueChange = {}, label = { Text("Confirm Password") })
+
+            // Use state to store the entered username, email, password, and confirmPassword
+            val (username, setUsername) = remember { mutableStateOf("") }
+            val (email, setEmail) = remember { mutableStateOf("") }
+            val (password, setPassword) = remember { mutableStateOf("") }
+            val (confirmPassword, setConfirmPassword) = remember { mutableStateOf("") }
+
+            TextField(value = username, onValueChange = { setUsername(it) }, label = { Text("Username") })
+            TextField(value = email, onValueChange = { setEmail(it) }, label = { Text("Email") })
+            TextField(value = password, onValueChange = { setPassword(it) }, label = { Text("Password") })
+            TextField(value = confirmPassword, onValueChange = { setConfirmPassword(it) }, label = { Text("Confirm Password") })
 
             Box(
                 modifier = Modifier
@@ -40,7 +49,9 @@ fun SignUpScreen(navController: NavController) {
                 contentAlignment = Alignment.CenterEnd
             ) {
                 Button(
-                    onClick = { /* Handle sign-up logic here */ },
+                    onClick = {
+                        // Handle sign-up logic here using the entered values
+                    },
                     modifier = Modifier
                         .size(width = 100.dp, height = 40.dp)
                         .fillMaxWidth() // Ensure the Button takes the full width inside the Box
@@ -51,8 +62,3 @@ fun SignUpScreen(navController: NavController) {
         }
     }
 }
-
-
-
-
-

@@ -13,6 +13,8 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -28,8 +30,13 @@ fun LoginScreen(navController: NavController) {
                 .padding(16.dp)
         ) {
             Text("Login Screen", style = MaterialTheme.typography.headlineSmall)
-            TextField(value = "", onValueChange = {}, label = { Text("Username") })
-            TextField(value = "", onValueChange = {}, label = { Text("Password") })
+
+            // Use state to store the entered username and password
+            val (username, setUsername) = remember { mutableStateOf("") }
+            val (password, setPassword) = remember { mutableStateOf("") }
+
+            TextField(value = username, onValueChange = { setUsername(it) }, label = { Text("Username") })
+            TextField(value = password, onValueChange = { setPassword(it) }, label = { Text("Password") })
 
             Box(
                 modifier = Modifier
@@ -38,10 +45,12 @@ fun LoginScreen(navController: NavController) {
                 contentAlignment = Alignment.CenterEnd
             ) {
                 Button(
-                    onClick = { /* Handle login logic here */ },
+                    onClick = {
+                        /* Handle login logic here using the 'username' and 'password' values */
+                    },
                     modifier = Modifier
                         .size(width = 100.dp, height = 40.dp)
-                        .fillMaxWidth() // Ensure the Button takes the full width inside the Box
+                        .fillMaxWidth()
                 ) {
                     Text("Login")
                 }
