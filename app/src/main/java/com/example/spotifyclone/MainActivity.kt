@@ -75,7 +75,6 @@ import com.example.woof.data.focusedBook
 import com.example.woof.data.storeBooks
 import kotlinx.coroutines.*
 import com.example.woof.data.Book
-import com.example.woof.data.books
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.Add
 
@@ -182,7 +181,7 @@ fun MyApp(modifier: Modifier = Modifier, selectedTheme: Theme, onThemeChange: (T
                 startDestination = "bookCollection",
                 modifier = Modifier.padding(innerPadding)
             ) {
-                composable(route = BookCollection.route){
+                composable(route = BookCollection.route) {
                     BookCollection()
                 }
                 composable(route = Settings.route) {
@@ -201,12 +200,13 @@ fun MyApp(modifier: Modifier = Modifier, selectedTheme: Theme, onThemeChange: (T
                 composable(route = Details.route) {
                     Details(focusedBook)
                 }
-            }
-            composable(route = "login") {
-                LoginScreen(navController = navController)
-            }
-            composable(route = "signUp") {
-                SignUpScreen(navController = navController)
+
+                composable(route = "login") {
+                    LoginScreen(navController = navController)
+                }
+                composable(route = "signUp") {
+                    SignUpScreen(navController = navController)
+                }
             }
         }
     }

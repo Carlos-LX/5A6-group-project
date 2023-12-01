@@ -3,6 +3,7 @@ package com.example.spotifyclone
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.List
+import androidx.compose.material.icons.rounded.Person
 import androidx.compose.material.icons.rounded.Settings
 import androidx.compose.material.icons.rounded.ShoppingCart
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -33,14 +34,13 @@ object Library : ReadifyBarDestination {
 object Details : ReadifyScreen {
     override val route = "details"
 }
-val ReadifyScreens = listOf(Settings, BookCollection, Library)
 
-object Login : ReadifyDestination {
+object Login : ReadifyBarDestination {
     override val icon = Icons.Rounded.Person
     override val route = "login"
 }
 
-object SignUp : ReadifyDestination {
+object SignUp : ReadifyBarDestination {
     override val icon = Icons.Rounded.Person
     override val route = "signUp"
 }
