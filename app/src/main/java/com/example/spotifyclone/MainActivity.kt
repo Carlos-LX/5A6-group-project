@@ -19,21 +19,16 @@ package com.example.spotifyclone
 // The vast majority of source code I got was from the kotlin bootcamp with some help using chat gpt.
 // I mainly used chat gpt to aid with printing an actual bookItem when the add button is pressed, I
 // overshot with the state and user input criteria and I struggled to figure it out on my own
+import android.content.Context
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.lazy.grid.GridCells
-import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -44,9 +39,12 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -58,46 +56,59 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.datastore.preferences.preferencesDataStore
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.codelab.basics.R
-import com.example.spotifyclone.data.Library
 import com.example.spotifyclone.ui.theme.SpotifyCloneTheme
 import com.example.spotifyclone.ui.books.BookCollection
 import com.example.spotifyclone.ui.settings.Settings
 import com.example.spotifyclone.ui.library.Library
-import com.example.woof.data.Book
-import com.example.woof.data.books
+import kotlinx.coroutines.*
 
 
 enum class Theme {
     Light, Dark
 }
 
+
+private const val USER_PREFERENCES_NAME = "theme"
+
+private val Context.dataStore by preferencesDataStore(
+    name = USER_PREFERENCES_NAME
+)
 class MainActivity : ComponentActivity() {
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            var selectedTheme by remember { mutableStateOf(Theme.Light) }
+            var preferences = PreferencesRepository(dataStore, this)
+            var userPrefs by remember { mutableStateOf(UserPrefs(Theme.Light)) }
 
-            SpotifyCloneTheme(darkTheme = selectedTheme == Theme.Dark) {
-                // Initialize the main app UI
+            // Collect the Flow and update userPrefs when it changes
+            LaunchedEffect(preferences.userPreferencesFlow) {
+                preferences.userPreferencesFlow.collect { newUserPrefs ->
+                    userPrefs = newUserPrefs
+                }
+            }
+
                 MyApp(
                     modifier = Modifier.fillMaxSize(),
-                    selectedTheme = selectedTheme,
+                    selectedTheme = userPrefs.selectedTheme,
                     onThemeChange = { newTheme ->
-                        selectedTheme = newTheme
+
+                        CoroutineScope(Dispatchers.IO).launch {
+                            preferences.setTheme(newTheme)
+                        }
                     }
                 )
             }
         }
     }
-}
 
 
 
@@ -108,55 +119,57 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun MyApp(modifier: Modifier = Modifier, selectedTheme: Theme, onThemeChange: (Theme) -> Unit) {
     // TODO: Add any additional setup or components specific to your app
+    SpotifyCloneTheme(currentTheme = selectedTheme) {
+        // Initialize the navigation controller
+        val navController = rememberNavController()
 
-    // Initialize the navigation controller
-    val navController = rememberNavController()
+        Scaffold(
+            modifier = modifier,
+            topBar = { BookTopAppBar() },
+            bottomBar = {
+                BottomAppBar(
+                    modifier = Modifier,
 
-    Scaffold(
-        modifier = modifier,
-        topBar = { BookTopAppBar() },
-        bottomBar = {
-            BottomAppBar(
-                modifier = Modifier,
-
-                ) {
-                Row {
-                    // Existing code for navigation items
-                    ReadifyScreens.forEach { readifyDestination ->
-                        NavigationBarItem(
-                            selected = false,
-                            onClick = { navController.navigateSingleTopTo(readifyDestination.route) },
-                            icon = {
-                                Icon(
-                                    readifyDestination.icon,
-                                    contentDescription = "${readifyDestination.route} icon",
-                                    tint = Color.White
-                                )
-                            }
-                        )
+                    ) {
+                    Row {
+                        // Existing code for navigation items
+                        ReadifyScreens.forEach { readifyDestination ->
+                            NavigationBarItem(
+                                selected = false,
+                                onClick = { navController.navigateSingleTopTo(readifyDestination.route) },
+                                icon = {
+                                    Icon(
+                                        readifyDestination.icon,
+                                        contentDescription = "${readifyDestination.route} icon",
+                                        tint = Color.White
+                                    )
+                                }
+                            )
+                        }
                     }
                 }
             }
-        }
-    ) { innerPadding ->
-        // Existing code for navigation
-        NavHost(navController = navController,
-            startDestination = "bookCollection",
-            modifier = Modifier.padding(innerPadding)
-        ) {
-            composable(route = "bookCollection") {
-                BookCollection()
-            }
-            composable(route = "settings") {
-                // Pass selectedTheme and onThemeChange to the Settings composable
-                Settings(
-                    selectedTheme = selectedTheme,
-                    onThemeChange = onThemeChange,
-                    modifier = Modifier.fillMaxSize()
-                )
-            }
-            composable(route = "library") {
-                Library()
+        ) { innerPadding ->
+            // Existing code for navigation
+            NavHost(
+                navController = navController,
+                startDestination = "bookCollection",
+                modifier = Modifier.padding(innerPadding)
+            ) {
+                composable(route = "bookCollection") {
+                    BookCollection()
+                }
+                composable(route = "settings") {
+                    // Pass selectedTheme and onThemeChange to the Settings composable
+                    Settings(
+                        selectedTheme = selectedTheme,
+                        onThemeChange = onThemeChange,
+                        modifier = Modifier.fillMaxSize()
+                    )
+                }
+                composable(route = "library") {
+                    Library()
+                }
             }
         }
     }
@@ -194,8 +207,6 @@ fun NavHostController.navigateSingleTopTo(route: String) =
 @Composable
 fun MyAppPreview() {
     var selectedTheme by remember { mutableStateOf(Theme.Light) }
-
-    SpotifyCloneTheme(darkTheme = selectedTheme == Theme.Dark) {
         MyApp(
             modifier = Modifier.fillMaxSize(),
             selectedTheme = selectedTheme,
@@ -204,7 +215,7 @@ fun MyAppPreview() {
             }
         )
     }
-}
+
 
 
 

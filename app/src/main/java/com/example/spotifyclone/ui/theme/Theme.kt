@@ -15,6 +15,7 @@ import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
 import androidx.core.view.WindowCompat
+import com.example.spotifyclone.Theme
 
 private val LightColors = lightColorScheme(
     primary = forest_green,
@@ -84,17 +85,17 @@ private val DarkColors = darkColorScheme(
 
 @Composable
 fun SpotifyCloneTheme(
-    darkTheme: Boolean = isSystemInDarkTheme(),
+    currentTheme: Theme,
     dynamicColor: Boolean = false,
     content: @Composable () -> Unit
 ) {
     val colorScheme = when {
         dynamicColor && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S -> {
             val context = LocalContext.current
-            if (darkTheme) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
+            if (currentTheme == Theme.Dark) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
         }
 
-        darkTheme -> DarkColors
+        currentTheme == Theme.Dark -> DarkColors
         else -> LightColors
     }
     val view = LocalView.current
@@ -102,7 +103,7 @@ fun SpotifyCloneTheme(
         SideEffect {
             val window = (view.context as Activity).window
             window.statusBarColor = colorScheme.primary.toArgb()
-            WindowCompat.getInsetsController(window, view).isAppearanceLightStatusBars = darkTheme
+            WindowCompat.getInsetsController(window, view).isAppearanceLightStatusBars = currentTheme == Theme.Dark
         }
     }
 

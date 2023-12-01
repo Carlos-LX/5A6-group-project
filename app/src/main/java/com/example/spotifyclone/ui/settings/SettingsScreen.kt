@@ -52,7 +52,7 @@ fun Settings(selectedTheme: Theme, onThemeChange: (Theme) -> Unit, modifier: Mod
 
 @Composable
 fun selectTheme(selectedTheme: Theme, onThemeChange: (Theme) -> Unit, modifier: Modifier = Modifier) {
-    val radioOptions = listOf(Theme.Light, Theme.Dark)
+    val radioOptions = Theme.values()
     Column {
         radioOptions.forEach { theme ->
             Row(
