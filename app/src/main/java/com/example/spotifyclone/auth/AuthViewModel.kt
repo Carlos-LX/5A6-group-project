@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.example.spotifyclone.MyApp
+import com.example.spotifyclone.MainActivity
 import com.google.firebase.auth.FirebaseAuthException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -72,6 +73,6 @@ class AuthViewModel(private val authRepository: AuthRepository) : ViewModel() {
  */
 class AuthViewModelFactory : ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
-        return AuthViewModel(MyApp.appModule.authRepository) as T
+        return AuthViewModel(MainActivity.appModule.authRepository) as T
     }
 }

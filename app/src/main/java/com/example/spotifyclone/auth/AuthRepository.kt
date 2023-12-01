@@ -1,6 +1,6 @@
 package com.example.spotifyclone.auth
 
-import com.example.kotlinwithcompose.model.ProfileData
+import com.example.spotifyclone.data.ProfileData
 import com.google.firebase.auth.AuthResult
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase

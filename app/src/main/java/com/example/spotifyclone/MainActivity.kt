@@ -84,6 +84,11 @@ enum class Theme {
 }
 
 class MainActivity : ComponentActivity() {
+    /* Always be able to access the module ("static") */
+    companion object {
+        lateinit var appModule: AppModule
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
@@ -103,15 +108,15 @@ class MainActivity : ComponentActivity() {
     }
 }
 
-
-
 /**
  * The main composable function that defines the app's UI.
  * @param modifier Modifier for the Surface composable.
  */
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MyApp(modifier: Modifier = Modifier, selectedTheme: Theme, onThemeChange: (Theme) -> Unit) {
     // TODO: Add any additional setup or components specific to your app
+
 
     // Initialize the navigation controller
     val navController = rememberNavController()
