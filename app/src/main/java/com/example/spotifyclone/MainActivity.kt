@@ -70,9 +70,13 @@ import com.example.spotifyclone.data.Library
 import com.example.spotifyclone.ui.theme.SpotifyCloneTheme
 import com.example.spotifyclone.ui.books.BookCollection
 import com.example.spotifyclone.ui.settings.Settings
+import com.example.spotifyclone.ui.login.LoginScreen
+import com.example.spotifyclone.ui.login.SignUpScreen
 import com.example.spotifyclone.ui.library.Library
 import com.example.woof.data.Book
 import com.example.woof.data.books
+import androidx.compose.material.icons.filled.AccountCircle
+import androidx.compose.material.icons.filled.Add
 
 
 enum class Theme {
@@ -157,6 +161,12 @@ fun MyApp(modifier: Modifier = Modifier, selectedTheme: Theme, onThemeChange: (T
             }
             composable(route = "library") {
                 Library()
+            }
+            composable(route = "login") {
+                LoginScreen(navController = navController)
+            }
+            composable(route = "signUp") {
+                SignUpScreen(navController = navController)
             }
         }
     }
