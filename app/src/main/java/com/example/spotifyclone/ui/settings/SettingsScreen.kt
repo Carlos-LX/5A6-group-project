@@ -23,8 +23,8 @@ import androidx.compose.ui.unit.sp
 import com.example.spotifyclone.Theme
 
 @Composable
-fun Settings(selectedTheme: Theme, onThemeChange: (Theme) -> Unit, modifier: Modifier = Modifier) {
-    var sliderValue by remember { mutableStateOf(16f) } // Initial font size
+fun Settings(selectedTheme: Theme, onThemeChange: (Theme) -> Unit, userfontSize: Float, onFontChange: (Float) -> Unit, modifier: Modifier = Modifier) {
+    var sliderValue by remember { mutableStateOf(userfontSize) } // Initial font size
 
     Surface(
         modifier = modifier.fillMaxSize(),
@@ -37,6 +37,7 @@ fun Settings(selectedTheme: Theme, onThemeChange: (Theme) -> Unit, modifier: Mod
                 value = sliderValue,
                 onValueChange = {
                     sliderValue = it
+                    onFontChange(sliderValue)
                 },
                 valueRange = 12f..36f, // Adjust the range based on your preference
                 steps = 24 // Adjust the number of steps based on your preference

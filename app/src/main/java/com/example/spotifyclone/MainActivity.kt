@@ -87,7 +87,7 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             var preferences = PreferencesRepository(dataStore, this)
-            var userPrefs by remember { mutableStateOf(UserPrefs(Theme.Light)) }
+            var userPrefs by remember { mutableStateOf(UserPrefs(Theme.Light, 12.0f)) }
 
             // Collect the Flow and update userPrefs when it changes
             LaunchedEffect(preferences.userPreferencesFlow) {
@@ -104,7 +104,13 @@ class MainActivity : ComponentActivity() {
                         CoroutineScope(Dispatchers.IO).launch {
                             preferences.setTheme(newTheme)
                         }
-                    }
+                    },
+                    userfontSize = userPrefs.fontSize,
+                    onFontChange = { newSize ->
+                        CoroutineScope(Dispatchers.IO).launch {
+                            preferences.setFontSize(newSize)
+                        }
+                    },
                 )
             }
         }
@@ -117,8 +123,9 @@ class MainActivity : ComponentActivity() {
  * @param modifier Modifier for the Surface composable.
  */
 @Composable
-fun MyApp(modifier: Modifier = Modifier, selectedTheme: Theme, onThemeChange: (Theme) -> Unit) {
+fun MyApp(modifier: Modifier = Modifier, selectedTheme: Theme, onThemeChange: (Theme) -> Unit, userfontSize: Float, onFontChange: (Float) -> Unit) {
     // TODO: Add any additional setup or components specific to your app
+    modifier
     SpotifyCloneTheme(currentTheme = selectedTheme) {
         // Initialize the navigation controller
         val navController = rememberNavController()
@@ -164,6 +171,8 @@ fun MyApp(modifier: Modifier = Modifier, selectedTheme: Theme, onThemeChange: (T
                     Settings(
                         selectedTheme = selectedTheme,
                         onThemeChange = onThemeChange,
+                        userfontSize = userfontSize,
+                        onFontChange = onFontChange,
                         modifier = Modifier.fillMaxSize()
                     )
                 }
@@ -207,11 +216,17 @@ fun NavHostController.navigateSingleTopTo(route: String) =
 @Composable
 fun MyAppPreview() {
     var selectedTheme by remember { mutableStateOf(Theme.Light) }
+    var fontSize by remember { mutableStateOf(16f) }
         MyApp(
             modifier = Modifier.fillMaxSize(),
             selectedTheme = selectedTheme,
             onThemeChange = { newTheme ->
                 selectedTheme = newTheme
+            },
+            userfontSize = fontSize,
+            onFontChange = {
+                    userfontSize ->
+                fontSize = userfontSize
             }
         )
     }
