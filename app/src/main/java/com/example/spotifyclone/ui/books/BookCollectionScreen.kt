@@ -10,21 +10,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.dimensionResource
 import com.codelab.basics.R
 
-import com.example.woof.data.books
+import com.example.woof.data.libraryBooks
 
 @Composable
 fun BookCollection(modifier: Modifier = Modifier) {
 
-    val (bookList, setBookList) = remember { mutableStateOf(books) }
+    val (bookList, setBookList) = remember { mutableStateOf(libraryBooks) }
     LazyColumn(modifier = modifier) {
-        item {
-            // Displays the "Add Book" card
-            AddBookItem(
-                onAddBookClick = { newBook ->
-                    setBookList(bookList + newBook)
-                }
-            )
-        }
         items(bookList) { book ->
             // Displays individual book items
             BookItem(

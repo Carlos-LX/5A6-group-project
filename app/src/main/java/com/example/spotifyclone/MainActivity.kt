@@ -64,10 +64,13 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.codelab.basics.R
+import com.example.spotifyclone.ui.Details.Details
 import com.example.spotifyclone.ui.theme.SpotifyCloneTheme
 import com.example.spotifyclone.ui.books.BookCollection
 import com.example.spotifyclone.ui.settings.Settings
 import com.example.spotifyclone.ui.library.Library
+import com.example.woof.data.focusedBook
+import com.example.woof.data.storeBooks
 import kotlinx.coroutines.*
 
 
@@ -88,6 +91,11 @@ class MainActivity : ComponentActivity() {
         setContent {
             var preferences = PreferencesRepository(dataStore, this)
             var userPrefs by remember { mutableStateOf(UserPrefs(Theme.Light, 12.0f)) }
+
+
+
+
+
 
             // Collect the Flow and update userPrefs when it changes
             LaunchedEffect(preferences.userPreferencesFlow) {
@@ -163,10 +171,10 @@ fun MyApp(modifier: Modifier = Modifier, selectedTheme: Theme, onThemeChange: (T
                 startDestination = "bookCollection",
                 modifier = Modifier.padding(innerPadding)
             ) {
-                composable(route = "bookCollection") {
+                composable(route = BookCollection.route){
                     BookCollection()
                 }
-                composable(route = "settings") {
+                composable(route = Settings.route) {
                     // Pass selectedTheme and onThemeChange to the Settings composable
                     Settings(
                         selectedTheme = selectedTheme,
@@ -176,8 +184,11 @@ fun MyApp(modifier: Modifier = Modifier, selectedTheme: Theme, onThemeChange: (T
                         modifier = Modifier.fillMaxSize()
                     )
                 }
-                composable(route = "library") {
-                    Library()
+                composable(route = Library.route) {
+                    Library(navController)
+                }
+                composable(route = Details.route) {
+                    Details(focusedBook)
                 }
             }
         }
