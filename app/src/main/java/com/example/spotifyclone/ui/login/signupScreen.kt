@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
@@ -17,6 +18,8 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 
@@ -37,10 +40,32 @@ fun SignUpScreen(navController: NavController) {
             val (password, setPassword) = remember { mutableStateOf("") }
             val (confirmPassword, setConfirmPassword) = remember { mutableStateOf("") }
 
-            TextField(value = username, onValueChange = { setUsername(it) }, label = { Text("Username") })
-            TextField(value = email, onValueChange = { setEmail(it) }, label = { Text("Email") })
-            TextField(value = password, onValueChange = { setPassword(it) }, label = { Text("Password") })
-            TextField(value = confirmPassword, onValueChange = { setConfirmPassword(it) }, label = { Text("Confirm Password") })
+            TextField(
+                value = username,
+                onValueChange = { setUsername(it) },
+                label = { Text("Username") }
+            )
+            TextField(
+                value = email,
+                onValueChange = { setEmail(it) },
+                label = { Text("Email") },
+                keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Email),
+                isError = !isValidEmail(email)
+            )
+            TextField(
+                value = password,
+                onValueChange = { setPassword(it) },
+                label = { Text("Password") },
+                visualTransformation = PasswordVisualTransformation(),
+                isError = !isValidPassword(password)
+            )
+            TextField(
+                value = confirmPassword,
+                onValueChange = { setConfirmPassword(it) },
+                label = { Text("Confirm Password") },
+                visualTransformation = PasswordVisualTransformation(),
+                isError = !isValidPassword(confirmPassword) || password != confirmPassword
+            )
 
             Box(
                 modifier = Modifier
@@ -50,7 +75,11 @@ fun SignUpScreen(navController: NavController) {
             ) {
                 Button(
                     onClick = {
-                        // Handle sign-up logic here using the entered values
+                        // Validate email and password before sign-up logic
+                        if (isValidEmail(email) && isValidPassword(password) && password == confirmPassword) {
+                            // Handle sign-up logic here using the entered values
+                            // Call the sign-up function or navigate to the sign-up logic passing the user credentials
+                        }
                     },
                     modifier = Modifier
                         .size(width = 100.dp, height = 40.dp)
@@ -61,4 +90,16 @@ fun SignUpScreen(navController: NavController) {
             }
         }
     }
+}
+
+// Function to validate the email format using a simple regex
+private fun isValidEmail(email: String): Boolean {
+    val emailRegex = "^[A-Za-z](.*)([@]{1})(.{1,})(\\.)(.{1,})"
+    return email.matches(emailRegex.toRegex())
+}
+
+// Function to validate the password format using a simple regex
+private fun isValidPassword(password: String): Boolean {
+    val passwordRegex = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=!])(?=\\S+$).{8,}$"
+    return password.matches(passwordRegex.toRegex())
 }
