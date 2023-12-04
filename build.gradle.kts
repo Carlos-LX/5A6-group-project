@@ -7,3 +7,7 @@ plugins {
 allprojects {
     apply(plugin = "org.jlleitschuh.gradle.ktlint")
 }
+repositories {
+    // Required to download KtLint
+    mavenCentral()
+}
