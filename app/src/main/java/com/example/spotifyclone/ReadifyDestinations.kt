@@ -35,8 +35,7 @@ object Details : ReadifyScreen {
     override val route = "details"
 }
 
-object Login : ReadifyBarDestination {
-    override val icon = Icons.Rounded.Person
+object Login : ReadifyScreen {
     override val route = "login"
 }
 
@@ -45,4 +44,4 @@ object SignUp : ReadifyBarDestination {
     override val route = "signUp"
 }
 
-val ReadifyScreens = listOf(Settings, BookCollection, Library, Login, SignUp)
+val ReadifyScreens = listOf(Settings, BookCollection, Library, SignUp)

@@ -1,4 +1,4 @@
-package com.example.kotlinwithcompose.screens
+ package com.example.kotlinwithcompose.screens
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
@@ -13,6 +13,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.spotifyclone.auth.AuthViewModel
@@ -20,7 +21,6 @@ import com.example.spotifyclone.auth.AuthViewModelFactory
 import com.example.spotifyclone.auth.ResultAuth
 import com.google.firebase.auth.FirebaseAuthException
 import kotlinx.coroutines.launch
-
 @Composable
 fun AuthLoginScreen(authViewModel: AuthViewModel =
                                 viewModel(factory= AuthViewModelFactory())

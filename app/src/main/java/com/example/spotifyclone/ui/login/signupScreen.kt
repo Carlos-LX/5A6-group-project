@@ -2,6 +2,7 @@ package com.example.spotifyclone.ui.login
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -22,10 +23,14 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import androidx.navigation.NavHostController
+import com.example.spotifyclone.Login
+import com.example.spotifyclone.ReadifyScreen
+import com.example.spotifyclone.navigateSingleTopTo
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SignUpScreen(navController: NavController) {
+fun SignUpScreen(navController: NavHostController) {
     Surface(modifier = Modifier.fillMaxSize()) {
         Column(
             modifier = Modifier
@@ -39,19 +44,22 @@ fun SignUpScreen(navController: NavController) {
             val (email, setEmail) = remember { mutableStateOf("") }
             val (password, setPassword) = remember { mutableStateOf("") }
             val (confirmPassword, setConfirmPassword) = remember { mutableStateOf("") }
-
+            Spacer(modifier = Modifier.size(20.dp))
             TextField(
                 value = username,
                 onValueChange = { setUsername(it) },
                 label = { Text("Username") }
             )
+            Spacer(modifier = Modifier.size(6.dp))
             TextField(
                 value = email,
                 onValueChange = { setEmail(it) },
                 label = { Text("Email") },
                 keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Email),
-                isError = !isValidEmail(email)
+                isError = !isValidEmail(email),
+
             )
+            Spacer(modifier = Modifier.size(6.dp))
             TextField(
                 value = password,
                 onValueChange = { setPassword(it) },
@@ -59,6 +67,7 @@ fun SignUpScreen(navController: NavController) {
                 visualTransformation = PasswordVisualTransformation(),
                 isError = !isValidPassword(password)
             )
+            Spacer(modifier = Modifier.size(6.dp))
             TextField(
                 value = confirmPassword,
                 onValueChange = { setConfirmPassword(it) },
@@ -71,7 +80,7 @@ fun SignUpScreen(navController: NavController) {
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(top = 16.dp),
-                contentAlignment = Alignment.CenterEnd
+                contentAlignment = Alignment.CenterStart
             ) {
                 Button(
                     onClick = {
@@ -86,6 +95,24 @@ fun SignUpScreen(navController: NavController) {
                         .fillMaxWidth() // Ensure the Button takes the full width inside the Box
                 ) {
                     Text("Sign Up")
+                }
+            }
+
+
+
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 16.dp),
+                contentAlignment = Alignment.CenterStart
+            ) {
+                Button(
+                    onClick = {
+                        navController.navigateSingleTopTo(Login.route);
+                    },
+                    modifier = Modifier
+                ) {
+                    Text("Log in")
                 }
             }
         }

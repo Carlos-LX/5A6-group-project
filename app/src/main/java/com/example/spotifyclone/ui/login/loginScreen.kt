@@ -2,6 +2,7 @@ package com.example.spotifyclone.ui.login
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -22,17 +23,25 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import androidx.navigation.NavHostController
+import com.example.spotifyclone.Login
+import com.example.spotifyclone.SignUp
+import com.example.spotifyclone.auth.AuthViewModel
+import com.example.spotifyclone.navigateSingleTopTo
+import org.intellij.lang.annotations.JdkConstants.HorizontalAlignment
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun LoginScreen(navController: NavController) {
+fun LoginScreen(navController: NavHostController) {
     Surface(modifier = Modifier.fillMaxSize()) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(16.dp)
+                .padding(16.dp),
+            horizontalAlignment  = Alignment.End
         ) {
             Text("Login Screen", style = MaterialTheme.typography.headlineSmall)
+            Spacer(modifier = Modifier.size(20.dp))
 
             // Use state to store the entered email and password
             val (email, setEmail) = remember { mutableStateOf("") }
@@ -45,6 +54,7 @@ fun LoginScreen(navController: NavController) {
                 keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Email),
                 isError = !isValidEmail(email)
             )
+            Spacer(modifier = Modifier.size(6.dp))
             TextField(
                 value = password,
                 onValueChange = { setPassword(it) },
@@ -52,6 +62,7 @@ fun LoginScreen(navController: NavController) {
                 visualTransformation = PasswordVisualTransformation(),
                 isError = !isValidPassword(password)
             )
+            Spacer(modifier = Modifier.size(6.dp))
 
             Box(
                 modifier = Modifier
@@ -63,7 +74,8 @@ fun LoginScreen(navController: NavController) {
                     onClick = {
                         // Validate email and password before login logic
                         if (isValidEmail(email) && isValidPassword(password)) {
-                            /* Handle login logic here using the 'email' and 'password' values */
+
+
                         }
                     },
                     modifier = Modifier
@@ -71,6 +83,23 @@ fun LoginScreen(navController: NavController) {
                         .fillMaxWidth()
                 ) {
                     Text("Login")
+                }
+
+            }
+
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 16.dp),
+                contentAlignment = Alignment.CenterEnd) {
+
+                Button(
+                    onClick = {
+                        navController.navigateSingleTopTo(SignUp.route);
+                    },
+                    modifier = Modifier
+                ) {
+                    Text("Sign up")
                 }
             }
         }
