@@ -51,7 +51,7 @@ fun ReviewItem(
 
 @Composable
 fun ReviewInformation(
-    rating: Int,
+    rating: Float,
     title: String,
     description: String,
     modifier: Modifier = Modifier

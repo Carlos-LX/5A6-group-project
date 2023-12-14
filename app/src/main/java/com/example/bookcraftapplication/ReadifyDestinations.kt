@@ -2,6 +2,8 @@
 package com.example.bookcraftapplication
 
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.Favorite
+import androidx.compose.material.icons.rounded.LibraryBooks
 import androidx.compose.material.icons.rounded.List
 import androidx.compose.material.icons.rounded.Person
 import androidx.compose.material.icons.rounded.Settings
@@ -20,7 +22,7 @@ interface ReadifyBarDestination {
     val route: String
 }
 object BookCollection : ReadifyBarDestination {
-    override val icon = Icons.Rounded.List
+    override val icon = Icons.Rounded.Favorite
     override val route = "bookCollection"
 }
 object Settings : ReadifyBarDestination {
@@ -28,7 +30,7 @@ object Settings : ReadifyBarDestination {
     override val route = "settings"
 }
 object Library : ReadifyBarDestination {
-    override val icon =  Icons.Rounded.ShoppingCart
+    override val icon =  Icons.Rounded.LibraryBooks
     override val route = "library"
 }
 object Details : ReadifyScreen {
@@ -47,4 +49,4 @@ object SignUp : ReadifyBarDestination {
     override val route = "signUp"
 }
 
-val ReadifyScreens = listOf(Settings, BookCollection, Library, SignUp)
+val ReadifyScreens = listOf(SignUp, BookCollection, Library, Settings)

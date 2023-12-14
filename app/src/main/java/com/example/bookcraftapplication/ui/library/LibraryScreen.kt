@@ -35,13 +35,11 @@ import com.example.bookcraftapplication.data.Library
 import com.example.bookcraftapplication.navigateSingleTopTo
 import com.example.bookcraftapplication.ui.books.BookItem
 import com.example.bookcraft.data.focusedBook
-import com.example.bookcraft.data.libraryBooks
 import com.example.bookcraft.data.storeBooks
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun Library(navController: NavHostController) {
-    val (bookList, setBookList) = remember { mutableStateOf(libraryBooks) }
     val (storeBookList, setStoreBookList) = remember { mutableStateOf(storeBooks) }
 
 
@@ -52,9 +50,8 @@ fun Library(navController: NavHostController) {
                 .fillMaxSize()
                 .padding(it)
         ) {
-            // Adds a title to the top of the page
             Text(
-                text = "STORE",
+                text = "LIBRARY",
                 style = MaterialTheme.typography.titleLarge
                     .copy(fontWeight = FontWeight.Bold, fontFamily = FontFamily.Default),
                 modifier = Modifier

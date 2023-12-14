@@ -15,6 +15,7 @@ import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
@@ -23,6 +24,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.dimensionResource
+import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
@@ -39,7 +42,19 @@ fun BookCollection(modifier: Modifier = Modifier, navController: NavHostControll
     val (selectedBook, setSelectedBook) = remember { mutableStateOf<Book?>(null) }
     val (showAlertDialog, setShowAlertDialog) = remember { mutableStateOf(false) }
 
+
     LazyColumn(modifier = modifier) {
+        item {
+            Text(
+                text = "FAVORITES",
+                style = MaterialTheme.typography.titleLarge
+                    .copy(fontWeight = FontWeight.Bold, fontFamily = FontFamily.Default),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 8.dp, horizontal = 16.dp),
+                textAlign = TextAlign.Center
+            )
+        }
         items(bookList) { book ->
             Card(
                 modifier = Modifier

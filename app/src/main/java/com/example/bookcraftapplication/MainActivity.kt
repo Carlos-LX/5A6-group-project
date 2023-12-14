@@ -202,7 +202,7 @@ fun MyApp(modifier: Modifier = Modifier, selectedTheme: Theme, onThemeChange: (T
                     Library(navController)
                 }
                 composable(route = Details.route) {
-                    Details(focusedBook)
+                    Details(focusedBook, navController)
                 }
                 composable(route = "login") {
                     LoginScreen(navController = navController)
