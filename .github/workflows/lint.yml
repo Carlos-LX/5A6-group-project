@@ -23,7 +23,11 @@ jobs:
         cache: 'gradle'
 
     - name: Run Kotlin Linter
-      run: ./gradlew runKtlintCheckOverKotlinScripts
+      run: ./gradlew ktlintCheck
 
+    - name: Fix Ktlint issues
+      run: ./gradlew ktlintFormat
+
+      
     #- name: Run Android Linter
      # run: ./gradlew lintStagingDebug
