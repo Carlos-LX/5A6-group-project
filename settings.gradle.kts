@@ -13,6 +13,6 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "SpotifyClone"
+rootProject.name = "BookCraft"
 include(":app")
  
