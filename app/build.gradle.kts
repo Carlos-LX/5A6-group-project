@@ -65,6 +65,9 @@ android {
         }
     }
     buildToolsVersion = "34.0.0"
+    ktlint {
+        disabledrules.set(setof("no-wildcard-imports"))
+    }
     spotless {
         kotlin {
             ktfmt()
