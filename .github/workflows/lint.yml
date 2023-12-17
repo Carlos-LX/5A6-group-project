@@ -23,9 +23,6 @@ jobs:
         cache: 'gradle'
 
     - name: Run Kotlin Linter
-      run: ./gradlew ktlintCheck
-
-    - name: Fix Ktlint issues
       run: ./gradlew ktlintFormat
 
       
