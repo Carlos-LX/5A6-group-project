@@ -1,7 +1,5 @@
 package com.example.bookcraftapplication.ui.login
 
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -39,11 +37,10 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.NavHostController
 import com.example.bookcraftapplication.BookCollection
+import com.example.bookcraftapplication.LocalNavController
 import com.example.bookcraftapplication.Login
 import com.example.bookcraftapplication.R
-import com.example.bookcraftapplication.SignUp
 import com.example.bookcraftapplication.auth.AuthViewModel
 import com.example.bookcraftapplication.auth.AuthViewModelFactory
 import com.example.bookcraftapplication.auth.ResultAuth
@@ -51,7 +48,8 @@ import com.example.bookcraftapplication.navigateSingleTopTo
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AuthSignUpScreen(authViewModel: AuthViewModel = viewModel(factory = AuthViewModelFactory()), navController: NavHostController) {
+fun AuthSignUpScreen(authViewModel: AuthViewModel = viewModel(factory = AuthViewModelFactory())) {
+    val navController = LocalNavController.current
     val userState = authViewModel.currentUser().collectAsState()
     val signUpResult by authViewModel.signUpResult.collectAsState(ResultAuth.Inactive)
     val signInResult by authViewModel.signInResult.collectAsState(ResultAuth.Inactive)

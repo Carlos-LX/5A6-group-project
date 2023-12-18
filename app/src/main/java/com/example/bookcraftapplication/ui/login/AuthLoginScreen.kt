@@ -36,8 +36,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.NavHostController
 import com.example.bookcraftapplication.BookCollection
+import com.example.bookcraftapplication.LocalNavController
 import com.example.bookcraftapplication.R
 import com.example.bookcraftapplication.SignUp
 import com.example.bookcraftapplication.auth.AuthViewModel
@@ -46,8 +46,9 @@ import com.example.bookcraftapplication.auth.ResultAuth
 import com.example.bookcraftapplication.navigateSingleTopTo
 
  @Composable
- fun AuthLoginScreen(authViewModel: AuthViewModel = viewModel(factory = AuthViewModelFactory()), navController: NavHostController) {
+ fun AuthLoginScreen(authViewModel: AuthViewModel = viewModel(factory = AuthViewModelFactory())) {
      val userState = authViewModel.currentUser().collectAsState()
+     val navController = LocalNavController.current
      var isSubmitted = false
      val signUpResult by authViewModel.signUpResult.collectAsState(ResultAuth.Inactive)
      val signInResult by authViewModel.signInResult.collectAsState(ResultAuth.Inactive)
