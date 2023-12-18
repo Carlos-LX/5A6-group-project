@@ -61,15 +61,18 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.codelab.basics.R
 import com.example.bookcraftapplication.ui.Details.Details
-import com.example.bookcraftapplication.ui.theme.SpotifyCloneTheme
+import com.example.bookcraftapplication.ui.theme.BookCraftTheme
 import com.example.bookcraftapplication.ui.books.BookCollection
 import com.example.bookcraftapplication.ui.settings.Settings
-import com.example.bookcraftapplication.ui.login.LoginScreen
 import com.example.bookcraftapplication.ui.login.SignUpScreen
 import com.example.bookcraftapplication.ui.library.Library
 import com.example.bookcraft.data.focusedBook
+import com.example.bookcraftapplication.auth.AuthRepositoryFirebase
+import com.example.bookcraftapplication.auth.AuthViewModel
+import com.example.bookcraftapplication.ui.aboutUs.AboutUs
+import com.example.bookcraftapplication.ui.login.AuthLoginScreen
+import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.*
 
 
@@ -94,11 +97,6 @@ class MainActivity : ComponentActivity() {
         setContent {
             var preferences = PreferencesRepository(dataStore, this)
             var userPrefs by remember { mutableStateOf(UserPrefs(Theme.Light, 12.0f)) }
-
-
-
-
-
 
             // Collect the Flow and update userPrefs when it changes
             LaunchedEffect(preferences.userPreferencesFlow) {
@@ -136,11 +134,17 @@ class MainActivity : ComponentActivity() {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MyApp(modifier: Modifier = Modifier, selectedTheme: Theme, onThemeChange: (Theme) -> Unit, userfontSize: Float, onFontChange: (Float) -> Unit) {
-
-    modifier
-    SpotifyCloneTheme(currentTheme = selectedTheme) {
+    BookCraftTheme(currentTheme = selectedTheme) {
         // Initialize the navigation controller
         val navController = rememberNavController()
+        // Initialize FirebaseAuth
+        val firebaseAuth = FirebaseAuth.getInstance()
+
+        // Create an instance of AuthRepositoryFirebase and pass the FirebaseAuth instance
+        val authRepository = AuthRepositoryFirebase(firebaseAuth)
+
+        // Create an instance of AuthViewModel and pass the AuthRepository instance
+        val authViewModel = AuthViewModel(authRepository)
         var selectedOption = false;
         Scaffold(
             modifier = modifier,
@@ -182,9 +186,12 @@ fun MyApp(modifier: Modifier = Modifier, selectedTheme: Theme, onThemeChange: (T
             // Existing code for navigation
             NavHost(
                 navController = navController,
-                startDestination = "bookCollection",
+                startDestination = "aboutUs",
                 modifier = Modifier.padding(innerPadding)
             ) {
+                composable(route = AboutUs.route) {
+                    AboutUs(navController)
+                }
                 composable(route = BookCollection.route) {
                     BookCollection(modifier, navController)
                 }
@@ -205,7 +212,7 @@ fun MyApp(modifier: Modifier = Modifier, selectedTheme: Theme, onThemeChange: (T
                     Details(focusedBook, navController)
                 }
                 composable(route = "login") {
-                    LoginScreen(navController = navController)
+                    AuthLoginScreen(authViewModel = authViewModel, navController)
                 }
                 composable(route = "signUp") {
                     SignUpScreen(navController = navController)

@@ -71,7 +71,6 @@ fun LoginScreen(navController: NavHostController) {
                         // Validate email and password before login logic
                         if (isValidEmail(email) && isValidPassword(password)) {
 
-
                         }
                     },
                     modifier = Modifier
@@ -80,7 +79,6 @@ fun LoginScreen(navController: NavHostController) {
                 ) {
                     Text("Login")
                 }
-
             }
 
             Box(

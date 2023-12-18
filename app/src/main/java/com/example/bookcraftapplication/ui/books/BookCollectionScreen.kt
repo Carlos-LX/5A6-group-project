@@ -29,7 +29,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
-import com.codelab.basics.R
+import com.example.bookcraftapplication.R
 import com.example.bookcraftapplication.Details
 import com.example.bookcraftapplication.navigateSingleTopTo
 import com.example.bookcraft.data.Book

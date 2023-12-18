@@ -37,6 +37,9 @@ object Details : ReadifyScreen {
     override val route = "details"
 }
 
+object AboutUs : ReadifyScreen {
+    override val route = "aboutUs"
+}
 object BookReading : ReadifyScreen {
     override val route = "bookReading"
 }

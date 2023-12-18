@@ -26,7 +26,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
-import com.codelab.basics.R
+import com.example.bookcraftapplication.R
 import com.example.bookcraft.data.Book
 
 /**
