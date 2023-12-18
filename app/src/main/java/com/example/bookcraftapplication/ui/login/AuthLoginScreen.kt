@@ -1,5 +1,6 @@
  package com.example.bookcraftapplication.ui.login
 
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -8,16 +9,16 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
 import androidx.compose.material3.Divider
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Snackbar
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -26,10 +27,12 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.focus.FocusDirection
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.style.TextAlign
@@ -45,6 +48,8 @@ import com.example.bookcraftapplication.auth.AuthViewModelFactory
 import com.example.bookcraftapplication.auth.ResultAuth
 import com.example.bookcraftapplication.navigateSingleTopTo
 
+
+
  @Composable
  fun AuthLoginScreen(authViewModel: AuthViewModel = viewModel(factory = AuthViewModelFactory())) {
      val userState = authViewModel.currentUser().collectAsState()
@@ -54,6 +59,10 @@ import com.example.bookcraftapplication.navigateSingleTopTo
      val signInResult by authViewModel.signInResult.collectAsState(ResultAuth.Inactive)
      val signOutResult by authViewModel.signOutResult.collectAsState(null)
      val deleteAccountResult by authViewModel.deleteAccountResult.collectAsState(null)
+
+
+
+
 
      val snackbarHostState = remember { SnackbarHostState() } // Material 3 approach
 
@@ -103,6 +112,16 @@ import com.example.bookcraftapplication.navigateSingleTopTo
      val (email, setEmail) = remember { mutableStateOf("") }
      val (password, setPassword) = remember { mutableStateOf("") }
 
+     fun signInButtonClick() {
+         if (isValidEmail(email) && isValidPassword(password)) {
+             // Valid email and password, proceed with sign-in
+             authViewModel.signIn(email, password)
+             isSubmitted = true
+         } else {
+             isSubmitted = false;
+         }
+     }
+
      // Show a Snackbar when email is invalid
 //     LaunchedEffect(email) {
 //         if (!isValidEmail(email) && isSubmitted) {
@@ -117,7 +136,8 @@ import com.example.bookcraftapplication.navigateSingleTopTo
 //         }
 //     }
 
-     Surface(modifier = Modifier.fillMaxSize()) {
+     Box(modifier = Modifier.fillMaxSize()) {
+
          LazyColumn(
              modifier = Modifier
                  .fillMaxSize()
@@ -125,6 +145,7 @@ import com.example.bookcraftapplication.navigateSingleTopTo
              horizontalAlignment = Alignment.End
          ) {
              item {
+                 val focusManager = LocalFocusManager.current
                  Text(
                      text = stringResource(R.string.login),
                      style = MaterialTheme.typography.headlineLarge,
@@ -132,30 +153,47 @@ import com.example.bookcraftapplication.navigateSingleTopTo
                      textAlign = TextAlign.Center,
                      fontFamily = FontFamily.Serif,
                      fontWeight = FontWeight.SemiBold,
-                     color = Color.LightGray,
                      modifier = Modifier
                          .fillMaxWidth()
                          .fillMaxHeight()
                  )
                  Spacer(modifier = Modifier.size(20.dp))
 
-                 TextField(
+                 OutlinedTextField(
                      value = email,
                      onValueChange = { setEmail(it) },
                      label = { Text("Email") },
-                     keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Email),
+                     keyboardOptions = KeyboardOptions.Default.copy(
+                         keyboardType = KeyboardType.Email,
+                         imeAction = ImeAction.Next // Set Next for the email field
+                     ),
+                     keyboardActions = KeyboardActions(
+                         onNext = {
+                             // Request focus on the password field when Enter is pressed on the email field
+                             focusManager.moveFocus(FocusDirection.Down)
+                         }
+                     ),
                      isError = !isValidEmail(email),
                      modifier = Modifier
                          .fillMaxWidth()
                          .fillMaxHeight()
                  )
                  Spacer(modifier = Modifier.size(24.dp))
-                 TextField(
+                 OutlinedTextField(
                      value = password,
                      onValueChange = { setPassword(it) },
                      label = { Text("Password") },
                      visualTransformation = PasswordVisualTransformation(),
                      isError = !isValidPassword(password),
+                     keyboardOptions = KeyboardOptions.Default.copy(
+                         imeAction = ImeAction.Done // Set Done for the password field
+                     ),
+                     keyboardActions = KeyboardActions(
+                         onDone = {
+                             // Simulate a click on the sign-in button when Enter is pressed on the password field
+                             signInButtonClick()
+                         }
+                     ),
                      modifier = Modifier
                          .fillMaxWidth()
                          .fillMaxHeight()
@@ -163,14 +201,7 @@ import com.example.bookcraftapplication.navigateSingleTopTo
                  Spacer(modifier = Modifier.size(40.dp))
                  // Sign-in Button
                  Button(onClick = {
-                     if (isValidEmail(email)) {
-                         // Valid email and password, proceed with sign-in
-                         authViewModel.signIn(email, password)
-                         isSubmitted = true
-                     } else {
-                         // Show snackbar for invalid email/password
-
-                     }
+                     signInButtonClick()
                  }, modifier = Modifier
                      .fillMaxWidth()) {
                      Text("Sign In")
@@ -189,19 +220,16 @@ import com.example.bookcraftapplication.navigateSingleTopTo
                          modifier = Modifier
                              .weight(1f)
                              .padding(end = 8.dp),
-                         color = Color.Gray,
                          thickness = 2.dp
                      )
                      Text(
                          text = "OR",
-                         color = Color.Gray,
                          fontWeight = FontWeight.Bold
                      )
                      Divider(
                          modifier = Modifier
                              .weight(1f)
                              .padding(start = 8.dp),
-                         color = Color.Gray,
                          thickness = 2.dp
                      )
                  }
