@@ -31,10 +31,13 @@ class AuthRepositoryFirebase(private val auth: FirebaseAuth) : AuthRepository {
 
     override suspend fun signIn(email: String, password: String): Boolean {
         return try {
+            println("Before signInWithEmailAndPassword")
             auth.signInWithEmailAndPassword(email, password).await()
-            return true;
+            println("After signInWithEmailAndPassword")
+            true // Authentication successful
         } catch (e: Exception) {
-            return false;
+            println("Exception during signIn: ${e.message}")
+            false // Authentication failed
         }
     }
 

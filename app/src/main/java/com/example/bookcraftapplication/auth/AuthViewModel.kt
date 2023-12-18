@@ -43,8 +43,19 @@ class AuthViewModel(private val authRepository: AuthRepository) : ViewModel() {
         }
     }
     fun signIn(email: String, password: String) {
+        _signInResult.value = ResultAuth.InProgress
         viewModelScope.launch(Dispatchers.IO) {
-            authRepository.signIn(email, password)
+            try {
+                val success = authRepository.signIn(email, password)
+                _signInResult.value = ResultAuth.Success(success)
+
+            } catch (e: FirebaseAuthException) {
+                _signInResult.value = ResultAuth.Failure(e)
+            } finally {
+                _signUpResult.value = ResultAuth.Inactive
+                _signOutResult.value = ResultAuth.Inactive
+                _deleteAccountResult.value = ResultAuth.Inactive
+            }
         }
     }
     fun signOut() {
