@@ -154,23 +154,16 @@ fun MyApp(modifier: Modifier = Modifier, selectedTheme: Theme, onThemeChange: (T
                         // Existing code for navigation items
                         ReadifyScreens.forEach { readifyDestination ->
                             NavigationBarItem(
-                                selected = false,
+                                selected = selectedOption,
                                 onClick = {
                                     selectedOption = true
                                     navController.navigateSingleTopTo(readifyDestination.route)
 
                                 },
                                 icon = {
-                                    val iconTint = if (selectedOption) {
-                                        Color.Green
-                                    } else {
-                                        Color.White
-                                    }
-
                                     Icon(
                                         readifyDestination.icon,
                                         contentDescription = "${readifyDestination.route} icon",
-                                        tint = iconTint
                                     )
                                 }
                             )
@@ -303,7 +296,6 @@ fun BookTopAppBar(
                             textAlign = TextAlign.Start,
                             fontFamily = FontFamily.Serif,
                             fontWeight = FontWeight.SemiBold,
-                            color = Color.LightGray
                         )
                     }
                 }

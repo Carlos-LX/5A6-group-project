@@ -16,7 +16,7 @@ import androidx.core.view.WindowCompat
 import com.example.bookcraftapplication.Theme
 
 private val LightColors = lightColorScheme(
-    primary = forest_green,
+    primary = md_theme_light_Primary,
     onPrimary = md_theme_light_onPrimary,
     primaryContainer = md_theme_light_primaryContainer,
     onPrimaryContainer = md_theme_light_onPrimaryContainer,
@@ -32,9 +32,9 @@ private val LightColors = lightColorScheme(
     errorContainer = md_theme_light_errorContainer,
     onError = md_theme_light_onError,
     onErrorContainer = md_theme_light_onErrorContainer,
-    background = forest_green,
+    background = md_theme_light_background,
     onBackground = md_theme_light_onBackground,
-    surface = md_theme_dark_secondaryContainer,
+    surface = md_theme_light_surface,
     onSurface = md_theme_light_onSurface,
     surfaceVariant = md_theme_light_surfaceVariant,
     onSurfaceVariant = md_theme_light_onSurfaceVariant,
