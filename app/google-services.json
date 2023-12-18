@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "862143674090",
+    "project_id": "book-craft-6f6f6",
+    "storage_bucket": "book-craft-6f6f6.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:862143674090:android:6924f843dbdc96ab868993",
+        "android_client_info": {
+          "package_name": "com.example.bookcraftapplication"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDc4tUBJUbAkZPMRuEcKDSd0ytZOBKCPiA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

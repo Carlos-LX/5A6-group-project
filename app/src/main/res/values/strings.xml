@@ -1,5 +1,7 @@
 <resources>
     <string name="app_name">BOOK | CRAFT</string>
+    <string name="about_us">Welcome to BOOK | CRAFT</string>
+    <string name="login">SIGN IN</string>
     <string name="show_more">Show more</string>
     <string name="show_less">Show less</string>
     <string name="placeholder_search">Search</string>

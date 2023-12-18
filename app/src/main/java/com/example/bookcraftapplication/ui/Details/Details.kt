@@ -53,7 +53,7 @@ import androidx.compose.ui.semantics.SemanticsProperties.ImeAction
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
-import com.codelab.basics.R
+import com.example.bookcraftapplication.R
 import com.example.bookcraftapplication.ui.theme.md_theme_dark_tertiary
 import com.example.bookcraft.data.Book
 import com.example.bookcraft.data.focusedBook
@@ -267,7 +267,7 @@ fun Details(book: Book) {
                     modifier = Modifier
                         .padding(16.dp)
                 ) {
-                    Text(text = "Book added to favorites!", color = Color.White)
+                    Text(text = "Book added to favorites!", color = Color.Black)
                 }
             }
         }

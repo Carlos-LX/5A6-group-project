@@ -83,7 +83,7 @@ private val DarkColors = darkColorScheme(
 
 
 @Composable
-fun SpotifyCloneTheme(
+fun BookCraftTheme(
     currentTheme: Theme,
     dynamicColor: Boolean = false,
     content: @Composable () -> Unit

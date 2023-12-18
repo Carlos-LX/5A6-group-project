@@ -16,7 +16,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.dimensionResource
-import com.codelab.basics.R
+import com.example.bookcraftapplication.R
 import com.example.bookcraft.data.Book
 import com.example.bookcraftapplication.data.Review
 import com.example.bookcraftapplication.ui.books.BookIcon

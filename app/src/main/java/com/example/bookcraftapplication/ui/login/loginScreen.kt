@@ -74,7 +74,6 @@ fun LoginScreen() {
                         // Validate email and password before login logic
                         if (isValidEmail(email) && isValidPassword(password)) {
 
-
                         }
                     },
                     modifier = Modifier
@@ -83,7 +82,6 @@ fun LoginScreen() {
                 ) {
                     Text("Login")
                 }
-
             }
 
             Box(

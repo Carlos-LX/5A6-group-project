@@ -16,7 +16,7 @@
 package com.example.bookcraft.data
 
 import androidx.annotation.DrawableRes
-import com.codelab.basics.R
+import com.example.bookcraftapplication.R
 
 /**
  * A data class to represent the information presented in the book card

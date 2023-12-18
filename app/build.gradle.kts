@@ -18,14 +18,15 @@ plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
     id("com.diffplug.spotless") version "6.23.3"
+    id("com.google.gms.google-services")
 }
 
 android {
-    namespace = "com.codelab.basics"
+    namespace = "com.example.bookcraftapplication"
     compileSdk = 34
 
     defaultConfig {
-        applicationId = "com.codelab.basics"
+        applicationId = "com.example.bookcraftapplication"
         minSdk = 24
         targetSdk = 34
         versionCode = 1
@@ -42,7 +43,7 @@ android {
             isMinifyEnabled = false
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
-                "proguard-rules.pro"
+                "proguard-rules.pro",
             )
         }
     }
@@ -81,7 +82,10 @@ android {
 
 dependencies {
     implementation("androidx.core:core-ktx:1.9.0")
-//    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.6.1")
+    implementation(platform("com.google.firebase:firebase-bom:32.7.0"))
+    implementation("com.google.firebase:firebase-analytics")
+    implementation("com.firebaseui:firebase-ui-auth:7.2.0")
+    implementation("com.google.firebase:firebase-firestore-ktx:24.10.0")
     implementation("androidx.compose.material3:material3:1.0.0-alpha07")
     implementation("androidx.activity:activity-compose:1.7.0")
     implementation(platform("androidx.compose:compose-bom:2023.03.00"))
@@ -108,7 +112,6 @@ dependencies {
     implementation("androidx.navigation:navigation-compose:2.7.2")
     implementation("androidx.datastore:datastore-preferences:1.0.5")
     implementation(platform("com.google.firebase:firebase-bom:32.3.1"))
-//    implementation("com.firebaseui:firebase-ui-auth:7.2.0")
     implementation("com.google.firebase:firebase-auth-ktx")
     implementation("androidx.compose.material:material-icons-extended")
 }
