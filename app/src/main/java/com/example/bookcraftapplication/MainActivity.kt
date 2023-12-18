@@ -24,23 +24,16 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.material3.BottomAppBar
-import androidx.compose.material3.CenterAlignedTopAppBar
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.NavigationBarItem
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
+import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -50,6 +43,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.onClick
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -61,24 +56,19 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.example.bookcraftapplication.ui.Details.Details
-import com.example.bookcraftapplication.ui.theme.BookCraftTheme
-import com.example.bookcraftapplication.ui.books.BookCollection
-import com.example.bookcraftapplication.ui.settings.Settings
-import com.example.bookcraftapplication.ui.login.SignUpScreen
-import com.example.bookcraftapplication.ui.library.Library
 import com.example.bookcraft.data.focusedBook
 import com.example.bookcraftapplication.auth.AuthRepositoryFirebase
 import com.example.bookcraftapplication.auth.AuthViewModel
+import com.example.bookcraftapplication.ui.Details.Details
 import com.example.bookcraftapplication.ui.aboutUs.AboutUs
-import com.example.bookcraftapplication.ui.login.AuthLoginScreen
+import com.example.bookcraftapplication.ui.books.BookCollection
+import com.example.bookcraftapplication.ui.library.Library
+import com.example.bookcraftapplication.ui.login.LoginScreen
+import com.example.bookcraftapplication.ui.login.SignUpScreen
+import com.example.bookcraftapplication.ui.settings.Settings
+import com.example.bookcraftapplication.ui.theme.BookCraftTheme
 import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.*
-import androidx.compose.material3.*
-import androidx.compose.runtime.CompositionLocalProvider
-import androidx.compose.runtime.compositionLocalOf
-import androidx.compose.ui.semantics.onClick
-import androidx.compose.ui.semantics.semantics
 
 
 enum class Theme {
@@ -184,47 +174,18 @@ fun MyApp(modifier: Modifier = Modifier, selectedTheme: Theme, onThemeChange: (T
             }
         ) { innerPadding ->
             // Existing code for navigation
-            NavHost(
-                navController = navController,
-                startDestination = "aboutUs",
-                modifier = Modifier.padding(innerPadding)
-            ) {
-                composable(route = AboutUs.route) {
-                    AboutUs(navController)
-                }
-                composable(route = BookCollection.route) {
-                    BookCollection(modifier, navController)
-                }
-                composable(route = Settings.route) {
-                    // Pass selectedTheme and onThemeChange to the Settings composable
-                    Settings(
-                        selectedTheme = selectedTheme,
-                        onThemeChange = onThemeChange,
-                        userfontSize = userfontSize,
-                        onFontChange = onFontChange,
-                        modifier = Modifier.fillMaxSize()
-                    )
-                }
-                composable(route = Library.route) {
-                    Library(navController)
-                }
-                composable(route = Details.route) {
-                    Details(focusedBook, navController)
-                }
-                composable(route = "login") {
-                    AuthLoginScreen(authViewModel = authViewModel, navController)
-                }
-                composable(route = "signUp") {
-                    SignUpScreen(navController = navController)
-                }
-                composable(route = BookReading.route) {
+
+
 
             CompositionLocalProvider(LocalNavController provides navController) {
                 NavHost(
                     navController = navController,
-                    startDestination = BookCollection.route,
+                    startDestination = AboutUs.route,
                     modifier = Modifier.padding(innerPadding)
                 ) {
+                    composable(route = AboutUs.route) {
+                        AboutUs()
+                    }
                     composable(route = BookCollection.route) {
                         BookCollection(modifier)
                     }
