@@ -65,13 +65,13 @@ import com.example.bookcraftapplication.ui.Details.Details
 import com.example.bookcraftapplication.ui.theme.BookCraftTheme
 import com.example.bookcraftapplication.ui.books.BookCollection
 import com.example.bookcraftapplication.ui.settings.Settings
-import com.example.bookcraftapplication.ui.login.SignUpScreen
 import com.example.bookcraftapplication.ui.library.Library
 import com.example.bookcraft.data.focusedBook
 import com.example.bookcraftapplication.auth.AuthRepositoryFirebase
 import com.example.bookcraftapplication.auth.AuthViewModel
 import com.example.bookcraftapplication.ui.aboutUs.AboutUs
 import com.example.bookcraftapplication.ui.login.AuthLoginScreen
+import com.example.bookcraftapplication.ui.login.AuthSignUpScreen
 import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.*
 
@@ -215,10 +215,7 @@ fun MyApp(modifier: Modifier = Modifier, selectedTheme: Theme, onThemeChange: (T
                     AuthLoginScreen(authViewModel = authViewModel, navController)
                 }
                 composable(route = "signUp") {
-                    SignUpScreen(navController = navController)
-                }
-                composable(route = BookReading.route) {
-
+                    AuthSignUpScreen(authViewModel = authViewModel, navController = navController)
                 }
             }
         }

@@ -1,6 +1,5 @@
  package com.example.bookcraftapplication.ui.login
 
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -38,7 +37,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
-import com.example.bookcraftapplication.AboutUs
 import com.example.bookcraftapplication.BookCollection
 import com.example.bookcraftapplication.R
 import com.example.bookcraftapplication.SignUp
@@ -50,7 +48,7 @@ import com.example.bookcraftapplication.navigateSingleTopTo
  @Composable
  fun AuthLoginScreen(authViewModel: AuthViewModel = viewModel(factory = AuthViewModelFactory()), navController: NavHostController) {
      val userState = authViewModel.currentUser().collectAsState()
-
+     var isSubmitted = false
      val signUpResult by authViewModel.signUpResult.collectAsState(ResultAuth.Inactive)
      val signInResult by authViewModel.signInResult.collectAsState(ResultAuth.Inactive)
      val signOutResult by authViewModel.signOutResult.collectAsState(null)
@@ -71,7 +69,7 @@ import com.example.bookcraftapplication.navigateSingleTopTo
              if (it is ResultAuth.Success && it.data) {
                  snackbarHostState.showSnackbar("Sign-up Successful")
              } else if (it is ResultAuth.Failure || it is ResultAuth.Success) {
-                 snackbarHostState.showSnackbar("Sign-up Unsuccessful")
+                 snackbarHostState.showSnackbar("Sign-up Unsuccessful. Email or password is invalid.")
              }
          }
      }
@@ -99,42 +97,42 @@ import com.example.bookcraftapplication.navigateSingleTopTo
      }
 
      // Show a Snackbar when sign-out is successful
-     LaunchedEffect(signOutResult) {
-         signOutResult?.let {
-             if (it is ResultAuth.Success && it.data) {
-                 snackbarHostState.showSnackbar("Sign-out Successful")
-             } else
-                 snackbarHostState.showSnackbar("Sign-out Unsuccessful")
-         }
-     }
+//     LaunchedEffect(signOutResult) {
+//         signOutResult?.let {
+//             if (it is ResultAuth.Success && it.data) {
+//                 snackbarHostState.showSnackbar("Sign-out Successful")
+//             } else
+//                 snackbarHostState.showSnackbar("Sign-out Unsuccessful")
+//         }
+//     }
 
      // Show a Snackbar when account deletion is successful
-     LaunchedEffect(deleteAccountResult) {
-         deleteAccountResult?.let {
-             if (it is ResultAuth.Success && it.data) {
-                 snackbarHostState.showSnackbar("Account Deleted")
-             } else {
-                 snackbarHostState.showSnackbar("Deletion failed")
-             }
-         }
-     }
+//     LaunchedEffect(deleteAccountResult) {
+//         deleteAccountResult?.let {
+//             if (it is ResultAuth.Success && it.data) {
+//                 snackbarHostState.showSnackbar("Account Deleted")
+//             } else {
+//                 snackbarHostState.showSnackbar("Deletion failed")
+//             }
+//         }
+//     }
 
      val (email, setEmail) = remember { mutableStateOf("") }
      val (password, setPassword) = remember { mutableStateOf("") }
 
      // Show a Snackbar when email is invalid
-     LaunchedEffect(email) {
-         if (!isValidEmail(email)) {
-             snackbarHostState.showSnackbar("Invalid Email")
-         }
-     }
-
-     // Show a Snackbar when password is invalid
-     LaunchedEffect(password) {
-         if (!isValidPassword(password)) {
-             snackbarHostState.showSnackbar("Invalid Password")
-         }
-     }
+//     LaunchedEffect(email) {
+//         if (!isValidEmail(email) && isSubmitted) {
+//             snackbarHostState.showSnackbar("Invalid Email")
+//         }
+//     }
+//
+//     // Show a Snackbar when password is invalid
+//     LaunchedEffect(password) {
+//         if (!isValidPassword(password)&& isSubmitted) {
+//             snackbarHostState.showSnackbar("Invalid Password")
+//         }
+//     }
 
      Surface(modifier = Modifier.fillMaxSize()) {
          LazyColumn(
@@ -182,9 +180,10 @@ import com.example.bookcraftapplication.navigateSingleTopTo
                  Spacer(modifier = Modifier.size(40.dp))
                  // Sign-in Button
                  Button(onClick = {
-                     if (isValidEmail(email) && isValidPassword(password)) {
+                     if (isValidEmail(email)) {
                          // Valid email and password, proceed with sign-in
                          authViewModel.signIn(email, password)
+                         isSubmitted = true
                      } else {
                          // Show snackbar for invalid email/password
 
