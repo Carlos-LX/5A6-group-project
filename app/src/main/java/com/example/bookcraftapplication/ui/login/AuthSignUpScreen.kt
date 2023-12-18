@@ -39,24 +39,21 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.bookcraftapplication.BookCollection
 import com.example.bookcraftapplication.LocalNavController
+import androidx.navigation.NavHostController
+import com.example.bookcraftapplication.Library
 import com.example.bookcraftapplication.Login
 import com.example.bookcraftapplication.R
+import com.example.bookcraftapplication.SignUp
 import com.example.bookcraftapplication.auth.AuthViewModel
 import com.example.bookcraftapplication.auth.AuthViewModelFactory
 import com.example.bookcraftapplication.auth.ResultAuth
 import com.example.bookcraftapplication.navigateSingleTopTo
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AuthSignUpScreen(authViewModel: AuthViewModel = viewModel(factory = AuthViewModelFactory())) {
     val navController = LocalNavController.current
     val userState = authViewModel.currentUser().collectAsState()
     val signUpResult by authViewModel.signUpResult.collectAsState(ResultAuth.Inactive)
-    val signInResult by authViewModel.signInResult.collectAsState(ResultAuth.Inactive)
-    val signOutResult by authViewModel.signOutResult.collectAsState(null)
-    val deleteAccountResult by authViewModel.deleteAccountResult.collectAsState(null)
-
-    val (username, setUsername) = remember { mutableStateOf("") }
     val (email, setEmail) = remember { mutableStateOf("") }
     val (password, setPassword) = remember { mutableStateOf("") }
     val (confirmPassword, setConfirmPassword) = remember { mutableStateOf("") }
@@ -74,43 +71,22 @@ fun AuthSignUpScreen(authViewModel: AuthViewModel = viewModel(factory = AuthView
             }
             if (it is ResultAuth.Success && it.data) {
                 snackbarHostState.showSnackbar("Sign-up Successful")
+                navController.navigateSingleTopTo(Login.route)
             } else if (it is ResultAuth.Failure || it is ResultAuth.Success) {
                 snackbarHostState.showSnackbar("Sign-up Unsuccessful. Email or password is invalid.")
             }
         }
     }
 
-    // Show a Snackbar when sign-in is successful
-    LaunchedEffect(signInResult) {
-        signInResult?.let {
-            if (it is ResultAuth.Inactive) {
-                println("SignIn LaunchedEffect: Inactive")
-                return@LaunchedEffect
-            }
-            if (it is ResultAuth.InProgress) {
-                println("SignIn LaunchedEffect: InProgress")
-                snackbarHostState.showSnackbar("Sign-in In Progress")
-                return@LaunchedEffect
-            }
-            if (it is ResultAuth.Success && it.data) {
-                println("SignIn LaunchedEffect: Success")
-                navController.navigateSingleTopTo(BookCollection.route)
-                snackbarHostState.showSnackbar("Sign-in Successful")
-            } else if (it is ResultAuth.Failure || it is ResultAuth.Success) {
-                snackbarHostState.showSnackbar("Sign-in Unsuccessful")
-            }
-        }
-    }
-
      //Show a Snackbar when sign-out is successful
-     LaunchedEffect(signOutResult) {
-         signOutResult?.let {
-             if (it is ResultAuth.Success && it.data) {
-                 snackbarHostState.showSnackbar("Sign-out Successful")
-             } else
-                 snackbarHostState.showSnackbar("Sign-out Unsuccessful")
-         }
-     }
+//     LaunchedEffect(signOutResult) {
+//         signOutResult?.let {
+//             if (it is ResultAuth.Success && it.data) {
+//                 snackbarHostState.showSnackbar("Sign-out Successful")
+//             } else
+//                 snackbarHostState.showSnackbar("Sign-out Unsuccessful")
+//         }
+//     }
 
     // Show a Snackbar when account deletion is successful
 //     LaunchedEffect(deleteAccountResult) {
@@ -161,31 +137,11 @@ fun AuthSignUpScreen(authViewModel: AuthViewModel = viewModel(factory = AuthView
                 )
                 Spacer(modifier = Modifier.size(20.dp))
                 TextField(
-                    value = username,
-                    onValueChange = { setUsername(it) },
-                    label = { Text("Username") },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .fillMaxHeight()
-                )
-                Spacer(modifier = Modifier.size(20.dp))
-                TextField(
                     value = email,
                     onValueChange = { setEmail(it) },
                     label = { Text("Email") },
                     keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Email),
                     isError = !isValidEmail(email),
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .fillMaxHeight()
-                )
-                Spacer(modifier = Modifier.size(20.dp))
-                TextField(
-                    value = password,
-                    onValueChange = { setPassword(it) },
-                    label = { Text("Password") },
-                    visualTransformation = PasswordVisualTransformation(),
-                    isError = !isValidPassword(password),
                     modifier = Modifier
                         .fillMaxWidth()
                         .fillMaxHeight()
@@ -212,15 +168,12 @@ fun AuthSignUpScreen(authViewModel: AuthViewModel = viewModel(factory = AuthView
                         .fillMaxWidth()
                         .fillMaxHeight()
                 )
-                Spacer(modifier = Modifier.size(15.dp))
+                Spacer(modifier = Modifier.size(60.dp))
                 // Sign-in Button
                 Button(onClick = {
-                    if (isValidEmail(email)) {
+                    if (isValidEmail(email) && isValidPassword(password) && password == confirmPassword) {
                         // Valid email and password, proceed with sign-in
-                        authViewModel.signIn(email, password)
-                    } else {
-                        // Show snackbar for invalid email/password
-
+                        authViewModel.signUp(email, password)
                     }
                 }, modifier = Modifier
                     .fillMaxWidth()) {

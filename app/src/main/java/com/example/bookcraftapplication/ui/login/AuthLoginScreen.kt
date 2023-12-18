@@ -57,24 +57,6 @@ import com.example.bookcraftapplication.navigateSingleTopTo
 
      val snackbarHostState = remember { SnackbarHostState() } // Material 3 approach
 
-     // Show a Snackbar when sign-up is successful, etc.
-     LaunchedEffect(signUpResult) {
-         signUpResult?.let {
-             if (it is ResultAuth.Inactive) {
-                 return@LaunchedEffect
-             }
-             if (it is ResultAuth.InProgress) {
-                 snackbarHostState.showSnackbar("Sign-up In Progress")
-                 return@LaunchedEffect
-             }
-             if (it is ResultAuth.Success && it.data) {
-                 snackbarHostState.showSnackbar("Sign-up Successful")
-             } else if (it is ResultAuth.Failure || it is ResultAuth.Success) {
-                 snackbarHostState.showSnackbar("Sign-up Unsuccessful. Email or password is invalid.")
-             }
-         }
-     }
-
      // Show a Snackbar when sign-in is successful
      LaunchedEffect(signInResult) {
          signInResult?.let {
@@ -92,7 +74,7 @@ import com.example.bookcraftapplication.navigateSingleTopTo
                  navController.navigateSingleTopTo(BookCollection.route)
                  snackbarHostState.showSnackbar("Sign-in Successful")
              } else if (it is ResultAuth.Failure || it is ResultAuth.Success) {
-                 snackbarHostState.showSnackbar("Sign-in Unsuccessful")
+                 snackbarHostState.showSnackbar("Sign-in Unsuccessful. Email or password is invalid.")
              }
          }
      }
