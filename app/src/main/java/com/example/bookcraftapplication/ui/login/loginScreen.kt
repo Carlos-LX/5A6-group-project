@@ -1,5 +1,6 @@
 package com.example.bookcraftapplication.ui.login
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -49,7 +50,8 @@ fun LoginScreen() {
                 onValueChange = { setEmail(it) },
                 label = { Text("Email") },
                 keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Email),
-                isError = !isValidEmail(email)
+                isError = !isValidEmail(email),
+                modifier = Modifier
             )
             Spacer(modifier = Modifier.size(6.dp))
             TextField(
@@ -77,6 +79,7 @@ fun LoginScreen() {
                     modifier = Modifier
                         .size(width = 100.dp, height = 40.dp)
                         .fillMaxWidth()
+                        .clickable(onClickLabel = "Tap to log in") {  }
                 ) {
                     Text("Login")
                 }
@@ -93,6 +96,7 @@ fun LoginScreen() {
                         navController.navigateSingleTopTo(SignUp.route);
                     },
                     modifier = Modifier
+                        .clickable(onClickLabel = "Tap to switch to sign up screen") {}
                 ) {
                     Text("Sign up")
                 }

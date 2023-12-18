@@ -1,13 +1,11 @@
 package com.example.bookcraftapplication.ui.books
 
 import androidx.compose.foundation.clickable
-import com.example.bookcraft.data.focusedBook
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
@@ -35,14 +33,13 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavHostController
-import com.example.bookcraftapplication.R
-import com.example.bookcraftapplication.Details
-import com.example.bookcraftapplication.navigateSingleTopTo
 import com.example.bookcraft.data.Book
-
+import com.example.bookcraft.data.focusedBook
 import com.example.bookcraft.data.libraryBooks
+import com.example.bookcraftapplication.Details
 import com.example.bookcraftapplication.LocalNavController
+import com.example.bookcraftapplication.R
+import com.example.bookcraftapplication.navigateSingleTopTo
 
 @Composable
 fun BookCollection(modifier: Modifier = Modifier) {
@@ -101,7 +98,7 @@ fun BookCollection(modifier: Modifier = Modifier) {
                         {
                             Icon(
                                 imageVector = Icons.Default.Book,
-                                contentDescription = "View reviews",
+                                contentDescription = "View $book reviews",
                                 tint = Color.Green,
                                 modifier = Modifier
                             )
@@ -120,7 +117,7 @@ fun BookCollection(modifier: Modifier = Modifier) {
                             // Delete Icon in the Upper Right Corner
                             Icon(
                                 imageVector = Icons.Default.Delete,
-                                contentDescription = "Remove book from collection",
+                                contentDescription = "Remove $book from collection",
                                 tint = Color.Red,
                                 modifier = Modifier
                             )

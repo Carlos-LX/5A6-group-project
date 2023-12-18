@@ -147,13 +147,12 @@ fun MyApp(modifier: Modifier = Modifier, selectedTheme: Theme, onThemeChange: (T
             bottomBar = {
                 BottomAppBar(
                     modifier = Modifier,
-
                     ) {
                         // Existing code for navigation items
                         ReadifyScreens.forEach { readifyDestination ->
                             NavigationBarItem(
                                 modifier = modifier
-                                    .semantics {  onClick(label = "Click to navigate to ${readifyDestination.route}", action = null) },
+                                    .semantics(mergeDescendants = true) {  onClick(label = "Click to navigate to ${readifyDestination.route}", action = null) },
                                 label = { Text(text = readifyDestination.route) },
                                 selected = selectedOption,
                                 onClick = {
@@ -194,8 +193,6 @@ fun MyApp(modifier: Modifier = Modifier, selectedTheme: Theme, onThemeChange: (T
                         Settings(
                             selectedTheme = selectedTheme,
                             onThemeChange = onThemeChange,
-                            userfontSize = userfontSize,
-                            onFontChange = onFontChange,
                             modifier = Modifier.fillMaxSize()
                         )
                     }
@@ -277,7 +274,10 @@ fun BookTopAppBar(
     modifier: Modifier = Modifier
 ) {
     Surface(
-        modifier = modifier.fillMaxWidth(),
+        modifier = modifier.fillMaxWidth()
+            .semantics(mergeDescendants = true) {  }
+        ,
+
     ) {
         CenterAlignedTopAppBar(
             title = {
