@@ -24,6 +24,7 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -38,6 +39,7 @@ import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.Typography
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -46,7 +48,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -71,6 +72,11 @@ import com.example.bookcraftapplication.ui.login.SignUpScreen
 import com.example.bookcraftapplication.ui.library.Library
 import com.example.bookcraft.data.focusedBook
 import kotlinx.coroutines.*
+import androidx.compose.material3.*
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.compositionLocalOf
+import androidx.compose.ui.semantics.onClick
+import androidx.compose.ui.semantics.semantics
 
 
 enum class Theme {
@@ -127,7 +133,7 @@ class MainActivity : ComponentActivity() {
         }
     }
 
-
+val LocalNavController = compositionLocalOf<NavHostController> { error("No NavController found!") }
 
 /**
  * The main composable function that defines the app's UI.
@@ -136,8 +142,6 @@ class MainActivity : ComponentActivity() {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MyApp(modifier: Modifier = Modifier, selectedTheme: Theme, onThemeChange: (Theme) -> Unit, userfontSize: Float, onFontChange: (Float) -> Unit) {
-
-    modifier
     SpotifyCloneTheme(currentTheme = selectedTheme) {
         // Initialize the navigation controller
         val navController = rememberNavController()
@@ -150,10 +154,12 @@ fun MyApp(modifier: Modifier = Modifier, selectedTheme: Theme, onThemeChange: (T
                     modifier = Modifier,
 
                     ) {
-                    Row {
                         // Existing code for navigation items
                         ReadifyScreens.forEach { readifyDestination ->
                             NavigationBarItem(
+                                modifier = modifier
+                                    .semantics {  onClick(label = "Click to navigate to ${readifyDestination.route}", action = null) },
+                                label = { Text(text = readifyDestination.route) },
                                 selected = selectedOption,
                                 onClick = {
                                     selectedOption = true
@@ -161,6 +167,7 @@ fun MyApp(modifier: Modifier = Modifier, selectedTheme: Theme, onThemeChange: (T
 
                                 },
                                 icon = {
+
                                     Icon(
                                         readifyDestination.icon,
                                         contentDescription = "${readifyDestination.route} icon",
@@ -169,42 +176,40 @@ fun MyApp(modifier: Modifier = Modifier, selectedTheme: Theme, onThemeChange: (T
                             )
                         }
                     }
-                }
             }
         ) { innerPadding ->
             // Existing code for navigation
-            NavHost(
-                navController = navController,
-                startDestination = "bookCollection",
-                modifier = Modifier.padding(innerPadding)
-            ) {
-                composable(route = BookCollection.route) {
-                    BookCollection(modifier, navController)
-                }
-                composable(route = Settings.route) {
-                    // Pass selectedTheme and onThemeChange to the Settings composable
-                    Settings(
-                        selectedTheme = selectedTheme,
-                        onThemeChange = onThemeChange,
-                        userfontSize = userfontSize,
-                        onFontChange = onFontChange,
-                        modifier = Modifier.fillMaxSize()
-                    )
-                }
-                composable(route = Library.route) {
-                    Library(navController)
-                }
-                composable(route = Details.route) {
-                    Details(focusedBook, navController)
-                }
-                composable(route = "login") {
-                    LoginScreen(navController = navController)
-                }
-                composable(route = "signUp") {
-                    SignUpScreen(navController = navController)
-                }
-                composable(route = BookReading.route) {
-
+            CompositionLocalProvider(LocalNavController provides navController) {
+                NavHost(
+                    navController = navController,
+                    startDestination = BookCollection.route,
+                    modifier = Modifier.padding(innerPadding)
+                ) {
+                    composable(route = BookCollection.route) {
+                        BookCollection(modifier)
+                    }
+                    composable(route = Settings.route) {
+                        // Pass selectedTheme and onThemeChange to the Settings composable
+                        Settings(
+                            selectedTheme = selectedTheme,
+                            onThemeChange = onThemeChange,
+                            userfontSize = userfontSize,
+                            onFontChange = onFontChange,
+                            modifier = Modifier.fillMaxSize()
+                        )
+                    }
+                    composable(route = Library.route) {
+                        Library()
+                    }
+                    composable(route = Details.route) {
+                        Details(focusedBook)
+                    }
+                    composable(route = Login.route) {
+                        LoginScreen()
+                    }
+                    composable(route = SignUp.route) {
+                        SignUpScreen()
+                    }
                 }
             }
         }

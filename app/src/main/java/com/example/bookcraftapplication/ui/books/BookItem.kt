@@ -150,15 +150,14 @@ private fun createBook(bookName: String, bookAuthor: String, releaseDateStr: Str
 @Composable
 fun BookItem(
     book: Book,
+    isExpanded: Boolean,
     modifier: Modifier = Modifier
 ) {
     // State variable for expanding/collapsing book description
-    var isExpanded by remember { mutableStateOf(false) }
 
     Card(
         modifier = modifier
             .fillMaxWidth()
-            .clickable { isExpanded = !isExpanded } // Toggle isExpanded on click
             .padding(dimensionResource(R.dimen.padding_small))
             .animateContentSize() // Animates the content size change
     ) {

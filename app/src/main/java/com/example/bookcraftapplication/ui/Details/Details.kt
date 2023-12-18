@@ -59,6 +59,7 @@ import com.example.bookcraft.data.Book
 import com.example.bookcraft.data.focusedBook
 import com.example.bookcraft.data.libraryBooks
 import com.example.bookcraftapplication.Library
+import com.example.bookcraftapplication.LocalNavController
 import com.example.bookcraftapplication.data.Review
 import com.example.bookcraftapplication.data.reviews
 import com.example.bookcraftapplication.navigateSingleTopTo
@@ -114,7 +115,8 @@ fun BookPage(bookItem: Book) {
 }
 
 @Composable
-fun Details(book: Book, navHostController: NavHostController) {
+fun Details(book: Book) {
+    val navController = LocalNavController.current
     var userRating by remember { mutableStateOf(0f) }
     var reviewTitle by remember { mutableStateOf("") }
     var reviewDescription by remember { mutableStateOf("") }
@@ -125,11 +127,11 @@ fun Details(book: Book, navHostController: NavHostController) {
         item {
             Button(
                 onClick = {
-                    navHostController.navigateSingleTopTo(Library.route)
+                    navController.popBackStack()
                 },
                 modifier = Modifier.fillMaxWidth()
             ) {
-                Text("Return To Store")
+                Text("Go back")
             }
         }
 

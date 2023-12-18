@@ -23,12 +23,15 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
+import com.example.bookcraftapplication.LocalNavController
 import com.example.bookcraftapplication.SignUp
 import com.example.bookcraftapplication.navigateSingleTopTo
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun LoginScreen(navController: NavHostController) {
+fun LoginScreen() {
+    val navController = LocalNavController.current
+
     Surface(modifier = Modifier.fillMaxSize()) {
         Column(
             modifier = Modifier

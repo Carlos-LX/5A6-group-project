@@ -23,15 +23,15 @@ interface ReadifyBarDestination {
 }
 object BookCollection : ReadifyBarDestination {
     override val icon = Icons.Rounded.Favorite
-    override val route = "bookCollection"
+    override val route = "Collection"
 }
 object Settings : ReadifyBarDestination {
     override val icon = Icons.Rounded.Settings
-    override val route = "settings"
+    override val route = "Settings"
 }
 object Library : ReadifyBarDestination {
     override val icon =  Icons.Rounded.LibraryBooks
-    override val route = "library"
+    override val route = "Store"
 }
 object Details : ReadifyScreen {
     override val route = "details"
@@ -46,7 +46,7 @@ object Login : ReadifyScreen {
 
 object SignUp : ReadifyBarDestination {
     override val icon = Icons.Rounded.Person
-    override val route = "signUp"
+    override val route = "Account"
 }
 
 val ReadifyScreens = listOf(SignUp, BookCollection, Library, Settings)

@@ -19,16 +19,20 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
+import com.example.bookcraftapplication.LocalNavController
 import com.example.bookcraftapplication.Login
 import com.example.bookcraftapplication.navigateSingleTopTo
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SignUpScreen(navController: NavHostController) {
+fun SignUpScreen() {
+    val navController = LocalNavController.current
+
     Surface(modifier = Modifier.fillMaxSize()) {
         Column(
             modifier = Modifier
