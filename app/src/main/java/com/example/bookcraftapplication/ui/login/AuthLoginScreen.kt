@@ -36,6 +36,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.bookcraftapplication.Account
 import com.example.bookcraftapplication.BookCollection
 import com.example.bookcraftapplication.LocalNavController
 import com.example.bookcraftapplication.R
@@ -43,6 +44,7 @@ import com.example.bookcraftapplication.SignUp
 import com.example.bookcraftapplication.auth.AuthViewModel
 import com.example.bookcraftapplication.auth.AuthViewModelFactory
 import com.example.bookcraftapplication.auth.ResultAuth
+import com.example.bookcraftapplication.data.userEmail
 import com.example.bookcraftapplication.navigateSingleTopTo
 
  @Composable
@@ -56,6 +58,8 @@ import com.example.bookcraftapplication.navigateSingleTopTo
      val deleteAccountResult by authViewModel.deleteAccountResult.collectAsState(null)
 
      val snackbarHostState = remember { SnackbarHostState() } // Material 3 approach
+     val (email, setEmail) = remember { mutableStateOf("") }
+     val (password, setPassword) = remember { mutableStateOf("") }
 
      // Show a Snackbar when sign-in is successful
      LaunchedEffect(signInResult) {
@@ -70,8 +74,8 @@ import com.example.bookcraftapplication.navigateSingleTopTo
                  return@LaunchedEffect
              }
              if (it is ResultAuth.Success && it.data) {
-                 println("SignIn LaunchedEffect: Success")
-                 navController.navigateSingleTopTo(BookCollection.route)
+                 userEmail = email
+                 navController.navigateSingleTopTo(Account.route)
                  snackbarHostState.showSnackbar("Sign-in Successful")
              } else if (it is ResultAuth.Failure || it is ResultAuth.Success) {
                  snackbarHostState.showSnackbar("Sign-in Unsuccessful. Email or password is invalid.")
@@ -99,9 +103,6 @@ import com.example.bookcraftapplication.navigateSingleTopTo
 //             }
 //         }
 //     }
-
-     val (email, setEmail) = remember { mutableStateOf("") }
-     val (password, setPassword) = remember { mutableStateOf("") }
 
      // Show a Snackbar when email is invalid
 //     LaunchedEffect(email) {
@@ -164,9 +165,9 @@ import com.example.bookcraftapplication.navigateSingleTopTo
                  // Sign-in Button
                  Button(onClick = {
                      if (isValidEmail(email)) {
-                         // Valid email and password, proceed with sign-in
                          authViewModel.signIn(email, password)
                          isSubmitted = true
+
                      } else {
                          // Show snackbar for invalid email/password
 

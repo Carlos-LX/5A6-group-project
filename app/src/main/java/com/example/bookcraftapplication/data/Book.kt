@@ -27,9 +27,7 @@ data class Book(
     val author: String,
     val releaseDate: Int,
     val description: String
-) {
-
-}
+)
 
 var libraryBooks = listOf(
     Book(R.drawable.tkamb, "To Kill a Mockingbird","by Harper Lee", 1960, "A poignant exploration of racial prejudice and moral growth in the American South during the 1930s."),

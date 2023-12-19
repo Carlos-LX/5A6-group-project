@@ -40,8 +40,8 @@ object Details : ReadifyScreen {
 object AboutUs : ReadifyScreen {
     override val route = "aboutUs"
 }
-object BookReading : ReadifyScreen {
-    override val route = "bookReading"
+object Account : ReadifyScreen {
+    override val route = "account"
 }
 object Login : ReadifyScreen {
     override val route = "login"

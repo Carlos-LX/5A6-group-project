@@ -67,7 +67,11 @@ import com.example.bookcraftapplication.ui.login.AuthLoginScreen
 import com.example.bookcraftapplication.ui.login.AuthSignUpScreen
 import com.example.bookcraftapplication.ui.settings.Settings
 import com.example.bookcraftapplication.ui.theme.BookCraftTheme
+import com.example.bookcraftapplication.userprofile.UserProfileViewModel
+import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.auth
+import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.*
 
 
@@ -92,6 +96,8 @@ class MainActivity : ComponentActivity() {
         setContent {
             var preferences = PreferencesRepository(dataStore, this)
             var userPrefs by remember { mutableStateOf(UserPrefs(Theme.Light, 12.0f)) }
+            appModule = AppModule(this, Firebase.auth,
+                FirebaseFirestore.getInstance())
 
             // Collect the Flow and update userPrefs when it changes
             LaunchedEffect(preferences.userPreferencesFlow) {
@@ -134,12 +140,12 @@ fun MyApp(modifier: Modifier = Modifier, selectedTheme: Theme, onThemeChange: (T
         val navController = rememberNavController()
         // Initialize FirebaseAuth
         val firebaseAuth = FirebaseAuth.getInstance()
-
         // Create an instance of AuthRepositoryFirebase and pass the FirebaseAuth instance
         val authRepository = AuthRepositoryFirebase(firebaseAuth)
-
+        val db: FirebaseFirestore = FirebaseFirestore.getInstance()
         // Create an instance of AuthViewModel and pass the AuthRepository instance
         val authViewModel = AuthViewModel(authRepository)
+        //val userProfileViewModel = UserProfileViewModel(firebaseAuth)
         var selectedOption = false;
         Scaffold(
             modifier = modifier,
@@ -161,7 +167,6 @@ fun MyApp(modifier: Modifier = Modifier, selectedTheme: Theme, onThemeChange: (T
 
                                 },
                                 icon = {
-
                                     Icon(
                                         readifyDestination.icon,
                                         contentDescription = "${readifyDestination.route} icon",
@@ -186,10 +191,9 @@ fun MyApp(modifier: Modifier = Modifier, selectedTheme: Theme, onThemeChange: (T
                         AboutUs()
                     }
                     composable(route = BookCollection.route) {
-                        BookCollection(modifier)
+                        BookCollection(db = db, modifier)
                     }
                     composable(route = Settings.route) {
-                        // Pass selectedTheme and onThemeChange to the Settings composable
                         Settings(
                             selectedTheme = selectedTheme,
                             onThemeChange = onThemeChange,
@@ -207,6 +211,9 @@ fun MyApp(modifier: Modifier = Modifier, selectedTheme: Theme, onThemeChange: (T
                     }
                     composable(route = SignUp.route) {
                         AuthSignUpScreen(authViewModel = authViewModel)
+                    }
+                    composable(route = Account.route) {
+                        //AuthSignUpScreen(authViewModel = authViewModel, )
                     }
                 }
             }

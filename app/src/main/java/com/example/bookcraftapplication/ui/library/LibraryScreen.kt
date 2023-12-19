@@ -48,9 +48,6 @@ fun Library() {
     val (storeBookList, setStoreBookList) = remember { mutableStateOf(storeBooks) }
     val navController = LocalNavController.current
 
-
-
-
     Scaffold() { it ->
         Column(
             modifier = Modifier

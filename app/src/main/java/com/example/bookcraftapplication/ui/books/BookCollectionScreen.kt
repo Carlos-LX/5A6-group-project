@@ -19,7 +19,9 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -39,15 +41,43 @@ import com.example.bookcraft.data.libraryBooks
 import com.example.bookcraftapplication.Details
 import com.example.bookcraftapplication.LocalNavController
 import com.example.bookcraftapplication.R
+import com.example.bookcraftapplication.data.userEmail
 import com.example.bookcraftapplication.navigateSingleTopTo
+import com.google.firebase.firestore.FirebaseFirestore
 
 @Composable
-fun BookCollection(modifier: Modifier = Modifier) {
+fun BookCollection(db: FirebaseFirestore, modifier: Modifier = Modifier) {
     val navController = LocalNavController.current
     val (bookList, setBookList) = remember { mutableStateOf(libraryBooks) }
     val (selectedBook, setSelectedBook) = remember { mutableStateOf<Book?>(null) }
     val (showAlertDialog, setShowAlertDialog) = remember { mutableStateOf(false) }
 
+    // State to store user favorites obtained from Firestore
+    val (favorites, setFavorites) = remember { mutableStateOf<List<String>>(emptyList()) }
+
+    // Fetch favorites from Firestore
+    LaunchedEffect(userEmail) {
+        db.collection("user-profile")
+            .whereEqualTo("Email", userEmail)
+            .get()
+            .addOnSuccessListener { documents ->
+                val newFavorites = mutableListOf<String>()
+                for (document in documents) {
+                    val favoritesList = document["Favorites"] as? List<String>
+                    if (favoritesList != null) {
+                        newFavorites.addAll(favoritesList)
+                    }
+                }
+                setFavorites(newFavorites)
+            }
+            .addOnFailureListener { exception ->
+                // Handle errors
+            }
+    }
+
+    val filteredBookList = bookList.filter { book ->
+        favorites.contains(book.name)
+    }
 
     LazyColumn(modifier = modifier) {
         item {
@@ -59,10 +89,9 @@ fun BookCollection(modifier: Modifier = Modifier) {
                     .fillMaxWidth()
                     .padding(vertical = 8.dp, horizontal = 16.dp),
                 textAlign = TextAlign.Center
-
             )
         }
-        items(bookList) { book ->
+        items(filteredBookList) { book ->
             // State variable for expanding/collapsing book description
             var isExpanded by remember { mutableStateOf(false) }
             Card(
@@ -78,24 +107,20 @@ fun BookCollection(modifier: Modifier = Modifier) {
                         .padding(8.dp)
                 ) {
                     // Display book item details
-                    BookItem(
-                        book = book, isExpanded, modifier = Modifier
-                            .fillMaxSize()
-                    )
+                    BookItem(book = book, isExpanded, modifier = Modifier.fillMaxSize())
 
                     // Read Icon in the Upper Left Corner
-                    Row(modifier = Modifier
-                        .align(Alignment.End)) {
-                        IconButton(modifier = Modifier
-                            .align(Alignment.CenterVertically)
-                            .semantics(mergeDescendants = true) {}
-                            .padding(10.dp),
-
+                    Row(modifier = Modifier.align(Alignment.End)) {
+                        IconButton(
+                            modifier = Modifier
+                                .align(Alignment.CenterVertically)
+                                .semantics(mergeDescendants = true) {}
+                                .padding(10.dp),
                             onClick = {
                                 focusedBook = book
                                 navController.navigateSingleTopTo(Details.route)
-                            })
-                        {
+                            }
+                        ) {
                             Icon(
                                 imageVector = Icons.Default.Book,
                                 contentDescription = "View $book reviews",
@@ -103,17 +128,15 @@ fun BookCollection(modifier: Modifier = Modifier) {
                                 modifier = Modifier
                             )
                         }
-                        IconButton(modifier = Modifier
-                            .align(Alignment.CenterVertically)
-                            .padding(10.dp),
-
-
+                        IconButton(
+                            modifier = Modifier
+                                .align(Alignment.CenterVertically)
+                                .padding(10.dp),
                             onClick = {
                                 setSelectedBook(book)
                                 setShowAlertDialog(true)
-                            })
-
-                        {
+                            }
+                        ) {
                             // Delete Icon in the Upper Right Corner
                             Icon(
                                 imageVector = Icons.Default.Delete,
