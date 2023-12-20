@@ -21,7 +21,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -71,7 +70,7 @@ fun BookCollection(db: FirebaseFirestore, modifier: Modifier = Modifier) {
                 setFavorites(newFavorites)
             }
             .addOnFailureListener { exception ->
-                // Handle errors
+                println("Error retrieving favorites: ${exception.message}")
             }
     }
 
@@ -212,13 +211,10 @@ private fun deleteBookFromFirestore(book: Book?, db: FirebaseFirestore) {
                             favoritesList.remove(book.name)
                             document.reference.update("Favorites", favoritesList)
                                 .addOnSuccessListener {
-                                    // Handle success
                                     println("Book deleted successfully from Favorites array")
-                                    // Break out of the loop after deleting the book
                                     return@addOnSuccessListener
                                 }
                                 .addOnFailureListener { e ->
-                                    // Handle failure
                                     println("Error updating document: $e")
                                 }
                         } else {
@@ -228,7 +224,6 @@ private fun deleteBookFromFirestore(book: Book?, db: FirebaseFirestore) {
                 }
             }
             .addOnFailureListener { e ->
-                // Handle failure
                 println("Error getting documents: $e")
             }
     }

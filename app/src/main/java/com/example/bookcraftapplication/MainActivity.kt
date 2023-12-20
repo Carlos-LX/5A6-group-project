@@ -19,6 +19,7 @@ package com.example.bookcraftapplication
 // The vast majority of source code I got was from the kotlin bootcamp with some help using chat gpt.
 // I mainly used chat gpt to aid with printing an actual bookItem when the add button is pressed, I
 // overshot with the state and user input criteria and I struggled to figure it out on my own
+import DetailsViewModel
 import android.content.Context
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -204,7 +205,7 @@ fun MyApp(modifier: Modifier = Modifier, selectedTheme: Theme, onThemeChange: (T
                         Library()
                     }
                     composable(route = Details.route) {
-                        Details(focusedBook)
+                        Details(focusedBook, db = db, navController)
                     }
                     composable(route = Login.route) {
                         AuthLoginScreen(authViewModel = authViewModel)
