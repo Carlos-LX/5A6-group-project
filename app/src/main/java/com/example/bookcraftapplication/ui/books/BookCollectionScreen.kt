@@ -137,7 +137,6 @@ fun BookCollection(db: FirebaseFirestore, modifier: Modifier = Modifier) {
                                 setShowAlertDialog(true)
                             }
                         ) {
-                            // Delete Icon in the Upper Right Corner
                             Icon(
                                 imageVector = Icons.Default.Delete,
                                 contentDescription = "Remove $book from collection",
@@ -155,7 +154,6 @@ fun BookCollection(db: FirebaseFirestore, modifier: Modifier = Modifier) {
     if (showAlertDialog) {
         AlertDialog(
             onDismissRequest = {
-                // Handle dismiss if needed
                 setShowAlertDialog(false)
             },
             title = {
@@ -172,7 +170,7 @@ fun BookCollection(db: FirebaseFirestore, modifier: Modifier = Modifier) {
             confirmButton = {
                 Button(
                     onClick = {
-                        // Handle the deletion
+                        deleteBookFromFirestore(selectedBook, db)
                         setBookList(bookList.filter { it != selectedBook })
                         setShowAlertDialog(false)
                     }
@@ -197,6 +195,42 @@ fun BookCollection(db: FirebaseFirestore, modifier: Modifier = Modifier) {
                 }
             }
         )
+    }
+}
+
+private fun deleteBookFromFirestore(book: Book?, db: FirebaseFirestore) {
+    if (book != null) {
+        // Assuming "user-profile" is your Firestore collection name
+        db.collection("user-profile")
+            .whereEqualTo("Email", userEmail)
+            .get()
+            .addOnSuccessListener { documents ->
+                for (document in documents) {
+                    val favoritesList = document["Favorites"] as? MutableList<String>
+                    if (favoritesList != null) {
+                        if (favoritesList.contains(book.name)) {
+                            favoritesList.remove(book.name)
+                            document.reference.update("Favorites", favoritesList)
+                                .addOnSuccessListener {
+                                    // Handle success
+                                    println("Book deleted successfully from Favorites array")
+                                    // Break out of the loop after deleting the book
+                                    return@addOnSuccessListener
+                                }
+                                .addOnFailureListener { e ->
+                                    // Handle failure
+                                    println("Error updating document: $e")
+                                }
+                        } else {
+                            println("Book not found in Favorites array")
+                        }
+                    }
+                }
+            }
+            .addOnFailureListener { e ->
+                // Handle failure
+                println("Error getting documents: $e")
+            }
     }
 }
 
