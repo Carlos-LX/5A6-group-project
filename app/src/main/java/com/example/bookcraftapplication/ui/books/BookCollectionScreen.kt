@@ -39,7 +39,6 @@ import com.example.bookcraft.data.libraryBooks
 import com.example.bookcraftapplication.Details
 import com.example.bookcraftapplication.LocalNavController
 import com.example.bookcraftapplication.R
-import com.example.bookcraftapplication.navigateSingleTopTo
 
 @Composable
 fun BookCollection(modifier: Modifier = Modifier) {
@@ -93,7 +92,7 @@ fun BookCollection(modifier: Modifier = Modifier) {
 
                             onClick = {
                                 focusedBook = book
-                                navController.navigateSingleTopTo(Details.route)
+                                navController.navigate(Details.route)
                             })
                         {
                             Icon(
