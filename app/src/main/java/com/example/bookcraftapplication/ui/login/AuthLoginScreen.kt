@@ -37,10 +37,10 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.bookcraftapplication.Account
 import com.example.bookcraftapplication.Informational
 import com.example.bookcraftapplication.LocalNavController
 import com.example.bookcraftapplication.R
+import com.example.bookcraftapplication.SignUp
 import com.example.bookcraftapplication.auth.AuthViewModel
 import com.example.bookcraftapplication.auth.AuthViewModelFactory
 import com.example.bookcraftapplication.auth.ResultAuth
@@ -174,7 +174,7 @@ import com.example.bookcraftapplication.navigateSingleTopTo
                  // Sign-up Button
                  Button(onClick = {
                      // Navigate to the sign-up screen
-                     navController.navigateSingleTopTo(Account.route)
+                     navController.navigateSingleTopTo(SignUp.route)
                  }, modifier = Modifier
                      .fillMaxWidth()) {
                      Text("Sign Up")

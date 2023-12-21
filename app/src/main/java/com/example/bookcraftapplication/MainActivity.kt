@@ -177,10 +177,6 @@ fun MyApp(modifier: Modifier = Modifier, selectedTheme: Theme, onThemeChange: (T
                 }
             }
         ) { innerPadding ->
-            // Existing code for navigation
-
-
-
             CompositionLocalProvider(LocalNavController provides navController) {
                 NavHost(
                     navController = navController,

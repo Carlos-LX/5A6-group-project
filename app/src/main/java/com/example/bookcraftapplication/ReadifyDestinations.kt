@@ -43,13 +43,13 @@ object Account : ReadifyScreen {
 object Login : ReadifyScreen {
     override val route = "login"
 }
-object Informational : ReadifyScreen {
-    override val route = "informational"
-}
-
-object SignUp : ReadifyBarDestination {
+object Informational : ReadifyBarDestination {
     override val icon = Icons.Rounded.Person
     override val route = "Account"
 }
 
-val ReadifyScreens = listOf(SignUp, BookCollection, Library, Settings)
+object SignUp : ReadifyScreen {
+    override val route = "signup"
+}
+
+val ReadifyScreens = listOf(Informational, BookCollection, Library, Settings)
