@@ -1,4 +1,4 @@
-package com.example.bookcraftapplication.ui.Details
+package com.example.bookcraftapplication.ui.details
 
 import android.util.Log
 import androidx.compose.foundation.Image

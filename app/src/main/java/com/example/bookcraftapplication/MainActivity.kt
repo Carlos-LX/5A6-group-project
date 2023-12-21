@@ -19,7 +19,6 @@ package com.example.bookcraftapplication
 // The vast majority of source code I got was from the kotlin bootcamp with some help using chat gpt.
 // I mainly used chat gpt to aid with printing an actual bookItem when the add button is pressed, I
 // overshot with the state and user input criteria and I struggled to figure it out on my own
-import DetailsViewModel
 import android.content.Context
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -60,15 +59,15 @@ import androidx.navigation.compose.rememberNavController
 import com.example.bookcraft.data.focusedBook
 import com.example.bookcraftapplication.auth.AuthRepositoryFirebase
 import com.example.bookcraftapplication.auth.AuthViewModel
-import com.example.bookcraftapplication.ui.Details.Details
 import com.example.bookcraftapplication.ui.aboutUs.AboutUs
 import com.example.bookcraftapplication.ui.books.BookCollection
+import com.example.bookcraftapplication.ui.details.Details
+import com.example.bookcraftapplication.ui.informational.Informational
 import com.example.bookcraftapplication.ui.library.Library
 import com.example.bookcraftapplication.ui.login.AuthLoginScreen
 import com.example.bookcraftapplication.ui.login.AuthSignUpScreen
 import com.example.bookcraftapplication.ui.settings.Settings
 import com.example.bookcraftapplication.ui.theme.BookCraftTheme
-import com.example.bookcraftapplication.userprofile.UserProfileViewModel
 import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.auth
@@ -107,25 +106,25 @@ class MainActivity : ComponentActivity() {
                 }
             }
 
-                MyApp(
-                    modifier = Modifier.fillMaxSize(),
-                    selectedTheme = userPrefs.selectedTheme,
-                    onThemeChange = { newTheme ->
+            MyApp(
+                modifier = Modifier.fillMaxSize(),
+                selectedTheme = userPrefs.selectedTheme,
+                onThemeChange = { newTheme ->
 
-                        CoroutineScope(Dispatchers.IO).launch {
-                            preferences.setTheme(newTheme)
-                        }
-                    },
-                    userfontSize = userPrefs.fontSize,
-                    onFontChange = { newSize ->
-                        CoroutineScope(Dispatchers.IO).launch {
-                            preferences.setFontSize(newSize)
-                        }
-                    },
-                )
-            }
+                    CoroutineScope(Dispatchers.IO).launch {
+                        preferences.setTheme(newTheme)
+                    }
+                },
+                userfontSize = userPrefs.fontSize,
+                onFontChange = { newSize ->
+                    CoroutineScope(Dispatchers.IO).launch {
+                        preferences.setFontSize(newSize)
+                    }
+                },
+            )
         }
     }
+}
 
 val LocalNavController = compositionLocalOf<NavHostController> { error("No NavController found!") }
 
@@ -154,28 +153,28 @@ fun MyApp(modifier: Modifier = Modifier, selectedTheme: Theme, onThemeChange: (T
             bottomBar = {
                 BottomAppBar(
                     modifier = Modifier,
-                    ) {
-                        // Existing code for navigation items
-                        ReadifyScreens.forEach { readifyDestination ->
-                            NavigationBarItem(
-                                modifier = modifier
-                                    .semantics(mergeDescendants = true) {  onClick(label = "Click to navigate to ${readifyDestination.route}", action = null) },
-                                label = { Text(text = readifyDestination.route) },
-                                selected = selectedOption,
-                                onClick = {
-                                    selectedOption = true
-                                    navController.navigateSingleTopTo(readifyDestination.route)
+                ) {
+                    // Existing code for navigation items
+                    ReadifyScreens.forEach { readifyDestination ->
+                        NavigationBarItem(
+                            modifier = modifier
+                                .semantics(mergeDescendants = true) {  onClick(label = "Click to navigate to ${readifyDestination.route}", action = null) },
+                            label = { Text(text = readifyDestination.route) },
+                            selected = selectedOption,
+                            onClick = {
+                                selectedOption = true
+                                navController.navigateSingleTopTo(readifyDestination.route)
 
-                                },
-                                icon = {
-                                    Icon(
-                                        readifyDestination.icon,
-                                        contentDescription = "${readifyDestination.route} icon",
-                                    )
-                                }
-                            )
-                        }
+                            },
+                            icon = {
+                                Icon(
+                                    readifyDestination.icon,
+                                    contentDescription = "${readifyDestination.route} icon",
+                                )
+                            }
+                        )
                     }
+                }
             }
         ) { innerPadding ->
             // Existing code for navigation
@@ -213,8 +212,8 @@ fun MyApp(modifier: Modifier = Modifier, selectedTheme: Theme, onThemeChange: (T
                     composable(route = SignUp.route) {
                         AuthSignUpScreen(authViewModel = authViewModel)
                     }
-                    composable(route = Account.route) {
-                        //AuthSignUpScreen(authViewModel = authViewModel, )
+                    composable(route = Informational.route) {
+                        Informational(authViewModel = authViewModel)
                     }
                 }
             }
@@ -233,8 +232,8 @@ fun NavHostController.navigateSingleTopTo(route: String) =
             saveState = true
         }
 
-            launchSingleTop = true
-            restoreState = true
+        launchSingleTop = true
+        restoreState = true
 
     }
 
@@ -255,19 +254,19 @@ fun NavHostController.navigateSingleTopTo(route: String) =
 fun MyAppPreview() {
     var selectedTheme by remember { mutableStateOf(Theme.Light) }
     var fontSize by remember { mutableStateOf(16f) }
-        MyApp(
-            modifier = Modifier.fillMaxSize(),
-            selectedTheme = selectedTheme,
-            onThemeChange = { newTheme ->
-                selectedTheme = newTheme
-            },
-            userfontSize = fontSize,
-            onFontChange = {
-                    userfontSize ->
-                fontSize = userfontSize
-            }
-        )
-    }
+    MyApp(
+        modifier = Modifier.fillMaxSize(),
+        selectedTheme = selectedTheme,
+        onThemeChange = { newTheme ->
+            selectedTheme = newTheme
+        },
+        userfontSize = fontSize,
+        onFontChange = {
+                userfontSize ->
+            fontSize = userfontSize
+        }
+    )
+}
 
 
 
@@ -286,7 +285,7 @@ fun BookTopAppBar(
             .semantics(mergeDescendants = true) {  }
         ,
 
-    ) {
+        ) {
         CenterAlignedTopAppBar(
             title = {
                 Row(
