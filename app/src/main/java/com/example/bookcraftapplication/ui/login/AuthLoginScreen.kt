@@ -1,9 +1,8 @@
 package com.example.bookcraftapplication.ui.login
 
 // import com.example.bookcraftapplication.Informational
-import androidx.compose.foundation.layout.Box
-//import com.example.bookcraftapplication.Informational
 import android.util.Log
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -42,10 +41,10 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.bookcraftapplication.Account
 import com.example.bookcraftapplication.Informational
 import com.example.bookcraftapplication.LocalNavController
 import com.example.bookcraftapplication.R
+import com.example.bookcraftapplication.SignUp
 import com.example.bookcraftapplication.auth.AuthViewModel
 import com.example.bookcraftapplication.auth.AuthViewModelFactory
 import com.example.bookcraftapplication.auth.ResultAuth
@@ -53,7 +52,7 @@ import com.example.bookcraftapplication.data.userEmail
 import com.example.bookcraftapplication.navigateSingleTopTo
 import com.google.firebase.firestore.FirebaseFirestore
 
- @Composable
+@Composable
  fun AuthLoginScreen(authViewModel: AuthViewModel = viewModel(factory = AuthViewModelFactory()), db: FirebaseFirestore) {
      val navController = LocalNavController.current
      var isSubmitted = false
@@ -170,12 +169,6 @@ import com.google.firebase.firestore.FirebaseFirestore
                 Button(
                     onClick = {
                         signInButtonClick()
-                        if (isValidEmail(email)) {
-                            authViewModel.signIn(email, password)
-                            isSubmitted = true
-                        } else {
-                            // Show snackbar for invalid email/password
-                        }
                     },
                     modifier =
                         Modifier
