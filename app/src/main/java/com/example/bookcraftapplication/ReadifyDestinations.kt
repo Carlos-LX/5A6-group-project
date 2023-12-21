@@ -14,27 +14,22 @@ Represents a destination in the application*/
 interface ReadifyScreen {
     val route: String
 }
-
 interface ReadifyBarDestination {
     val icon: ImageVector
     val route: String
 }
-
 object BookCollection : ReadifyBarDestination {
     override val icon = Icons.Rounded.Favorite
     override val route = "Favorites"
 }
-
 object Settings : ReadifyBarDestination {
     override val icon = Icons.Rounded.Settings
     override val route = "Settings"
 }
-
 object Library : ReadifyBarDestination {
-    override val icon = Icons.Rounded.LibraryBooks
+    override val icon =  Icons.Rounded.LibraryBooks
     override val route = "Library"
 }
-
 object Details : ReadifyScreen {
     override val route = "details"
 }
@@ -42,22 +37,19 @@ object Details : ReadifyScreen {
 object AboutUs : ReadifyScreen {
     override val route = "aboutUs"
 }
-
 object Account : ReadifyScreen {
     override val route = "account"
 }
-
 object Login : ReadifyScreen {
     override val route = "login"
 }
-
-object Informational : ReadifyScreen {
-    override val route = "informational"
-}
-
-object SignUp : ReadifyBarDestination {
+object Informational : ReadifyBarDestination {
     override val icon = Icons.Rounded.Person
     override val route = "Account"
 }
 
-val ReadifyScreens = listOf(SignUp, BookCollection, Library, Settings)
+object SignUp : ReadifyScreen {
+    override val route = "signup"
+}
+
+val ReadifyScreens = listOf(Informational, BookCollection, Library, Settings)

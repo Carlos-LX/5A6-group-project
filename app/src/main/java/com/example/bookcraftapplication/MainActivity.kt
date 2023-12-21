@@ -74,19 +74,19 @@ import com.google.firebase.auth.auth
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.*
 
+
 enum class Theme {
-    Light,
-    Dark,
+    Light, Dark
 }
+
 
 private const val USER_PREFERENCES_NAME = "theme"
 
 private val Context.dataStore by preferencesDataStore(
-    name = USER_PREFERENCES_NAME,
+    name = USER_PREFERENCES_NAME
 )
-
 class MainActivity : ComponentActivity() {
-    // Always be able to access the module ("static")
+    /* Always be able to access the module ("static") */
     companion object {
         lateinit var appModule: AppModule
     }
@@ -96,11 +96,8 @@ class MainActivity : ComponentActivity() {
         setContent {
             var preferences = PreferencesRepository(dataStore, this)
             var userPrefs by remember { mutableStateOf(UserPrefs(Theme.Light, 12.0f)) }
-            appModule =
-                AppModule(
-                    this, Firebase.auth,
-                    FirebaseFirestore.getInstance(),
-                )
+            appModule = AppModule(this, Firebase.auth,
+                FirebaseFirestore.getInstance())
 
             // Collect the Flow and update userPrefs when it changes
             LaunchedEffect(preferences.userPreferencesFlow) {
@@ -137,13 +134,7 @@ val LocalNavController = compositionLocalOf<NavHostController> { error("No NavCo
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MyApp(
-    modifier: Modifier = Modifier,
-    selectedTheme: Theme,
-    onThemeChange: (Theme) -> Unit,
-    userfontSize: Float,
-    onFontChange: (Float) -> Unit,
-) {
+fun MyApp(modifier: Modifier = Modifier, selectedTheme: Theme, onThemeChange: (Theme) -> Unit, userfontSize: Float, onFontChange: (Float) -> Unit) {
     BookCraftTheme(currentTheme = selectedTheme) {
         // Initialize the navigation controller
         val navController = rememberNavController()
@@ -154,8 +145,8 @@ fun MyApp(
         val db: FirebaseFirestore = FirebaseFirestore.getInstance()
         // Create an instance of AuthViewModel and pass the AuthRepository instance
         val authViewModel = AuthViewModel(authRepository)
-        // val userProfileViewModel = UserProfileViewModel(firebaseAuth)
-        var selectedOption = false
+        //val userProfileViewModel = UserProfileViewModel(firebaseAuth)
+        var selectedOption = false;
         Scaffold(
             modifier = modifier,
             topBar = { BookTopAppBar() },
@@ -166,35 +157,31 @@ fun MyApp(
                     // Existing code for navigation items
                     ReadifyScreens.forEach { readifyDestination ->
                         NavigationBarItem(
-                            modifier =
-                                modifier
-                                    .semantics(
-                                        mergeDescendants = true,
-                                    ) { onClick(label = "Click to navigate to ${readifyDestination.route}", action = null) },
+                            modifier = modifier
+                                .semantics(mergeDescendants = true) {  onClick(label = "Click to navigate to ${readifyDestination.route}", action = null) },
                             label = { Text(text = readifyDestination.route) },
                             selected = selectedOption,
                             onClick = {
                                 selectedOption = true
                                 navController.navigateSingleTopTo(readifyDestination.route)
+
                             },
                             icon = {
                                 Icon(
                                     readifyDestination.icon,
                                     contentDescription = "${readifyDestination.route} icon",
                                 )
-                            },
+                            }
                         )
                     }
                 }
-            },
+            }
         ) { innerPadding ->
-            // Existing code for navigation
-
             CompositionLocalProvider(LocalNavController provides navController) {
                 NavHost(
                     navController = navController,
                     startDestination = AboutUs.route,
-                    modifier = Modifier.padding(innerPadding),
+                    modifier = Modifier.padding(innerPadding)
                 ) {
                     composable(route = AboutUs.route) {
                         AboutUs()
@@ -206,7 +193,7 @@ fun MyApp(
                         Settings(
                             selectedTheme = selectedTheme,
                             onThemeChange = onThemeChange,
-                            modifier = Modifier.fillMaxSize(),
+                            modifier = Modifier.fillMaxSize()
                         )
                     }
                     composable(route = Library.route) {
@@ -230,23 +217,30 @@ fun MyApp(
     }
 }
 
+
+
+
 fun NavHostController.navigateSingleTopTo(route: String) =
     this.navigate(route) {
         popUpTo(
-            this@navigateSingleTopTo.graph.findStartDestination().id,
+            this@navigateSingleTopTo.graph.findStartDestination().id
         ) {
             saveState = true
         }
 
         launchSingleTop = true
         restoreState = true
+
     }
+
 
 /**
  * Composable that displays a list item containing a question along with an answer, used for the about us page
  * @param book Contains the data that populates the list item.
  * @param modifier Modifiers to set for this composable.
  */
+
+
 
 /**
  * Preview function for MyApp composable.
@@ -266,9 +260,12 @@ fun MyAppPreview() {
         onFontChange = {
                 userfontSize ->
             fontSize = userfontSize
-        },
+        }
     )
 }
+
+
+
 
 /**
  * Composable function for the top app bar.
@@ -276,26 +273,28 @@ fun MyAppPreview() {
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun BookTopAppBar(modifier: Modifier = Modifier) {
+fun BookTopAppBar(
+    modifier: Modifier = Modifier
+) {
     Surface(
-        modifier =
-            modifier.fillMaxWidth()
-                .semantics(mergeDescendants = true) { },
-    ) {
+        modifier = modifier.fillMaxWidth()
+            .semantics(mergeDescendants = true) {  }
+        ,
+
+        ) {
         CenterAlignedTopAppBar(
             title = {
                 Row(
-                    verticalAlignment = Alignment.CenterVertically,
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
                     Row(
                         verticalAlignment = Alignment.CenterVertically,
-                        modifier = Modifier.weight(1f),
+                        modifier = Modifier.weight(1f)
                     ) {
                         Image(
-                            modifier =
-                                Modifier
-                                    .size(dimensionResource(id = R.dimen.logo_size))
-                                    .padding(dimensionResource(id = R.dimen.padding_small)),
+                            modifier = Modifier
+                                .size(dimensionResource(id = R.dimen.logo_size))
+                                .padding(dimensionResource(id = R.dimen.padding_small)),
                             painter = painterResource(R.drawable.bookcraftlogo),
                             contentDescription = null,
                         )
@@ -309,7 +308,10 @@ fun BookTopAppBar(modifier: Modifier = Modifier) {
                         )
                     }
                 }
-            },
+            }
         )
     }
 }
+
+
+
