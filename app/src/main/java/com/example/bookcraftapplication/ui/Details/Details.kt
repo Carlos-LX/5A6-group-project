@@ -110,6 +110,14 @@ fun Details(book: Book, db: FirebaseFirestore, navController: NavHostController)
     LaunchedEffect(book) {
         fetchReviewsForBook(book, db) { newReviews ->
             // Update the reviews list
+            reviewsState = newReviews.toMutableList()
+            reviewsState.addAll(newReviews)
+        }
+    }
+
+    LaunchedEffect(triggerScroll) {
+        fetchReviewsForBook(book, db) { newReviews ->
+            // Update the reviews list
             reviewsState.clear()
             reviewsState.addAll(newReviews)
         }
@@ -231,7 +239,6 @@ fun Details(book: Book, db: FirebaseFirestore, navController: NavHostController)
         item(key = triggerScroll) {}
 
         item {
-            // Snackbar
             Button(
                 onClick = {
                     addToFavorites(book, db)
@@ -372,7 +379,6 @@ fun Reviews(modifier: Modifier, review: Review) {
                 .fillMaxSize()
                 .padding(8.dp)
         ) {
-            // Display book item details
             ReviewItem(review = review)
         }
     }
