@@ -1,6 +1,7 @@
  package com.example.bookcraftapplication.ui.login
 
 //import com.example.bookcraftapplication.Informational
+import android.util.Log
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -46,9 +47,10 @@ import com.example.bookcraftapplication.auth.AuthViewModelFactory
 import com.example.bookcraftapplication.auth.ResultAuth
 import com.example.bookcraftapplication.data.userEmail
 import com.example.bookcraftapplication.navigateSingleTopTo
+import com.google.firebase.firestore.FirebaseFirestore
 
  @Composable
- fun AuthLoginScreen(authViewModel: AuthViewModel = viewModel(factory = AuthViewModelFactory())) {
+ fun AuthLoginScreen(authViewModel: AuthViewModel = viewModel(factory = AuthViewModelFactory()), db: FirebaseFirestore) {
      val navController = LocalNavController.current
      var isSubmitted = false
      val signInResult by authViewModel.signInResult.collectAsState(ResultAuth.Inactive)
@@ -71,8 +73,9 @@ import com.example.bookcraftapplication.navigateSingleTopTo
              }
              if (it is ResultAuth.Success && it.data) {
                  userEmail = email
-                 navController.navigateSingleTopTo(Informational.route)
                  snackbarHostState.showSnackbar("Sign-in Successful")
+                 checkIfUserExistsInFirestore(email, db)
+                 navController.navigateSingleTopTo(Informational.route)
              } else if (it is ResultAuth.Failure || it is ResultAuth.Success) {
                  snackbarHostState.showSnackbar("Sign-in Unsuccessful. Email or password is invalid.")
              }
@@ -194,7 +197,35 @@ import com.example.bookcraftapplication.navigateSingleTopTo
      }
  }
 
+ private fun checkIfUserExistsInFirestore(email: String, db: FirebaseFirestore) {
+     db.collection("user-profile")
+         .whereEqualTo("Email", email)
+         .get()
+         .addOnSuccessListener { documents ->
+             if (documents.isEmpty) {
+                 createUserDocument(email, db)
+             }
+         }
+         .addOnFailureListener { exception ->
+             Log.e("AuthLoginScreen", "Error checking user existence: $exception")
+         }
+ }
 
+ private fun createUserDocument(email: String, db: FirebaseFirestore) {
+     val newUser = hashMapOf(
+         "Email" to email,
+         "Favorites" to emptyList<String>()
+     )
+
+     db.collection("user-profile")
+         .add(newUser)
+         .addOnSuccessListener { documentReference ->
+             Log.d("AuthLoginScreen", "User document created with ID: ${documentReference.id}")
+         }
+         .addOnFailureListener { e ->
+             Log.e("AuthLoginScreen", "Error creating user document: $e")
+         }
+ }
 
  // Function to validate the email format using a simple regex
  private fun isValidEmail(email: String): Boolean {

@@ -42,6 +42,7 @@ import com.example.bookcraft.data.Book
 import com.example.bookcraftapplication.R
 import com.example.bookcraftapplication.data.Review
 import com.example.bookcraftapplication.data.userEmail
+import com.example.bookcraftapplication.navigateSingleTopTo
 import com.example.bookcraftapplication.ui.reviews.ReviewItem
 import com.example.bookcraftapplication.ui.theme.md_theme_dark_tertiary
 import com.google.firebase.firestore.FirebaseFirestore
@@ -127,7 +128,7 @@ fun Details(book: Book, db: FirebaseFirestore, navController: NavHostController)
         item {
             Button(
                 onClick = {
-                    navController.popBackStack()
+                    navController.navigateSingleTopTo(com.example.bookcraftapplication.Library.route)
                 },
                 modifier = Modifier.fillMaxWidth()
             ) {
