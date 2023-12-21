@@ -28,9 +28,10 @@ import com.example.bookcraftapplication.navigateSingleTopTo
 fun AboutUs() {
     val navController = LocalNavController.current
     LazyColumn(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(16.dp)
+        modifier =
+            Modifier
+                .fillMaxSize()
+                .padding(16.dp),
     ) {
         item {
             // Header
@@ -41,8 +42,9 @@ fun AboutUs() {
                 textAlign = TextAlign.Center,
                 fontFamily = FontFamily.Serif,
                 fontWeight = FontWeight.SemiBold,
-                modifier = Modifier
-                    .fillMaxWidth()
+                modifier =
+                    Modifier
+                        .fillMaxWidth(),
             )
         }
 
@@ -51,23 +53,26 @@ fun AboutUs() {
             Image(
                 painter = painterResource(id = R.drawable.bookcraftlogo),
                 contentDescription = null,
-                modifier = Modifier
-                    .fillMaxWidth(1f)
-                    .clip(shape = MaterialTheme.shapes.medium),
-                contentScale = ContentScale.Crop
+                modifier =
+                    Modifier
+                        .fillMaxWidth(1f)
+                        .clip(shape = MaterialTheme.shapes.medium),
+                contentScale = ContentScale.Crop,
             )
         }
 
         item {
             // Brief Explanation
             Text(
-                text = "Our amazing team is dedicated to creating a centralized hub for book lovers to share their thoughts on " +
+                text =
+                    "Our amazing team is dedicated to creating a centralized hub for book lovers to share their thoughts on " +
                         "their most recent reads. This application allows you to bookmark books that interest you, and leave reviews " +
                         "for books you already read.",
                 style = MaterialTheme.typography.bodyLarge,
                 textAlign = TextAlign.Center,
-                modifier = Modifier
-                    .fillMaxWidth()
+                modifier =
+                    Modifier
+                        .fillMaxWidth(),
             )
         }
 
@@ -75,9 +80,10 @@ fun AboutUs() {
             // Button
             Button(
                 onClick = { navController.navigateSingleTopTo(Login.route) },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(4.dp)
+                modifier =
+                    Modifier
+                        .fillMaxWidth()
+                        .padding(4.dp),
             ) {
                 Text("SIGN IN")
             }

@@ -37,55 +37,63 @@ fun Library() {
     val (storeBookList, setStoreBookList) = remember { mutableStateOf(storeBooks) }
     val navController = LocalNavController.current
 
-    Scaffold() { it ->
+    Scaffold { it ->
         Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(it)
+            modifier =
+                Modifier
+                    .fillMaxSize()
+                    .padding(it),
         ) {
             Text(
                 text = "LIBRARY",
-                style = MaterialTheme.typography.titleLarge
-                    .copy(fontWeight = FontWeight.Bold, fontFamily = FontFamily.Default),
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = 8.dp, horizontal = 16.dp),
-                textAlign = TextAlign.Center
+                style =
+                    MaterialTheme.typography.titleLarge
+                        .copy(fontWeight = FontWeight.Bold, fontFamily = FontFamily.Default),
+                modifier =
+                    Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 8.dp, horizontal = 16.dp),
+                textAlign = TextAlign.Center,
             )
 
             // Display individual book items with text below
             LazyVerticalGrid(GridCells.Fixed(3)) {
                 items(storeBookList) { book ->
                     Card(
-                        modifier = Modifier
-                            .padding(dimensionResource(R.dimen.padding_small))
-                            .height(250.dp) // Adjust the height as needed
-                            .clickable {
-                                focusedBook = book;
-                                navController.navigate(Details.route)
-                            }
-                            .semantics(mergeDescendants = true) { onClick(label = "Click to view ${book.name} details", action = null) }
-
+                        modifier =
+                            Modifier
+                                .padding(dimensionResource(R.dimen.padding_small))
+                                .height(250.dp) // Adjust the height as needed
+                                .clickable {
+                                    focusedBook = book
+                                    navController.navigate(Details.route)
+                                }
+                                .semantics(
+                                    mergeDescendants = true,
+                                ) { onClick(label = "Click to view ${book.name} details", action = null) },
                     ) {
                         Column(
-                            modifier = Modifier
-                                .fillMaxSize()
-                                .padding(8.dp)
+                            modifier =
+                                Modifier
+                                    .fillMaxSize()
+                                    .padding(8.dp),
                         ) {
                             BookItem(
                                 book = book,
                                 false,
-                                modifier = Modifier
-                                    .weight(1f)
-                                    .fillMaxWidth()
+                                modifier =
+                                    Modifier
+                                        .weight(1f)
+                                        .fillMaxWidth(),
                             )
                             Spacer(modifier = Modifier.height(8.dp)) // Adjust spacing as needed
                             Text(
                                 text = "${book.name}", // or any other information
                                 textAlign = TextAlign.Center,
-                                modifier = Modifier
-                                    .weight(1f)
-                                    .fillMaxWidth()
+                                modifier =
+                                    Modifier
+                                        .weight(1f)
+                                        .fillMaxWidth(),
                             )
                         }
                     }

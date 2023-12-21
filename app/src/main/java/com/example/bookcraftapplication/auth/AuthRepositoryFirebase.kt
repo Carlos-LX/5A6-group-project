@@ -17,19 +17,27 @@ class AuthRepositoryFirebase(private val auth: FirebaseAuth) : AuthRepository {
             currentUserStateFlow.value = firebaseAuth.currentUser?.toUser()
         }
     }
+
     override fun currentUser(): StateFlow<User?> {
         return currentUserStateFlow
     }
-    override suspend fun signUp(email: String, password: String): Boolean {
+
+    override suspend fun signUp(
+        email: String,
+        password: String,
+    ): Boolean {
         return try {
             auth.createUserWithEmailAndPassword(email, password).await()
-            return true;
+            return true
         } catch (e: Exception) {
-            return false;
+            return false
         }
     }
 
-    override suspend fun signIn(email: String, password: String): Boolean {
+    override suspend fun signIn(
+        email: String,
+        password: String,
+    ): Boolean {
         return try {
             println("Before signInWithEmailAndPassword")
             auth.signInWithEmailAndPassword(email, password).await()
@@ -41,12 +49,12 @@ class AuthRepositoryFirebase(private val auth: FirebaseAuth) : AuthRepository {
         }
     }
 
-    override fun signOut() : Boolean {
+    override fun signOut(): Boolean {
         auth.signOut()
         return true
     }
 
-    override suspend fun delete() : Boolean {
+    override suspend fun delete(): Boolean {
         if (auth.currentUser != null) {
             auth.currentUser!!.delete()
             return true
@@ -58,12 +66,13 @@ class AuthRepositoryFirebase(private val auth: FirebaseAuth) : AuthRepository {
     /** Convert from FirebaseUser to User */
     private fun FirebaseUser?.toUser(): User? {
         return this?.let {
-            if (it.email==null) null else
-            User(
-                email = it.email!!,
-            )
+            if (it.email == null) {
+                null
+            } else {
+                User(
+                    email = it.email!!,
+                )
+            }
         }
     }
-
-
 }

@@ -2,15 +2,6 @@ package com.example.bookcraftapplication.ui.theme
 
 import androidx.compose.ui.graphics.Color
 
-val Purple80 = Color(0xFFD0BCFF)
-val PurpleGrey80 = Color(0xFFCCC2DC)
-val Pink80 = Color(0xFFEFB8C8)
-
-val Purple40 = Color(0xFF6650a4)
-val PurpleGrey40 = Color(0xFF625b71)
-val Pink40 = Color(0xFF7D5260)
-
-val earthy_brown = Color(0xFF8B4513)
 val md_theme_light_Primary = Color(0xFF7C1E46)
 val md_theme_light_onPrimary = Color(0xFFFFFFFF)
 val md_theme_light_primaryContainer = Color(0xFFFECCB7)
@@ -41,7 +32,6 @@ val md_theme_light_shadow = Color(0xFFFFFFFF)
 val md_theme_light_surfaceTint = Color(0xFF936245)
 val md_theme_light_outlineVariant = Color(0xFF252325)
 val md_theme_light_scrim = Color(0xFFFFFFFF)
-
 
 val md_theme_dark_primary = Color(0xFF6CDBAC)
 val md_theme_dark_onPrimary = Color(0xFF003826)

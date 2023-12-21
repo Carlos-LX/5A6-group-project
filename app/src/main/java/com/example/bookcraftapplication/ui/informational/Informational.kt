@@ -37,27 +37,28 @@ fun Informational(authViewModel: AuthViewModel = viewModel(factory = AuthViewMod
     val snackbarHostState = remember { SnackbarHostState() }
     val navController = LocalNavController.current
     LazyColumn(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(48.dp),
-        verticalArrangement = Arrangement.spacedBy(70.dp)
+        modifier =
+            Modifier
+                .fillMaxSize()
+                .padding(48.dp),
+        verticalArrangement = Arrangement.spacedBy(70.dp),
     ) {
         item {
             InformationalItem(
                 icon = Icons.Rounded.Favorite,
-                text = "Navigate to Favorites to check out bookmarked books."
+                text = "Navigate to Favorites to check out bookmarked books.",
             )
         }
         item {
             InformationalItem(
                 icon = Icons.Rounded.LibraryBooks,
-                text = "Navigate to Library to find books or add your opinion on them."
+                text = "Navigate to Library to find books or add your opinion on them.",
             )
         }
         item {
             InformationalItem(
                 icon = Icons.Rounded.Settings,
-                text = "Navigate to Settings to change the theme."
+                text = "Navigate to Settings to change the theme.",
             )
         }
         item {
@@ -73,29 +74,34 @@ fun Informational(authViewModel: AuthViewModel = viewModel(factory = AuthViewMod
 
     SnackbarHost(
         hostState = snackbarHostState,
-        modifier = Modifier.padding(16.dp)
+        modifier = Modifier.padding(16.dp),
     ) { snackbarData ->
         Snackbar(
             modifier = Modifier.fillMaxWidth(),
-            snackbarData = snackbarData
+            snackbarData = snackbarData,
         )
     }
 }
 
 @Composable
-fun InformationalItem(icon: ImageVector, text: String) {
+fun InformationalItem(
+    icon: ImageVector,
+    text: String,
+) {
     Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .clip(MaterialTheme.shapes.medium)
+        modifier =
+            Modifier
+                .fillMaxWidth()
+                .clip(MaterialTheme.shapes.medium),
     ) {
         Icon(
             imageVector = icon,
             contentDescription = null,
-            modifier = Modifier
-                .size(40.dp)
-                .padding(bottom = 8.dp),
-            tint = MaterialTheme.colorScheme.primary
+            modifier =
+                Modifier
+                    .size(40.dp)
+                    .padding(bottom = 8.dp),
+            tint = MaterialTheme.colorScheme.primary,
         )
         Text(text = text)
     }

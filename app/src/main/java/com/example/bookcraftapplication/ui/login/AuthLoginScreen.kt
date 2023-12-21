@@ -1,6 +1,6 @@
- package com.example.bookcraftapplication.ui.login
+package com.example.bookcraftapplication.ui.login
 
-//import com.example.bookcraftapplication.Informational
+// import com.example.bookcraftapplication.Informational
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -50,195 +50,202 @@ import com.example.bookcraftapplication.auth.ResultAuth
 import com.example.bookcraftapplication.data.userEmail
 import com.example.bookcraftapplication.navigateSingleTopTo
 
+@Composable
+fun AuthLoginScreen(authViewModel: AuthViewModel = viewModel(factory = AuthViewModelFactory())) {
+    val navController = LocalNavController.current
+    var isSubmitted = false
+    val signInResult by authViewModel.signInResult.collectAsState(ResultAuth.Inactive)
 
+    val snackbarHostState = remember { SnackbarHostState() } // Material 3 approach
+    val (email, setEmail) = remember { mutableStateOf("") }
+    val (password, setPassword) = remember { mutableStateOf("") }
+    // Show a Snackbar when sign-in is successful
+    LaunchedEffect(signInResult) {
+        signInResult?.let {
+            if (it is ResultAuth.Inactive) {
+                println("SignIn LaunchedEffect: Inactive")
+                return@LaunchedEffect
+            }
+            if (it is ResultAuth.InProgress) {
+                println("SignIn LaunchedEffect: InProgress")
+                snackbarHostState.showSnackbar("Sign-in In Progress")
+                return@LaunchedEffect
+            }
+            if (it is ResultAuth.Success && it.data) {
+                userEmail = email
+                navController.navigateSingleTopTo(Informational.route)
+                snackbarHostState.showSnackbar("Sign-in Successful")
+            } else if (it is ResultAuth.Failure || it is ResultAuth.Success) {
+                snackbarHostState.showSnackbar("Sign-in Unsuccessful. Email or password is invalid.")
+            }
+        }
+    }
 
- @Composable
- fun AuthLoginScreen(authViewModel: AuthViewModel = viewModel(factory = AuthViewModelFactory())) {
-     val navController = LocalNavController.current
-     var isSubmitted = false
-     val signInResult by authViewModel.signInResult.collectAsState(ResultAuth.Inactive)
+    fun signInButtonClick() {
+        if (isValidEmail(email) && isValidPassword(password)) {
+            // Valid email and password, proceed with sign-in
+            authViewModel.signIn(email, password)
+            isSubmitted = true
+        } else {
+            isSubmitted = false
+        }
+    }
 
+    Box(modifier = Modifier.fillMaxSize()) {
+        LazyColumn(
+            modifier =
+                Modifier
+                    .fillMaxSize()
+                    .padding(16.dp),
+            horizontalAlignment = Alignment.End,
+        ) {
+            item {
+                val focusManager = LocalFocusManager.current
+                Text(
+                    text = stringResource(R.string.login),
+                    style = MaterialTheme.typography.headlineLarge,
+                    fontSize = 24.sp,
+                    textAlign = TextAlign.Center,
+                    fontFamily = FontFamily.Serif,
+                    fontWeight = FontWeight.SemiBold,
+                    modifier =
+                        Modifier
+                            .fillMaxWidth()
+                            .fillMaxHeight(),
+                )
+                Spacer(modifier = Modifier.size(20.dp))
 
+                OutlinedTextField(
+                    value = email,
+                    onValueChange = { setEmail(it) },
+                    label = { Text("Email") },
+                    keyboardOptions =
+                        KeyboardOptions.Default.copy(
+                            keyboardType = KeyboardType.Email,
+                            imeAction = ImeAction.Next, // Set Next for the email field
+                        ),
+                    keyboardActions =
+                        KeyboardActions(
+                            onNext = {
+                                // Request focus on the password field when Enter is pressed on the email field
+                                focusManager.moveFocus(FocusDirection.Down)
+                            },
+                        ),
+                    isError = !isValidEmail(email),
+                    modifier =
+                        Modifier
+                            .fillMaxWidth()
+                            .fillMaxHeight(),
+                )
+                Spacer(modifier = Modifier.size(24.dp))
+                OutlinedTextField(
+                    value = password,
+                    onValueChange = { setPassword(it) },
+                    label = { Text("Password") },
+                    visualTransformation = PasswordVisualTransformation(),
+                    isError = !isValidPassword(password),
+                    keyboardOptions =
+                        KeyboardOptions.Default.copy(
+                            imeAction = ImeAction.Done, // Set Done for the password field
+                        ),
+                    keyboardActions =
+                        KeyboardActions(
+                            onDone = {
+                                // Simulate a click on the sign-in button when Enter is pressed on the password field
+                                signInButtonClick()
+                            },
+                        ),
+                    modifier =
+                        Modifier
+                            .fillMaxWidth()
+                            .fillMaxHeight(),
+                )
+                Spacer(modifier = Modifier.size(40.dp))
+                // Sign-in Button
+                Button(
+                    onClick = {
+                        signInButtonClick()
+                        if (isValidEmail(email)) {
+                            authViewModel.signIn(email, password)
+                            isSubmitted = true
+                        } else {
+                            // Show snackbar for invalid email/password
+                        }
+                    },
+                    modifier =
+                        Modifier
+                            .fillMaxWidth(),
+                ) {
+                    Text("Sign In")
+                }
+                Spacer(modifier = Modifier.size(40.dp))
+            }
 
+            item {
+                Row(
+                    modifier =
+                        Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 8.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    Divider(
+                        modifier =
+                            Modifier
+                                .weight(1f)
+                                .padding(end = 8.dp),
+                        thickness = 2.dp,
+                    )
+                    Text(
+                        text = "OR",
+                        fontWeight = FontWeight.Bold,
+                    )
+                    Divider(
+                        modifier =
+                            Modifier
+                                .weight(1f)
+                                .padding(start = 8.dp),
+                        thickness = 2.dp,
+                    )
+                }
+            }
 
+            item {
+                Spacer(modifier = Modifier.size(40.dp))
+                // Sign-up Button
+                Button(
+                    onClick = {
+                        // Navigate to the sign-up screen
+                        navController.navigateSingleTopTo(Account.route)
+                    },
+                    modifier =
+                        Modifier
+                            .fillMaxWidth(),
+                ) {
+                    Text("Sign Up")
+                }
+            }
+        }
+        SnackbarHost(
+            hostState = snackbarHostState,
+            modifier = Modifier.padding(16.dp),
+        ) { snackbarData ->
+            Snackbar(
+                modifier = Modifier.fillMaxWidth(),
+                snackbarData = snackbarData,
+            )
+        }
+    }
+}
 
-     val snackbarHostState = remember { SnackbarHostState() } // Material 3 approach
-     val (email, setEmail) = remember { mutableStateOf("") }
-     val (password, setPassword) = remember { mutableStateOf("") }
-     // Show a Snackbar when sign-in is successful
-     LaunchedEffect(signInResult) {
-         signInResult?.let {
-             if (it is ResultAuth.Inactive) {
-                 println("SignIn LaunchedEffect: Inactive")
-                 return@LaunchedEffect
-             }
-             if (it is ResultAuth.InProgress) {
-                 println("SignIn LaunchedEffect: InProgress")
-                 snackbarHostState.showSnackbar("Sign-in In Progress")
-                 return@LaunchedEffect
-             }
-             if (it is ResultAuth.Success && it.data) {
-                 userEmail = email
-                 navController.navigateSingleTopTo(Informational.route)
-                 snackbarHostState.showSnackbar("Sign-in Successful")
-             } else if (it is ResultAuth.Failure || it is ResultAuth.Success) {
-                 snackbarHostState.showSnackbar("Sign-in Unsuccessful. Email or password is invalid.")
-             }
-         }
-     }
+// Function to validate the email format using a simple regex
+private fun isValidEmail(email: String): Boolean {
+    val emailRegex = "^[A-Za-z](.*)([@]{1})(.{1,})(\\.)(.{1,})"
+    return email.matches(emailRegex.toRegex())
+}
 
-     fun signInButtonClick() {
-         if (isValidEmail(email) && isValidPassword(password)) {
-             // Valid email and password, proceed with sign-in
-             authViewModel.signIn(email, password)
-             isSubmitted = true
-         } else {
-             isSubmitted = false;
-         }
-     }
-
-     Box(modifier = Modifier.fillMaxSize()) {
-
-         LazyColumn(
-             modifier = Modifier
-                 .fillMaxSize()
-                 .padding(16.dp),
-             horizontalAlignment = Alignment.End
-         ) {
-             item {
-                 val focusManager = LocalFocusManager.current
-                 Text(
-                     text = stringResource(R.string.login),
-                     style = MaterialTheme.typography.headlineLarge,
-                     fontSize = 24.sp,
-                     textAlign = TextAlign.Center,
-                     fontFamily = FontFamily.Serif,
-                     fontWeight = FontWeight.SemiBold,
-                     modifier = Modifier
-                         .fillMaxWidth()
-                         .fillMaxHeight()
-                 )
-                 Spacer(modifier = Modifier.size(20.dp))
-
-                 OutlinedTextField(
-                     value = email,
-                     onValueChange = { setEmail(it) },
-                     label = { Text("Email") },
-                     keyboardOptions = KeyboardOptions.Default.copy(
-                         keyboardType = KeyboardType.Email,
-                         imeAction = ImeAction.Next // Set Next for the email field
-                     ),
-                     keyboardActions = KeyboardActions(
-                         onNext = {
-                             // Request focus on the password field when Enter is pressed on the email field
-                             focusManager.moveFocus(FocusDirection.Down)
-                         }
-                     ),
-                     isError = !isValidEmail(email),
-                     modifier = Modifier
-                         .fillMaxWidth()
-                         .fillMaxHeight()
-                 )
-                 Spacer(modifier = Modifier.size(24.dp))
-                 OutlinedTextField(
-                     value = password,
-                     onValueChange = { setPassword(it) },
-                     label = { Text("Password") },
-                     visualTransformation = PasswordVisualTransformation(),
-                     isError = !isValidPassword(password),
-                     keyboardOptions = KeyboardOptions.Default.copy(
-                         imeAction = ImeAction.Done // Set Done for the password field
-                     ),
-                     keyboardActions = KeyboardActions(
-                         onDone = {
-                             // Simulate a click on the sign-in button when Enter is pressed on the password field
-                             signInButtonClick()
-                         }
-                     ),
-                     modifier = Modifier
-                         .fillMaxWidth()
-                         .fillMaxHeight()
-                 )
-                 Spacer(modifier = Modifier.size(40.dp))
-                 // Sign-in Button
-                 Button(onClick = {
-                     signInButtonClick()
-                     if (isValidEmail(email)) {
-                         authViewModel.signIn(email, password)
-                         isSubmitted = true
-
-                     } else {
-                         // Show snackbar for invalid email/password
-
-                     }
-                 }, modifier = Modifier
-                     .fillMaxWidth()) {
-                     Text("Sign In")
-                 }
-                 Spacer(modifier = Modifier.size(40.dp))
-             }
-
-             item {
-                 Row(
-                     modifier = Modifier
-                         .fillMaxWidth()
-                         .padding(horizontal = 8.dp),
-                     verticalAlignment = Alignment.CenterVertically
-                 ) {
-                     Divider(
-                         modifier = Modifier
-                             .weight(1f)
-                             .padding(end = 8.dp),
-                         thickness = 2.dp
-                     )
-                     Text(
-                         text = "OR",
-                         fontWeight = FontWeight.Bold
-                     )
-                     Divider(
-                         modifier = Modifier
-                             .weight(1f)
-                             .padding(start = 8.dp),
-                         thickness = 2.dp
-                     )
-                 }
-             }
-
-             item {
-                 Spacer(modifier = Modifier.size(40.dp))
-                 // Sign-up Button
-                 Button(onClick = {
-                     // Navigate to the sign-up screen
-                     navController.navigateSingleTopTo(Account.route)
-                 }, modifier = Modifier
-                     .fillMaxWidth()) {
-                     Text("Sign Up")
-                 }
-             }
-
-         }
-         SnackbarHost(
-             hostState = snackbarHostState,
-             modifier = Modifier.padding(16.dp)
-         ) { snackbarData ->
-             Snackbar(
-                 modifier = Modifier.fillMaxWidth(),
-                 snackbarData = snackbarData
-             )
-         }
-     }
- }
-
-
-
- // Function to validate the email format using a simple regex
- private fun isValidEmail(email: String): Boolean {
-     val emailRegex = "^[A-Za-z](.*)([@]{1})(.{1,})(\\.)(.{1,})"
-     return email.matches(emailRegex.toRegex())
- }
-
- // Function to validate the password format using a simple regex
- private fun isValidPassword(password: String): Boolean {
-     val passwordRegex = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=!])(?=\\S+$).{8,}$"
-     return password.matches(passwordRegex.toRegex())
- }
+// Function to validate the password format using a simple regex
+private fun isValidPassword(password: String): Boolean {
+    val passwordRegex = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=!])(?=\\S+$).{8,}$"
+    return password.matches(passwordRegex.toRegex())
+}

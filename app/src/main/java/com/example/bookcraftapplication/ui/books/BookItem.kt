@@ -26,46 +26,46 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
-import com.example.bookcraftapplication.R
 import com.example.bookcraft.data.Book
+import com.example.bookcraftapplication.R
 
 /**
  * Composable function for adding a new book item.
  * @param onAddBookClick Callback when the "Add" button is clicked.
  */
+
 /**
  * Composable function for adding a new book item.
  * @param onAddBookClick Callback when the "Add" button is clicked.
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AddBookItem(
-    onAddBookClick: (Book) -> Unit,
-) {
+fun AddBookItem(onAddBookClick: (Book) -> Unit) {
     // State variables for managing user input
     var isExpanded by remember { mutableStateOf(false) }
     var bookName by remember { mutableStateOf("") }
-    var bookAuthor by remember { mutableStateOf("")}
+    var bookAuthor by remember { mutableStateOf("") }
     var releaseDate by remember { mutableStateOf("") }
     var description by remember { mutableStateOf("") }
 
     Card(
-        modifier = Modifier
-            .fillMaxWidth()
-            .clickable { isExpanded = !isExpanded }
-            .padding(dimensionResource(R.dimen.padding_small))
-            .animateContentSize()
+        modifier =
+            Modifier
+                .fillMaxWidth()
+                .clickable { isExpanded = !isExpanded }
+                .padding(dimensionResource(R.dimen.padding_small))
+                .animateContentSize(),
     ) {
         Column(
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth(),
         ) {
             Row(
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier.fillMaxWidth(),
             ) {
                 // Display the "Add Book" text
                 Text(
                     text = "Add Book",
-                    modifier = Modifier.padding(dimensionResource(R.dimen.padding_small))
+                    modifier = Modifier.padding(dimensionResource(R.dimen.padding_small)),
                 )
             }
 
@@ -75,27 +75,30 @@ fun AddBookItem(
                     value = bookName,
                     onValueChange = { bookName = it },
                     label = { Text("Book Name") },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(dimensionResource(R.dimen.padding_small))
+                    modifier =
+                        Modifier
+                            .fillMaxWidth()
+                            .padding(dimensionResource(R.dimen.padding_small)),
                 )
 
                 TextField(
                     value = releaseDate,
                     onValueChange = { releaseDate = it },
                     label = { Text("Release Date") },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(dimensionResource(R.dimen.padding_small))
+                    modifier =
+                        Modifier
+                            .fillMaxWidth()
+                            .padding(dimensionResource(R.dimen.padding_small)),
                 )
 
                 TextField(
                     value = description,
                     onValueChange = { description = it },
                     label = { Text("Description") },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(dimensionResource(R.dimen.padding_small))
+                    modifier =
+                        Modifier
+                            .fillMaxWidth()
+                            .padding(dimensionResource(R.dimen.padding_small)),
                 )
 
                 // Add button
@@ -113,9 +116,10 @@ fun AddBookItem(
                             description = ""
                         }
                     },
-                    modifier = Modifier
-                        .align(Alignment.CenterHorizontally)
-                        .padding(dimensionResource(R.dimen.padding_small))
+                    modifier =
+                        Modifier
+                            .align(Alignment.CenterHorizontally)
+                            .padding(dimensionResource(R.dimen.padding_small)),
                 ) {
                     Text("Add")
                 }
@@ -131,7 +135,12 @@ fun AddBookItem(
  * @param description The description of the book.
  * @return The created Book object or null if input is invalid.
  */
-private fun createBook(bookName: String, bookAuthor: String, releaseDateStr: String, description: String): Book? {
+private fun createBook(
+    bookName: String,
+    bookAuthor: String,
+    releaseDateStr: String,
+    description: String,
+): Book? {
     val releaseDate = releaseDateStr.toIntOrNull()
     if (releaseDate == null || bookName.isEmpty() || description.isEmpty()) {
         // Handles validation errors here
@@ -151,21 +160,22 @@ private fun createBook(bookName: String, bookAuthor: String, releaseDateStr: Str
 fun BookItem(
     book: Book,
     isExpanded: Boolean,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     // State variable for expanding/collapsing book description
 
     Card(
-        modifier = modifier
-            .fillMaxWidth()
-            .padding(dimensionResource(R.dimen.padding_small))
-            .animateContentSize() // Animates the content size change
+        modifier =
+            modifier
+                .fillMaxWidth()
+                .padding(dimensionResource(R.dimen.padding_small))
+                .animateContentSize(), // Animates the content size change
     ) {
         Column(
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth(),
         ) {
             Row(
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier.fillMaxWidth(),
             ) {
                 // Displays the book icon
                 BookIcon(book.imageResourceId)
@@ -177,15 +187,12 @@ fun BookItem(
             if (isExpanded) {
                 Text(
                     text = book.description,
-                    modifier = Modifier.padding(dimensionResource(R.dimen.padding_small))
+                    modifier = Modifier.padding(dimensionResource(R.dimen.padding_small)),
                 )
             }
         }
     }
 }
-
-
-
 
 /**
  * Composable function for displaying a book icon.
@@ -195,23 +202,22 @@ fun BookItem(
 @Composable
 fun BookIcon(
     @DrawableRes bookIcon: Int,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     Image(
-        modifier = modifier
-            .size(
-                width = dimensionResource(R.dimen.width),
-                height = dimensionResource(R.dimen.height)
-            ) // Sets the size of the image
-            .padding(dimensionResource(R.dimen.padding_small))
-            .clip(MaterialTheme.shapes.small),
+        modifier =
+            modifier
+                .size(
+                    width = dimensionResource(R.dimen.width),
+                    height = dimensionResource(R.dimen.height),
+                ) // Sets the size of the image
+                .padding(dimensionResource(R.dimen.padding_small))
+                .clip(MaterialTheme.shapes.small),
         contentScale = ContentScale.Crop,
         painter = painterResource(bookIcon),
-        contentDescription = null
+        contentDescription = null,
     )
 }
-
-
 
 /**
  * Composable function for displaying book information.
@@ -225,17 +231,17 @@ fun BookInformation(
     bookName: String,
     bookAuthor: String,
     releaseDate: Int,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     Column(modifier = modifier) {
         Text(
             text = bookName,
             style = MaterialTheme.typography.titleLarge,
-            modifier = Modifier.padding(top = dimensionResource(R.dimen.padding_small))
+            modifier = Modifier.padding(top = dimensionResource(R.dimen.padding_small)),
         )
         Text(
             text = "Released in: $releaseDate",
-            style = MaterialTheme.typography.bodyLarge
+            style = MaterialTheme.typography.bodyLarge,
         )
     }
 }

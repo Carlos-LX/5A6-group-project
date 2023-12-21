@@ -21,9 +21,11 @@ import androidx.compose.ui.unit.dp
 import com.example.bookcraftapplication.Theme
 
 @Composable
-fun Settings(selectedTheme: Theme, onThemeChange: (Theme) -> Unit, modifier: Modifier = Modifier) {
-
-
+fun Settings(
+    selectedTheme: Theme,
+    onThemeChange: (Theme) -> Unit,
+    modifier: Modifier = Modifier,
+) {
     Box(
         modifier = modifier.fillMaxSize(),
     ) {
@@ -35,29 +37,32 @@ fun Settings(selectedTheme: Theme, onThemeChange: (Theme) -> Unit, modifier: Mod
 }
 
 @Composable
-fun SelectTheme(selectedTheme: Theme, onThemeChange: (Theme) -> Unit, modifier: Modifier = Modifier) {
+fun SelectTheme(
+    selectedTheme: Theme,
+    onThemeChange: (Theme) -> Unit,
+    modifier: Modifier = Modifier,
+) {
     val radioOptions = Theme.entries.toTypedArray()
     Column {
         radioOptions.forEach { theme ->
             Row(
-
                 verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .selectable(
-                        selected = (theme == selectedTheme),
-                        onClick = {
-                            onThemeChange(theme)
-                        },
-                        role = Role.RadioButton
-                    )
-                    .padding(horizontal = 16.dp)
-                    .semantics(mergeDescendants = true) {onClick(label = "Change to $theme Theme", action = null)}
-
+                modifier =
+                    Modifier
+                        .fillMaxWidth()
+                        .selectable(
+                            selected = (theme == selectedTheme),
+                            onClick = {
+                                onThemeChange(theme)
+                            },
+                            role = Role.RadioButton,
+                        )
+                        .padding(horizontal = 16.dp)
+                        .semantics(mergeDescendants = true) { onClick(label = "Change to $theme Theme", action = null) },
             ) {
                 RadioButton(
                     selected = (theme == selectedTheme),
-                    onClick = { onThemeChange(theme) }
+                    onClick = { onThemeChange(theme) },
                 )
                 Spacer(modifier = Modifier.width(4.dp))
                 Text(text = theme.name, modifier = Modifier.padding(start = 16.dp))

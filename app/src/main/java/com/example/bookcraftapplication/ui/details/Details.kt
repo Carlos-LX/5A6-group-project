@@ -49,32 +49,34 @@ import kotlinx.coroutines.tasks.await
 @Composable
 fun BookItemCard(bookItem: Book) {
     Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(16.dp)
+        modifier =
+            Modifier
+                .fillMaxWidth()
+                .padding(16.dp),
     ) {
         Image(
             painter = painterResource(id = bookItem.imageResourceId),
             contentDescription = null,
-            modifier = Modifier
-                .height(500.dp)
-                .fillMaxWidth()
-                .clip(MaterialTheme.shapes.medium),
-            contentScale = ContentScale.Crop
+            modifier =
+                Modifier
+                    .height(500.dp)
+                    .fillMaxWidth()
+                    .clip(MaterialTheme.shapes.medium),
+            contentScale = ContentScale.Crop,
         )
         Spacer(modifier = Modifier.height(16.dp))
         Text(text = bookItem.name + " " + bookItem.author, style = MaterialTheme.typography.headlineMedium)
         Spacer(modifier = Modifier.height(8.dp))
         Row(
             modifier = Modifier.fillMaxWidth(),
-            verticalAlignment = Alignment.CenterVertically
+            verticalAlignment = Alignment.CenterVertically,
         ) {
             Spacer(modifier = Modifier.width(4.dp))
         }
         Spacer(modifier = Modifier.height(8.dp))
         Row(
             modifier = Modifier.fillMaxWidth(),
-            verticalAlignment = Alignment.CenterVertically
+            verticalAlignment = Alignment.CenterVertically,
         ) {
             Spacer(modifier = Modifier.width(4.dp))
             Text(text = bookItem.description, style = MaterialTheme.typography.headlineSmall)
@@ -85,9 +87,10 @@ fun BookItemCard(bookItem: Book) {
 @Composable
 fun BookPage(bookItem: Book) {
     Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(12.dp)
+        modifier =
+            Modifier
+                .fillMaxSize()
+                .padding(12.dp),
     ) {
         BookItemCard(bookItem = bookItem)
         Spacer(modifier = Modifier.height(16.dp))
@@ -95,7 +98,11 @@ fun BookPage(bookItem: Book) {
 }
 
 @Composable
-fun Details(book: Book, db: FirebaseFirestore, navController: NavHostController) {
+fun Details(
+    book: Book,
+    db: FirebaseFirestore,
+    navController: NavHostController,
+) {
     var userRating by remember { mutableStateOf(0f) }
     var reviewTitle by remember { mutableStateOf("") }
     var reviewDescription by remember { mutableStateOf("") }
@@ -104,7 +111,6 @@ fun Details(book: Book, db: FirebaseFirestore, navController: NavHostController)
 
     // Use state for reviews to trigger recomposition
     var reviewsState by remember { mutableStateOf(mutableListOf<Review>()) }
-
 
     LaunchedEffect(book) {
         fetchReviewsForBook(book, db) { newReviews ->
@@ -128,7 +134,7 @@ fun Details(book: Book, db: FirebaseFirestore, navController: NavHostController)
                 onClick = {
                     navController.popBackStack()
                 },
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier.fillMaxWidth(),
             ) {
                 Text("Go back")
             }
@@ -140,9 +146,10 @@ fun Details(book: Book, db: FirebaseFirestore, navController: NavHostController)
 
         item {
             Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(16.dp)
+                modifier =
+                    Modifier
+                        .fillMaxWidth()
+                        .padding(16.dp),
             ) {
                 Text(text = "Reviews", style = MaterialTheme.typography.headlineLarge)
                 Spacer(modifier = Modifier.height(24.dp))
@@ -161,9 +168,10 @@ fun Details(book: Book, db: FirebaseFirestore, navController: NavHostController)
                     },
                     valueRange = 0f..5f,
                     steps = 4,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 16.dp)
+                    modifier =
+                        Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 16.dp),
                 )
 
                 Spacer(modifier = Modifier.height(8.dp))
@@ -176,14 +184,15 @@ fun Details(book: Book, db: FirebaseFirestore, navController: NavHostController)
                     label = { Text("Review Title") },
                     modifier = Modifier.fillMaxWidth(),
                     singleLine = true,
-                    keyboardOptions = KeyboardOptions.Default.copy(
-                        imeAction = androidx.compose.ui.text.input.ImeAction.Next
-                    ),
-                    keyboardActions = KeyboardActions(
-                        onNext = {
-
-                        }
-                    )
+                    keyboardOptions =
+                        KeyboardOptions.Default.copy(
+                            imeAction = androidx.compose.ui.text.input.ImeAction.Next,
+                        ),
+                    keyboardActions =
+                        KeyboardActions(
+                            onNext = {
+                            },
+                        ),
                 )
 
                 Spacer(modifier = Modifier.height(8.dp))
@@ -195,20 +204,22 @@ fun Details(book: Book, db: FirebaseFirestore, navController: NavHostController)
                     },
                     label = { Text("Review Description") },
                     modifier = Modifier.fillMaxWidth(),
-                    keyboardOptions = KeyboardOptions.Default.copy(
-                        imeAction = androidx.compose.ui.text.input.ImeAction.Done
-                    ),
-                    keyboardActions = KeyboardActions(
-                        onDone = {
-                            submitReview(book.name, Review(userRating, reviewTitle, reviewDescription), db, reviewsState)
+                    keyboardOptions =
+                        KeyboardOptions.Default.copy(
+                            imeAction = androidx.compose.ui.text.input.ImeAction.Done,
+                        ),
+                    keyboardActions =
+                        KeyboardActions(
+                            onDone = {
+                                submitReview(book.name, Review(userRating, reviewTitle, reviewDescription), db, reviewsState)
 
-                            userRating = 0f
-                            reviewTitle = ""
-                            reviewDescription = ""
+                                userRating = 0f
+                                reviewTitle = ""
+                                reviewDescription = ""
 
-                            triggerScroll += 1
-                        }
-                    )
+                                triggerScroll += 1
+                            },
+                        ),
                 )
 
                 Spacer(modifier = Modifier.height(16.dp))
@@ -219,7 +230,7 @@ fun Details(book: Book, db: FirebaseFirestore, navController: NavHostController)
                             book.name,
                             Review(userRating, reviewTitle, reviewDescription),
                             db,
-                            reviewsState
+                            reviewsState,
                         )
 
                         userRating = 0f
@@ -228,7 +239,7 @@ fun Details(book: Book, db: FirebaseFirestore, navController: NavHostController)
 
                         triggerScroll += 1
                     },
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier.fillMaxWidth(),
                 ) {
                     Text("Submit Review")
                 }
@@ -243,9 +254,10 @@ fun Details(book: Book, db: FirebaseFirestore, navController: NavHostController)
                     addToFavorites(book, db)
                     snackbarVisible = true
                 },
-                modifier = Modifier
-                    .padding(16.dp)
-                    .fillMaxWidth(),
+                modifier =
+                    Modifier
+                        .padding(16.dp)
+                        .fillMaxWidth(),
             ) {
                 Text(text = "Add To Favorites")
             }
@@ -257,15 +269,17 @@ fun Details(book: Book, db: FirebaseFirestore, navController: NavHostController)
                             onClick = {
                                 snackbarVisible = false
                             },
-                            colors = ButtonDefaults.buttonColors(
-                                contentColor = Color.Black
-                            )
+                            colors =
+                                ButtonDefaults.buttonColors(
+                                    contentColor = Color.Black,
+                                ),
                         ) {
                             Text(text = "Dismiss")
                         }
                     },
-                    modifier = Modifier
-                        .padding(16.dp)
+                    modifier =
+                        Modifier
+                            .padding(16.dp),
                 ) {
                     Text(text = "Book added to favorites!", color = Color.Black)
                 }
@@ -278,19 +292,25 @@ fun Details(book: Book, db: FirebaseFirestore, navController: NavHostController)
     }
 }
 
-suspend fun fetchReviewsForBook(book: Book, db: FirebaseFirestore, onReviewsFetched: (List<Review>) -> Unit) {
+suspend fun fetchReviewsForBook(
+    book: Book,
+    db: FirebaseFirestore,
+    onReviewsFetched: (List<Review>) -> Unit,
+) {
     try {
-        val reviewsSnapshot = db.collection("reviews")
-            .whereEqualTo("Book", book.name)
-            .get()
-            .await()
+        val reviewsSnapshot =
+            db.collection("reviews")
+                .whereEqualTo("Book", book.name)
+                .get()
+                .await()
 
-        val newReviews = reviewsSnapshot.documents.mapNotNull { document ->
-            val rating = document.getDouble("Rating")?.toFloat() ?: 0f
-            val title = document.getString("Title") ?: ""
-            val description = document.getString("Description") ?: ""
-            Review(rating, title, description)
-        }
+        val newReviews =
+            reviewsSnapshot.documents.mapNotNull { document ->
+                val rating = document.getDouble("Rating")?.toFloat() ?: 0f
+                val title = document.getString("Title") ?: ""
+                val description = document.getString("Description") ?: ""
+                Review(rating, title, description)
+            }
 
         // Call the callback function with the new reviews
         onReviewsFetched(newReviews)
@@ -300,7 +320,10 @@ suspend fun fetchReviewsForBook(book: Book, db: FirebaseFirestore, onReviewsFetc
     }
 }
 
-fun addToFavorites(book: Book, db: FirebaseFirestore) {
+fun addToFavorites(
+    book: Book,
+    db: FirebaseFirestore,
+) {
     // Fetch current favorites from Firestore
     val favoritesList = mutableListOf<String>()
 
@@ -339,7 +362,7 @@ fun submitReview(
     bookName: String,
     review: Review,
     db: FirebaseFirestore,
-    reviewsState: MutableList<Review>
+    reviewsState: MutableList<Review>,
 ) {
     try {
         db.collection("reviews")
@@ -348,8 +371,8 @@ fun submitReview(
                     "Book" to bookName,
                     "Rating" to review.rating,
                     "Title" to review.title,
-                    "Description" to review.description
-                )
+                    "Description" to review.description,
+                ),
             )
             .addOnSuccessListener { documentReference ->
                 // Update the local reviews list if needed
@@ -366,16 +389,21 @@ fun submitReview(
 }
 
 @Composable
-fun Reviews(modifier: Modifier, review: Review) {
+fun Reviews(
+    modifier: Modifier,
+    review: Review,
+) {
     Card(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(dimensionResource(R.dimen.padding_small))
+        modifier =
+            Modifier
+                .fillMaxWidth()
+                .padding(dimensionResource(R.dimen.padding_small)),
     ) {
         Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(8.dp)
+            modifier =
+                Modifier
+                    .fillMaxSize()
+                    .padding(8.dp),
         ) {
             ReviewItem(review = review)
         }

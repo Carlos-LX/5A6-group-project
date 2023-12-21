@@ -47,8 +47,6 @@ import com.example.bookcraftapplication.auth.AuthViewModelFactory
 import com.example.bookcraftapplication.auth.ResultAuth
 import com.example.bookcraftapplication.navigateSingleTopTo
 
-
-
 @Composable
 fun AuthSignUpScreen(authViewModel: AuthViewModel = viewModel(factory = AuthViewModelFactory())) {
     val navController = LocalNavController.current
@@ -78,7 +76,7 @@ fun AuthSignUpScreen(authViewModel: AuthViewModel = viewModel(factory = AuthView
         }
     }
 
-     //Show a Snackbar when sign-out is successful
+    // Show a Snackbar when sign-out is successful
 //     LaunchedEffect(signOutResult) {
 //         signOutResult?.let {
 //             if (it is ResultAuth.Success && it.data) {
@@ -99,35 +97,33 @@ fun AuthSignUpScreen(authViewModel: AuthViewModel = viewModel(factory = AuthView
 //         }
 //     }
 
-
-
     // Show a Snackbar when email is invalid
-     LaunchedEffect(email) {
-         if (!isValidEmail(email)) {
-             snackbarHostState.showSnackbar("Invalid Email")
-         }
-     }
+    LaunchedEffect(email) {
+        if (!isValidEmail(email)) {
+            snackbarHostState.showSnackbar("Invalid Email")
+        }
+    }
 
-     // Show a Snackbar when password is invalid
-     LaunchedEffect(password) {
-         if (!isValidPassword(password)) {
-             snackbarHostState.showSnackbar("Invalid Password")
-         }
-     }
+    // Show a Snackbar when password is invalid
+    LaunchedEffect(password) {
+        if (!isValidPassword(password)) {
+            snackbarHostState.showSnackbar("Invalid Password")
+        }
+    }
+
     fun signUpButtonClick() {
-
-            if (isValidEmail(email) && isValidPassword(password) && password == confirmPassword) {
-                // Valid email and password, proceed with sign-in
-                authViewModel.signUp(email, password)
-            }
-
+        if (isValidEmail(email) && isValidPassword(password) && password == confirmPassword) {
+            // Valid email and password, proceed with sign-in
+            authViewModel.signUp(email, password)
+        }
     }
     Box(modifier = Modifier.fillMaxSize()) {
         LazyColumn(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(16.dp),
-            horizontalAlignment = Alignment.End
+            modifier =
+                Modifier
+                    .fillMaxSize()
+                    .padding(16.dp),
+            horizontalAlignment = Alignment.End,
         ) {
             item {
                 val focusManager = LocalFocusManager.current
@@ -138,29 +134,33 @@ fun AuthSignUpScreen(authViewModel: AuthViewModel = viewModel(factory = AuthView
                     textAlign = TextAlign.Center,
                     fontFamily = FontFamily.Serif,
                     fontWeight = FontWeight.SemiBold,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .fillMaxHeight()
+                    modifier =
+                        Modifier
+                            .fillMaxWidth()
+                            .fillMaxHeight(),
                 )
                 Spacer(modifier = Modifier.size(20.dp))
                 OutlinedTextField(
                     value = email,
                     onValueChange = { setEmail(it) },
                     label = { Text("Email") },
-                    keyboardOptions = KeyboardOptions.Default.copy(
-                        keyboardType = KeyboardType.Email,
-                        imeAction = ImeAction.Next // Set Next for the email field
-                    ),
-                    keyboardActions = KeyboardActions(
-                        onNext = {
-                            // Request focus on the password field when Enter is pressed on the email field
-                            focusManager.moveFocus(FocusDirection.Down)
-                        }
-                    ),
+                    keyboardOptions =
+                        KeyboardOptions.Default.copy(
+                            keyboardType = KeyboardType.Email,
+                            imeAction = ImeAction.Next, // Set Next for the email field
+                        ),
+                    keyboardActions =
+                        KeyboardActions(
+                            onNext = {
+                                // Request focus on the password field when Enter is pressed on the email field
+                                focusManager.moveFocus(FocusDirection.Down)
+                            },
+                        ),
                     isError = !isValidEmail(email),
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .fillMaxHeight()
+                    modifier =
+                        Modifier
+                            .fillMaxWidth()
+                            .fillMaxHeight(),
                 )
                 Spacer(modifier = Modifier.size(20.dp))
                 OutlinedTextField(
@@ -168,20 +168,23 @@ fun AuthSignUpScreen(authViewModel: AuthViewModel = viewModel(factory = AuthView
                     onValueChange = { setPassword(it) },
                     label = { Text("Password") },
                     visualTransformation = PasswordVisualTransformation(),
-                    keyboardOptions = KeyboardOptions.Default.copy(
-                        keyboardType = KeyboardType.Password,
-                        imeAction = ImeAction.Next // Set Next for the email field
-                    ),
-                    keyboardActions = KeyboardActions(
-                        onNext = {
-                            // Request focus on the password field when Enter is pressed on the email field
-                            focusManager.moveFocus(FocusDirection.Down)
-                        }
-                    ),
+                    keyboardOptions =
+                        KeyboardOptions.Default.copy(
+                            keyboardType = KeyboardType.Password,
+                            imeAction = ImeAction.Next, // Set Next for the email field
+                        ),
+                    keyboardActions =
+                        KeyboardActions(
+                            onNext = {
+                                // Request focus on the password field when Enter is pressed on the email field
+                                focusManager.moveFocus(FocusDirection.Down)
+                            },
+                        ),
                     isError = !isValidPassword(password),
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .fillMaxHeight()
+                    modifier =
+                        Modifier
+                            .fillMaxWidth()
+                            .fillMaxHeight(),
                 )
                 Spacer(modifier = Modifier.size(20.dp))
                 OutlinedTextField(
@@ -190,24 +193,31 @@ fun AuthSignUpScreen(authViewModel: AuthViewModel = viewModel(factory = AuthView
                     label = { Text("Confirm Password") },
                     visualTransformation = PasswordVisualTransformation(),
                     isError = !isValidPassword(confirmPassword) || password != confirmPassword,
-                    keyboardOptions = KeyboardOptions.Default.copy(
-                        imeAction = ImeAction.Done // Set Done for the password field
-                    ),
-                    keyboardActions = KeyboardActions(
-                        onDone = {
-                            // Simulate a click on the sign-in button when Enter is pressed on the password field
-                            signUpButtonClick()
-                        }
-                    ),
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .fillMaxHeight()
+                    keyboardOptions =
+                        KeyboardOptions.Default.copy(
+                            imeAction = ImeAction.Done, // Set Done for the password field
+                        ),
+                    keyboardActions =
+                        KeyboardActions(
+                            onDone = {
+                                // Simulate a click on the sign-in button when Enter is pressed on the password field
+                                signUpButtonClick()
+                            },
+                        ),
+                    modifier =
+                        Modifier
+                            .fillMaxWidth()
+                            .fillMaxHeight(),
                 )
                 Spacer(modifier = Modifier.size(60.dp))
                 // Sign-in Button
-                Button(onClick = {
-                }, modifier = Modifier
-                    .fillMaxWidth()) {
+                Button(
+                    onClick = {
+                    },
+                    modifier =
+                        Modifier
+                            .fillMaxWidth(),
+                ) {
                     Text("Sign Up")
                 }
                 Spacer(modifier = Modifier.size(20.dp))
@@ -215,26 +225,29 @@ fun AuthSignUpScreen(authViewModel: AuthViewModel = viewModel(factory = AuthView
 
             item {
                 Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 8.dp),
-                    verticalAlignment = Alignment.CenterVertically
+                    modifier =
+                        Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 8.dp),
+                    verticalAlignment = Alignment.CenterVertically,
                 ) {
                     Divider(
-                        modifier = Modifier
-                            .weight(1f)
-                            .padding(end = 8.dp),
-                        thickness = 2.dp
+                        modifier =
+                            Modifier
+                                .weight(1f)
+                                .padding(end = 8.dp),
+                        thickness = 2.dp,
                     )
                     Text(
                         text = "OR",
-                        fontWeight = FontWeight.Bold
+                        fontWeight = FontWeight.Bold,
                     )
                     Divider(
-                        modifier = Modifier
-                            .weight(1f)
-                            .padding(start = 8.dp),
-                        thickness = 2.dp
+                        modifier =
+                            Modifier
+                                .weight(1f)
+                                .padding(start = 8.dp),
+                        thickness = 2.dp,
                     )
                 }
             }
@@ -242,23 +255,26 @@ fun AuthSignUpScreen(authViewModel: AuthViewModel = viewModel(factory = AuthView
             item {
                 Spacer(modifier = Modifier.size(15.dp))
                 // Sign-up Button
-                Button(onClick = {
-                    // Navigate to the sign-up screen
-                    navController.navigateSingleTopTo(Login.route)
-                }, modifier = Modifier
-                    .fillMaxWidth()) {
+                Button(
+                    onClick = {
+                        // Navigate to the sign-up screen
+                        navController.navigateSingleTopTo(Login.route)
+                    },
+                    modifier =
+                        Modifier
+                            .fillMaxWidth(),
+                ) {
                     Text("Sign In")
                 }
             }
-
         }
         SnackbarHost(
             hostState = snackbarHostState,
-            modifier = Modifier.padding(16.dp)
+            modifier = Modifier.padding(16.dp),
         ) { snackbarData ->
             Snackbar(
                 modifier = Modifier.fillMaxWidth(),
-                snackbarData = snackbarData
+                snackbarData = snackbarData,
             )
         }
     }

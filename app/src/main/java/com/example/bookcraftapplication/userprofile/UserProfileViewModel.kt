@@ -9,7 +9,6 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
 class UserProfileViewModel(private val userProfileRepository: UserProfileRepository) : ViewModel() {
-
     // Private MutableStateFlow to track the list of ProfileData
     private val _allProfiles = MutableStateFlow(listOf<ProfileData>())
 

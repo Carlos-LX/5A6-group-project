@@ -44,7 +44,10 @@ import com.example.bookcraftapplication.data.userEmail
 import com.google.firebase.firestore.FirebaseFirestore
 
 @Composable
-fun BookCollection(db: FirebaseFirestore, modifier: Modifier = Modifier) {
+fun BookCollection(
+    db: FirebaseFirestore,
+    modifier: Modifier = Modifier,
+) {
     val navController = LocalNavController.current
     val (bookList, setBookList) = remember { mutableStateOf(libraryBooks) }
     val (selectedBook, setSelectedBook) = remember { mutableStateOf<Book?>(null) }
@@ -73,37 +76,41 @@ fun BookCollection(db: FirebaseFirestore, modifier: Modifier = Modifier) {
             }
     }
 
-    val filteredBookList = bookList.filter { book ->
-        favorites.contains(book.name)
-    }
+    val filteredBookList =
+        bookList.filter { book ->
+            favorites.contains(book.name)
+        }
 
     LazyColumn(modifier = modifier) {
         item {
             Text(
                 text = "FAVORITES",
-                style = MaterialTheme.typography.titleLarge
-                    .copy(fontWeight = FontWeight.Bold, fontFamily = FontFamily.Default),
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = 8.dp, horizontal = 16.dp),
-                textAlign = TextAlign.Center
-
+                style =
+                    MaterialTheme.typography.titleLarge
+                        .copy(fontWeight = FontWeight.Bold, fontFamily = FontFamily.Default),
+                modifier =
+                    Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 8.dp, horizontal = 16.dp),
+                textAlign = TextAlign.Center,
             )
         }
         items(filteredBookList) { book ->
             // State variable for expanding/collapsing book description
             var isExpanded by remember { mutableStateOf(false) }
             Card(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(dimensionResource(R.dimen.padding_small))
-                    .clickable { isExpanded = !isExpanded }
-                    .semantics(mergeDescendants = true) { onClick(label = "Click to see ${book.name} details", action = null) }
+                modifier =
+                    Modifier
+                        .fillMaxWidth()
+                        .padding(dimensionResource(R.dimen.padding_small))
+                        .clickable { isExpanded = !isExpanded }
+                        .semantics(mergeDescendants = true) { onClick(label = "Click to see ${book.name} details", action = null) },
             ) {
                 Column(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(8.dp)
+                    modifier =
+                        Modifier
+                            .fillMaxSize()
+                            .padding(8.dp),
                 ) {
                     // Display book item details
                     BookItem(book = book, isExpanded, modifier = Modifier.fillMaxSize())
@@ -111,37 +118,38 @@ fun BookCollection(db: FirebaseFirestore, modifier: Modifier = Modifier) {
                     // Read Icon in the Upper Left Corner
                     Row(modifier = Modifier.align(Alignment.End)) {
                         IconButton(
-                            modifier = Modifier
-                                .align(Alignment.CenterVertically)
-                                .semantics(mergeDescendants = true) {}
-                                .padding(10.dp),
+                            modifier =
+                                Modifier
+                                    .align(Alignment.CenterVertically)
+                                    .semantics(mergeDescendants = true) {}
+                                    .padding(10.dp),
                             onClick = {
                                 focusedBook = book
                                 navController.navigate(Details.route)
-                            }
-                        )
-                        {
+                            },
+                        ) {
                             Icon(
                                 imageVector = Icons.Default.Book,
                                 contentDescription = "View $book reviews",
                                 tint = Color.Green,
-                                modifier = Modifier
+                                modifier = Modifier,
                             )
                         }
                         IconButton(
-                            modifier = Modifier
-                                .align(Alignment.CenterVertically)
-                                .padding(10.dp),
+                            modifier =
+                                Modifier
+                                    .align(Alignment.CenterVertically)
+                                    .padding(10.dp),
                             onClick = {
                                 setSelectedBook(book)
                                 setShowAlertDialog(true)
-                            }
+                            },
                         ) {
                             Icon(
                                 imageVector = Icons.Default.Delete,
                                 contentDescription = "Remove $book from collection",
                                 tint = Color.Red,
-                                modifier = Modifier
+                                modifier = Modifier,
                             )
                         }
                     }
@@ -173,11 +181,11 @@ fun BookCollection(db: FirebaseFirestore, modifier: Modifier = Modifier) {
                         deleteBookFromFirestore(selectedBook, db)
                         setBookList(bookList.filter { it != selectedBook })
                         setShowAlertDialog(false)
-                    }
+                    },
                 ) {
                     Text(
                         text = "Yes",
-                        color = Color.White // Change to your desired lighter color
+                        color = Color.White, // Change to your desired lighter color
                     )
                 }
             },
@@ -186,19 +194,22 @@ fun BookCollection(db: FirebaseFirestore, modifier: Modifier = Modifier) {
                     onClick = {
                         // Handle cancel logic here
                         setShowAlertDialog(false)
-                    }
+                    },
                 ) {
                     Text(
                         text = "Cancel",
-                        color = Color.White // Change to your desired lighter color
+                        color = Color.White, // Change to your desired lighter color
                     )
                 }
-            }
+            },
         )
     }
 }
 
-private fun deleteBookFromFirestore(book: Book?, db: FirebaseFirestore) {
+private fun deleteBookFromFirestore(
+    book: Book?,
+    db: FirebaseFirestore,
+) {
     if (book != null) {
         // Assuming "user-profile" is your Firestore collection name
         db.collection("user-profile")
@@ -229,4 +240,3 @@ private fun deleteBookFromFirestore(book: Book?, db: FirebaseFirestore) {
             }
     }
 }
-

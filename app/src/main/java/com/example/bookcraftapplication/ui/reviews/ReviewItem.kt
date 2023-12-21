@@ -17,31 +17,29 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.dimensionResource
 import com.example.bookcraftapplication.R
-import com.example.bookcraft.data.Book
 import com.example.bookcraftapplication.data.Review
-import com.example.bookcraftapplication.ui.books.BookIcon
-import com.example.bookcraftapplication.ui.books.BookInformation
 
 @Composable
 fun ReviewItem(
     review: Review,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     // State variable for expanding/collapsing book description
     var isExpanded by remember { mutableStateOf(false) }
 
     Card(
-        modifier = modifier
-            .fillMaxWidth()
-            .clickable { isExpanded = !isExpanded } // Toggle isExpanded on click
-            .padding(dimensionResource(R.dimen.padding_small))
-            .animateContentSize() // Animates the content size change
+        modifier =
+            modifier
+                .fillMaxWidth()
+                .clickable { isExpanded = !isExpanded } // Toggle isExpanded on click
+                .padding(dimensionResource(R.dimen.padding_small))
+                .animateContentSize(), // Animates the content size change
     ) {
         Column(
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth(),
         ) {
             Row(
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier.fillMaxWidth(),
             ) {
                 ReviewInformation(review.rating, review.title, review.description)
             }
@@ -54,21 +52,21 @@ fun ReviewInformation(
     rating: Float,
     title: String,
     description: String,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     Column(modifier = modifier) {
         Text(
             text = title,
             style = MaterialTheme.typography.titleLarge,
-            modifier = Modifier.padding(top = dimensionResource(R.dimen.padding_small))
+            modifier = Modifier.padding(top = dimensionResource(R.dimen.padding_small)),
         )
         Text(
             text = "Rating: $rating",
-            style = MaterialTheme.typography.bodyLarge
+            style = MaterialTheme.typography.bodyLarge,
         )
         Text(
             text = description,
-            style = MaterialTheme.typography.bodyLarge
+            style = MaterialTheme.typography.bodyLarge,
         )
     }
 }
