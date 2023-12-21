@@ -47,6 +47,8 @@ import com.example.bookcraftapplication.auth.AuthViewModelFactory
 import com.example.bookcraftapplication.auth.ResultAuth
 import com.example.bookcraftapplication.navigateSingleTopTo
 
+
+
 @Composable
 fun AuthSignUpScreen(authViewModel: AuthViewModel = viewModel(factory = AuthViewModelFactory())) {
     val navController = LocalNavController.current

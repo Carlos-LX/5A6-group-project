@@ -1,18 +1,15 @@
-// ReadifyDestination.kt
 package com.example.bookcraftapplication
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Favorite
 import androidx.compose.material.icons.rounded.LibraryBooks
-import androidx.compose.material.icons.rounded.List
 import androidx.compose.material.icons.rounded.Person
 import androidx.compose.material.icons.rounded.Settings
-import androidx.compose.material.icons.rounded.ShoppingCart
 import androidx.compose.ui.graphics.vector.ImageVector
 
 /**
- * Represents a destination in the application
- */
+
+Represents a destination in the application*/
 
 interface ReadifyScreen {
     val route: String
@@ -40,11 +37,14 @@ object Details : ReadifyScreen {
 object AboutUs : ReadifyScreen {
     override val route = "aboutUs"
 }
-object BookReading : ReadifyScreen {
-    override val route = "bookReading"
+object Account : ReadifyScreen {
+    override val route = "account"
 }
 object Login : ReadifyScreen {
     override val route = "login"
+}
+object Informational : ReadifyScreen {
+    override val route = "informational"
 }
 
 object SignUp : ReadifyBarDestination {

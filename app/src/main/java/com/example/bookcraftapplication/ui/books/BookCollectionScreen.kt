@@ -19,6 +19,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -39,14 +40,42 @@ import com.example.bookcraft.data.libraryBooks
 import com.example.bookcraftapplication.Details
 import com.example.bookcraftapplication.LocalNavController
 import com.example.bookcraftapplication.R
+import com.example.bookcraftapplication.data.userEmail
+import com.google.firebase.firestore.FirebaseFirestore
 
 @Composable
-fun BookCollection(modifier: Modifier = Modifier) {
+fun BookCollection(db: FirebaseFirestore, modifier: Modifier = Modifier) {
     val navController = LocalNavController.current
     val (bookList, setBookList) = remember { mutableStateOf(libraryBooks) }
     val (selectedBook, setSelectedBook) = remember { mutableStateOf<Book?>(null) }
     val (showAlertDialog, setShowAlertDialog) = remember { mutableStateOf(false) }
 
+    // State to store user favorites obtained from Firestore
+    val (favorites, setFavorites) = remember { mutableStateOf<List<String>>(emptyList()) }
+
+    // Fetch favorites from Firestore
+    LaunchedEffect(userEmail) {
+        db.collection("user-profile")
+            .whereEqualTo("Email", userEmail)
+            .get()
+            .addOnSuccessListener { documents ->
+                val newFavorites = mutableListOf<String>()
+                for (document in documents) {
+                    val favoritesList = document["Favorites"] as? List<String>
+                    if (favoritesList != null) {
+                        newFavorites.addAll(favoritesList)
+                    }
+                }
+                setFavorites(newFavorites)
+            }
+            .addOnFailureListener { exception ->
+                println("Error retrieving favorites: ${exception.message}")
+            }
+    }
+
+    val filteredBookList = bookList.filter { book ->
+        favorites.contains(book.name)
+    }
 
     LazyColumn(modifier = modifier) {
         item {
@@ -61,7 +90,7 @@ fun BookCollection(modifier: Modifier = Modifier) {
 
             )
         }
-        items(bookList) { book ->
+        items(filteredBookList) { book ->
             // State variable for expanding/collapsing book description
             var isExpanded by remember { mutableStateOf(false) }
             Card(
@@ -77,23 +106,20 @@ fun BookCollection(modifier: Modifier = Modifier) {
                         .padding(8.dp)
                 ) {
                     // Display book item details
-                    BookItem(
-                        book = book, isExpanded, modifier = Modifier
-                            .fillMaxSize()
-                    )
+                    BookItem(book = book, isExpanded, modifier = Modifier.fillMaxSize())
 
                     // Read Icon in the Upper Left Corner
-                    Row(modifier = Modifier
-                        .align(Alignment.End)) {
-                        IconButton(modifier = Modifier
-                            .align(Alignment.CenterVertically)
-                            .semantics(mergeDescendants = true) {}
-                            .padding(10.dp),
-
+                    Row(modifier = Modifier.align(Alignment.End)) {
+                        IconButton(
+                            modifier = Modifier
+                                .align(Alignment.CenterVertically)
+                                .semantics(mergeDescendants = true) {}
+                                .padding(10.dp),
                             onClick = {
                                 focusedBook = book
                                 navController.navigate(Details.route)
-                            })
+                            }
+                        )
                         {
                             Icon(
                                 imageVector = Icons.Default.Book,
@@ -102,18 +128,15 @@ fun BookCollection(modifier: Modifier = Modifier) {
                                 modifier = Modifier
                             )
                         }
-                        IconButton(modifier = Modifier
-                            .align(Alignment.CenterVertically)
-                            .padding(10.dp),
-
-
+                        IconButton(
+                            modifier = Modifier
+                                .align(Alignment.CenterVertically)
+                                .padding(10.dp),
                             onClick = {
                                 setSelectedBook(book)
                                 setShowAlertDialog(true)
-                            })
-
-                        {
-                            // Delete Icon in the Upper Right Corner
+                            }
+                        ) {
                             Icon(
                                 imageVector = Icons.Default.Delete,
                                 contentDescription = "Remove $book from collection",
@@ -131,7 +154,6 @@ fun BookCollection(modifier: Modifier = Modifier) {
     if (showAlertDialog) {
         AlertDialog(
             onDismissRequest = {
-                // Handle dismiss if needed
                 setShowAlertDialog(false)
             },
             title = {
@@ -148,7 +170,7 @@ fun BookCollection(modifier: Modifier = Modifier) {
             confirmButton = {
                 Button(
                     onClick = {
-                        // Handle the deletion
+                        deleteBookFromFirestore(selectedBook, db)
                         setBookList(bookList.filter { it != selectedBook })
                         setShowAlertDialog(false)
                     }
@@ -173,6 +195,38 @@ fun BookCollection(modifier: Modifier = Modifier) {
                 }
             }
         )
+    }
+}
+
+private fun deleteBookFromFirestore(book: Book?, db: FirebaseFirestore) {
+    if (book != null) {
+        // Assuming "user-profile" is your Firestore collection name
+        db.collection("user-profile")
+            .whereEqualTo("Email", userEmail)
+            .get()
+            .addOnSuccessListener { documents ->
+                for (document in documents) {
+                    val favoritesList = document["Favorites"] as? MutableList<String>
+                    if (favoritesList != null) {
+                        if (favoritesList.contains(book.name)) {
+                            favoritesList.remove(book.name)
+                            document.reference.update("Favorites", favoritesList)
+                                .addOnSuccessListener {
+                                    println("Book deleted successfully from Favorites array")
+                                    return@addOnSuccessListener
+                                }
+                                .addOnFailureListener { e ->
+                                    println("Error updating document: $e")
+                                }
+                        } else {
+                            println("Book not found in Favorites array")
+                        }
+                    }
+                }
+            }
+            .addOnFailureListener { e ->
+                println("Error getting documents: $e")
+            }
     }
 }
 

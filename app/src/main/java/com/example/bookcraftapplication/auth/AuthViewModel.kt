@@ -59,8 +59,10 @@ class AuthViewModel(private val authRepository: AuthRepository) : ViewModel() {
         }
     }
     fun signOut() {
+        _signInResult.value = ResultAuth.Inactive
         authRepository.signOut()
     }
+
     fun delete() {
         viewModelScope.launch(Dispatchers.IO) {
             authRepository.delete()
