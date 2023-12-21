@@ -2,6 +2,8 @@ package com.example.bookcraftapplication.ui.login
 
 // import com.example.bookcraftapplication.Informational
 import androidx.compose.foundation.layout.Box
+//import com.example.bookcraftapplication.Informational
+import android.util.Log
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -49,37 +51,40 @@ import com.example.bookcraftapplication.auth.AuthViewModelFactory
 import com.example.bookcraftapplication.auth.ResultAuth
 import com.example.bookcraftapplication.data.userEmail
 import com.example.bookcraftapplication.navigateSingleTopTo
+import com.google.firebase.firestore.FirebaseFirestore
 
-@Composable
-fun AuthLoginScreen(authViewModel: AuthViewModel = viewModel(factory = AuthViewModelFactory())) {
-    val navController = LocalNavController.current
-    var isSubmitted = false
-    val signInResult by authViewModel.signInResult.collectAsState(ResultAuth.Inactive)
+ @Composable
+ fun AuthLoginScreen(authViewModel: AuthViewModel = viewModel(factory = AuthViewModelFactory()), db: FirebaseFirestore) {
+     val navController = LocalNavController.current
+     var isSubmitted = false
+     val signInResult by authViewModel.signInResult.collectAsState(ResultAuth.Inactive)
 
-    val snackbarHostState = remember { SnackbarHostState() } // Material 3 approach
-    val (email, setEmail) = remember { mutableStateOf("") }
-    val (password, setPassword) = remember { mutableStateOf("") }
-    // Show a Snackbar when sign-in is successful
-    LaunchedEffect(signInResult) {
-        signInResult?.let {
-            if (it is ResultAuth.Inactive) {
-                println("SignIn LaunchedEffect: Inactive")
-                return@LaunchedEffect
-            }
-            if (it is ResultAuth.InProgress) {
-                println("SignIn LaunchedEffect: InProgress")
-                snackbarHostState.showSnackbar("Sign-in In Progress")
-                return@LaunchedEffect
-            }
-            if (it is ResultAuth.Success && it.data) {
-                userEmail = email
-                navController.navigateSingleTopTo(Informational.route)
-                snackbarHostState.showSnackbar("Sign-in Successful")
-            } else if (it is ResultAuth.Failure || it is ResultAuth.Success) {
-                snackbarHostState.showSnackbar("Sign-in Unsuccessful. Email or password is invalid.")
-            }
-        }
-    }
+     val snackbarHostState = remember { SnackbarHostState() } // Material 3 approach
+     val (email, setEmail) = remember { mutableStateOf("") }
+     val (password, setPassword) = remember { mutableStateOf("") }
+
+     // Show a Snackbar when sign-in is successful
+     LaunchedEffect(signInResult) {
+         signInResult?.let {
+             if (it is ResultAuth.Inactive) {
+                 println("SignIn LaunchedEffect: Inactive")
+                 return@LaunchedEffect
+             }
+             if (it is ResultAuth.InProgress) {
+                 println("SignIn LaunchedEffect: InProgress")
+                 snackbarHostState.showSnackbar("Sign-in In Progress")
+                 return@LaunchedEffect
+             }
+             if (it is ResultAuth.Success && it.data) {
+                 userEmail = email
+                 snackbarHostState.showSnackbar("Sign-in Successful")
+                 checkIfUserExistsInFirestore(email, db)
+                 navController.navigateSingleTopTo(Informational.route)
+             } else if (it is ResultAuth.Failure || it is ResultAuth.Success) {
+                 snackbarHostState.showSnackbar("Sign-in Unsuccessful. Email or password is invalid.")
+             }
+         }
+     }
 
     fun signInButtonClick() {
         if (isValidEmail(email) && isValidPassword(password)) {
@@ -210,42 +215,69 @@ fun AuthLoginScreen(authViewModel: AuthViewModel = viewModel(factory = AuthViewM
                 }
             }
 
-            item {
-                Spacer(modifier = Modifier.size(40.dp))
-                // Sign-up Button
-                Button(
-                    onClick = {
-                        // Navigate to the sign-up screen
-                        navController.navigateSingleTopTo(Account.route)
-                    },
-                    modifier =
-                        Modifier
-                            .fillMaxWidth(),
-                ) {
-                    Text("Sign Up")
-                }
-            }
-        }
-        SnackbarHost(
-            hostState = snackbarHostState,
-            modifier = Modifier.padding(16.dp),
-        ) { snackbarData ->
-            Snackbar(
-                modifier = Modifier.fillMaxWidth(),
-                snackbarData = snackbarData,
-            )
-        }
-    }
-}
+             item {
+                 Spacer(modifier = Modifier.size(40.dp))
+                 // Sign-up Button
+                 Button(onClick = {
+                     // Navigate to the sign-up screen
+                     navController.navigateSingleTopTo(SignUp.route)
+                 }, modifier = Modifier
+                     .fillMaxWidth()) {
+                     Text("Sign Up")
+                 }
+             }
 
-// Function to validate the email format using a simple regex
-private fun isValidEmail(email: String): Boolean {
-    val emailRegex = "^[A-Za-z](.*)([@]{1})(.{1,})(\\.)(.{1,})"
-    return email.matches(emailRegex.toRegex())
-}
+         }
+         SnackbarHost(
+             hostState = snackbarHostState,
+             modifier = Modifier.padding(16.dp)
+         ) { snackbarData ->
+             Snackbar(
+                 modifier = Modifier.fillMaxWidth(),
+                 snackbarData = snackbarData
+             )
+         }
+     }
+ }
 
-// Function to validate the password format using a simple regex
-private fun isValidPassword(password: String): Boolean {
-    val passwordRegex = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=!])(?=\\S+$).{8,}$"
-    return password.matches(passwordRegex.toRegex())
-}
+ private fun checkIfUserExistsInFirestore(email: String, db: FirebaseFirestore) {
+     db.collection("user-profile")
+         .whereEqualTo("Email", email)
+         .get()
+         .addOnSuccessListener { documents ->
+             if (documents.isEmpty) {
+                 createUserDocument(email, db)
+             }
+         }
+         .addOnFailureListener { exception ->
+             Log.e("AuthLoginScreen", "Error checking user existence: $exception")
+         }
+ }
+
+ private fun createUserDocument(email: String, db: FirebaseFirestore) {
+     val newUser = hashMapOf(
+         "Email" to email,
+         "Favorites" to emptyList<String>()
+     )
+
+     db.collection("user-profile")
+         .add(newUser)
+         .addOnSuccessListener { documentReference ->
+             Log.d("AuthLoginScreen", "User document created with ID: ${documentReference.id}")
+         }
+         .addOnFailureListener { e ->
+             Log.e("AuthLoginScreen", "Error creating user document: $e")
+         }
+ }
+
+ // Function to validate the email format using a simple regex
+ private fun isValidEmail(email: String): Boolean {
+     val emailRegex = "^[A-Za-z](.*)([@]{1})(.{1,})(\\.)(.{1,})"
+     return email.matches(emailRegex.toRegex())
+ }
+
+ // Function to validate the password format using a simple regex
+ private fun isValidPassword(password: String): Boolean {
+     val passwordRegex = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=!])(?=\\S+$).{8,}$"
+     return password.matches(passwordRegex.toRegex())
+ }

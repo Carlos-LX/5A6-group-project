@@ -203,7 +203,7 @@ fun MyApp(modifier: Modifier = Modifier, selectedTheme: Theme, onThemeChange: (T
                         Details(focusedBook, db = db, navController)
                     }
                     composable(route = Login.route) {
-                        AuthLoginScreen(authViewModel = authViewModel)
+                        AuthLoginScreen(authViewModel = authViewModel, db = db)
                     }
                     composable(route = SignUp.route) {
                         AuthSignUpScreen(authViewModel = authViewModel)

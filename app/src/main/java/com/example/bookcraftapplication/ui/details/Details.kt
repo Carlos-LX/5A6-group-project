@@ -42,6 +42,7 @@ import com.example.bookcraft.data.Book
 import com.example.bookcraftapplication.R
 import com.example.bookcraftapplication.data.Review
 import com.example.bookcraftapplication.data.userEmail
+import com.example.bookcraftapplication.navigateSingleTopTo
 import com.example.bookcraftapplication.ui.reviews.ReviewItem
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.tasks.await
@@ -132,7 +133,7 @@ fun Details(
         item {
             Button(
                 onClick = {
-                    navController.popBackStack()
+                    navController.navigateSingleTopTo(com.example.bookcraftapplication.Library.route)
                 },
                 modifier = Modifier.fillMaxWidth(),
             ) {

@@ -43,6 +43,7 @@ object Account : ReadifyScreen {
 object Login : ReadifyScreen {
     override val route = "login"
 }
+
 object Informational : ReadifyBarDestination {
     override val icon = Icons.Rounded.Person
     override val route = "Account"

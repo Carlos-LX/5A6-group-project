@@ -70,12 +70,6 @@ class AuthViewModel(private val authRepository: AuthRepository) : ViewModel() {
         _signInResult.value = ResultAuth.Inactive
         authRepository.signOut()
     }
-
-    fun delete() {
-        viewModelScope.launch(Dispatchers.IO) {
-            authRepository.delete()
-        }
-    }
 }
 
 /* ViewModel Factory that will create our view model by injecting the
