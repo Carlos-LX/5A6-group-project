@@ -65,17 +65,19 @@ android {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
         }
     }
-    buildToolsVersion = "34.0.0"
-    spotless {
-        kotlin {
-            ktfmt()
-            ktlint()
-            diktat()
-            prettier()
-        }
-        kotlinGradle {
-            ktlint()
-            diktat()
+   lazy {
+        spotless {
+
+            kotlin {
+                ktfmt()
+                ktlint()
+                diktat()
+                prettier()
+            }
+            kotlinGradle {
+                ktlint()
+                diktat()
+            }
         }
     }
 }
