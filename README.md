@@ -26,8 +26,7 @@ Book Craft is a new cutting-edge social platform aimed at making users discover 
 ### Settings
 
 
-<img src="https://github.com/Carlos-LX/5A6-group-project/assets/98485090/1e20aa47-0b31-4ff9-a13e-814ecbc1d82d" alt="drawing" width="200"/> <img src="https://github.com/Carlos-LX/5A6-group-project/assets/98485090/d90ab706-51b0-465d-a288-5a5dcea0bc4f
-" alt="drawing" width="200"/>
+<img src="https://github.com/Carlos-LX/5A6-group-project/assets/98485090/1e20aa47-0b31-4ff9-a13e-814ecbc1d82d" alt="drawing" width="200"/> <img src="https://github.com/Carlos-LX/5A6-group-project/assets/98485090/d90ab706-51b0-465d-a288-5a5dcea0bc4f" alt="drawing" width="200"/>
 
 
 ####For more information about the different screens, head to [our wiki!](https://github.com/Carlos-LX/5A6-group-project/wiki/Final-project)
