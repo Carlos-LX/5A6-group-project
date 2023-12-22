@@ -32,6 +32,9 @@ import com.example.bookcraftapplication.LocalNavController
 import com.example.bookcraftapplication.R
 import com.example.bookcraftapplication.ui.books.BookItem
 
+/**
+ * Screen that the user sees when selecting the library icon. Allows them to select a book to add a review or add to favorites.
+ */
 @Composable
 fun Library() {
     val (storeBookList, setStoreBookList) = remember { mutableStateOf(storeBooks) }
@@ -88,7 +91,7 @@ fun Library() {
                             )
                             Spacer(modifier = Modifier.height(8.dp)) // Adjust spacing as needed
                             Text(
-                                text = "${book.name}", // or any other information
+                                text = book.name, // or any other information
                                 textAlign = TextAlign.Center,
                                 modifier =
                                     Modifier

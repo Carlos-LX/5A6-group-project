@@ -1,6 +1,5 @@
 package com.example.bookcraftapplication
 
-import android.content.Context
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
@@ -17,9 +16,11 @@ data class UserPrefs(
     val fontSize: Float,
 )
 
-class PreferencesRepository public constructor(
-    private val dataStore: DataStore<Preferences>,
-    private val context: Context,
+/**
+ * The repository used for preferences
+ */
+class PreferencesRepository(
+    private val dataStore: DataStore<Preferences>
 ) {
     private object PreferenceKeys {
         val SELECTED_THEME = stringPreferencesKey("THEME")

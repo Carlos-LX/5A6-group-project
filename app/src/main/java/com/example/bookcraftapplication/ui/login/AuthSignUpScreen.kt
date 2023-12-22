@@ -47,6 +47,9 @@ import com.example.bookcraftapplication.auth.AuthViewModelFactory
 import com.example.bookcraftapplication.auth.ResultAuth
 import com.example.bookcraftapplication.navigateSingleTopTo
 
+/**
+ * The screen that the user sees in order to sign up
+ */
 @Composable
 fun AuthSignUpScreen(authViewModel: AuthViewModel = viewModel(factory = AuthViewModelFactory())) {
     val navController = LocalNavController.current
@@ -76,27 +79,6 @@ fun AuthSignUpScreen(authViewModel: AuthViewModel = viewModel(factory = AuthView
         }
     }
 
-    // Show a Snackbar when sign-out is successful
-//     LaunchedEffect(signOutResult) {
-//         signOutResult?.let {
-//             if (it is ResultAuth.Success && it.data) {
-//                 snackbarHostState.showSnackbar("Sign-out Successful")
-//             } else
-//                 snackbarHostState.showSnackbar("Sign-out Unsuccessful")
-//         }
-//     }
-
-    // Show a Snackbar when account deletion is successful
-//     LaunchedEffect(deleteAccountResult) {
-//         deleteAccountResult?.let {
-//             if (it is ResultAuth.Success && it.data) {
-//                 snackbarHostState.showSnackbar("Account Deleted")
-//             } else {
-//                 snackbarHostState.showSnackbar("Deletion failed")
-//             }
-//         }
-//     }
-
     // Show a Snackbar when email is invalid
     LaunchedEffect(email) {
         if (!isValidEmail(email)) {
@@ -111,9 +93,12 @@ fun AuthSignUpScreen(authViewModel: AuthViewModel = viewModel(factory = AuthView
         }
     }
 
+    /**
+     * Function that calls the sign in function when it is clicked. Essential because of the Keyboard Options in the text field
+     */
     fun signUpButtonClick() {
         if (isValidEmail(email) && isValidPassword(password) && password == confirmPassword) {
-            // Valid email and password, proceed with sign-in
+            // Valid email and password, proceed with sign-up
             authViewModel.signUp(email, password)
         }
     }
@@ -200,7 +185,7 @@ fun AuthSignUpScreen(authViewModel: AuthViewModel = viewModel(factory = AuthView
                     keyboardActions =
                         KeyboardActions(
                             onDone = {
-                                // Simulate a click on the sign-in button when Enter is pressed on the password field
+                                // Simulate a click on the sign-up button when Enter is pressed on the password field
                                 signUpButtonClick()
                             },
                         ),
@@ -210,9 +195,10 @@ fun AuthSignUpScreen(authViewModel: AuthViewModel = viewModel(factory = AuthView
                             .fillMaxHeight(),
                 )
                 Spacer(modifier = Modifier.size(60.dp))
-                // Sign-in Button
+                // Sign-up Button
                 Button(
                     onClick = {
+                        signUpButtonClick()
                     },
                     modifier =
                         Modifier
@@ -254,7 +240,7 @@ fun AuthSignUpScreen(authViewModel: AuthViewModel = viewModel(factory = AuthView
 
             item {
                 Spacer(modifier = Modifier.size(15.dp))
-                // Sign-up Button
+                // Sign-in Button
                 Button(
                     onClick = {
                         // Navigate to the sign-up screen

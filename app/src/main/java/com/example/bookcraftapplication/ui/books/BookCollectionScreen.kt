@@ -43,6 +43,10 @@ import com.example.bookcraftapplication.R
 import com.example.bookcraftapplication.data.userEmail
 import com.google.firebase.firestore.FirebaseFirestore
 
+
+/**
+ * Screen that shows the user's books that have been added to favorites.
+ */
 @Composable
 fun BookCollection(
     db: FirebaseFirestore,
@@ -206,6 +210,9 @@ fun BookCollection(
     }
 }
 
+/**
+ * Removes a book from favorites
+ */
 private fun deleteBookFromFirestore(
     book: Book?,
     db: FirebaseFirestore,

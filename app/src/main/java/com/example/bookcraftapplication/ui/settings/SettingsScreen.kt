@@ -20,6 +20,9 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
 import com.example.bookcraftapplication.Theme
 
+/**
+ * Screen that allows the user to change the theme.
+ */
 @Composable
 fun Settings(
     selectedTheme: Theme,

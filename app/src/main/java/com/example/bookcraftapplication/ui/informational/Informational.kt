@@ -32,6 +32,9 @@ import com.example.bookcraftapplication.auth.AuthViewModelFactory
 import com.example.bookcraftapplication.data.userEmail
 import com.example.bookcraftapplication.navigateSingleTopTo
 
+/**
+ * Screen that informs the user how the application works.
+ */
 @Composable
 fun Informational(authViewModel: AuthViewModel = viewModel(factory = AuthViewModelFactory())) {
     val snackbarHostState = remember { SnackbarHostState() }

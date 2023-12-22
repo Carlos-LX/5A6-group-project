@@ -52,6 +52,9 @@ import com.example.bookcraftapplication.data.userEmail
 import com.example.bookcraftapplication.navigateSingleTopTo
 import com.google.firebase.firestore.FirebaseFirestore
 
+/**
+ * The screen that the user sees in order to login
+ */
 @Composable
  fun AuthLoginScreen(authViewModel: AuthViewModel = viewModel(factory = AuthViewModelFactory()), db: FirebaseFirestore) {
      val navController = LocalNavController.current
@@ -84,7 +87,9 @@ import com.google.firebase.firestore.FirebaseFirestore
              }
          }
      }
-
+    /**
+     * Function that calls the sign in function when it is clicked. Essential because of the Keyboard Options in the text field
+     */
     fun signInButtonClick() {
         if (isValidEmail(email) && isValidPassword(password)) {
             // Valid email and password, proceed with sign-in

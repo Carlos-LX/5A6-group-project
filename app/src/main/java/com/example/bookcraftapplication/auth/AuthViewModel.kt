@@ -10,6 +10,9 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
+/**
+ * Handles authentication in the application
+ */
 class AuthViewModel(private val authRepository: AuthRepository) : ViewModel() {
     private val _signInResult = MutableStateFlow<ResultAuth<Boolean>?>(ResultAuth.Inactive)
     val signInResult: StateFlow<ResultAuth<Boolean>?> = _signInResult
@@ -27,6 +30,9 @@ class AuthViewModel(private val authRepository: AuthRepository) : ViewModel() {
         return authRepository.currentUser()
     }
 
+    /**
+     * Initiates the sign up process using the provided email and password
+     */
     fun signUp(
         email: String,
         password: String,
@@ -46,7 +52,9 @@ class AuthViewModel(private val authRepository: AuthRepository) : ViewModel() {
             }
         }
     }
-
+    /**
+     * Initiates the sign in process using the provided email and password
+     */
     fun signIn(
         email: String,
         password: String,
@@ -65,7 +73,9 @@ class AuthViewModel(private val authRepository: AuthRepository) : ViewModel() {
             }
         }
     }
-
+    /**
+     * Signs out the current user
+     */
     fun signOut() {
         _signInResult.value = ResultAuth.Inactive
         authRepository.signOut()

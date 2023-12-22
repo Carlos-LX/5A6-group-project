@@ -94,7 +94,7 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            var preferences = PreferencesRepository(dataStore, this)
+            var preferences = PreferencesRepository(dataStore)
             var userPrefs by remember { mutableStateOf(UserPrefs(Theme.Light, 12.0f)) }
             appModule = AppModule(this, Firebase.auth,
                 FirebaseFirestore.getInstance())

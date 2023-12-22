@@ -1,7 +1,6 @@
 package com.example.bookcraftapplication.ui.reviews
 
 import androidx.compose.animation.animateContentSize
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -19,6 +18,9 @@ import androidx.compose.ui.res.dimensionResource
 import com.example.bookcraftapplication.R
 import com.example.bookcraftapplication.data.Review
 
+/**
+ * Composable which displays a review for a book.
+ */
 @Composable
 fun ReviewItem(
     review: Review,
@@ -31,7 +33,6 @@ fun ReviewItem(
         modifier =
             modifier
                 .fillMaxWidth()
-                .clickable { isExpanded = !isExpanded } // Toggle isExpanded on click
                 .padding(dimensionResource(R.dimen.padding_small))
                 .animateContentSize(), // Animates the content size change
     ) {

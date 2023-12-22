@@ -24,6 +24,9 @@ import com.example.bookcraftapplication.Login
 import com.example.bookcraftapplication.R
 import com.example.bookcraftapplication.navigateSingleTopTo
 
+/**
+ * Screen that informs the user about the goal of the application.
+ */
 @Composable
 fun AboutUs() {
     val navController = LocalNavController.current

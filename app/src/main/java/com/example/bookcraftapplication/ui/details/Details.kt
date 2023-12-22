@@ -42,11 +42,13 @@ import com.example.bookcraft.data.Book
 import com.example.bookcraftapplication.R
 import com.example.bookcraftapplication.data.Review
 import com.example.bookcraftapplication.data.userEmail
-import com.example.bookcraftapplication.navigateSingleTopTo
 import com.example.bookcraftapplication.ui.reviews.ReviewItem
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.tasks.await
 
+/**
+ * Composable that displays all the details related to a book (author, cover, title, etc.)
+ */
 @Composable
 fun BookItemCard(bookItem: Book) {
     Column(
@@ -85,6 +87,9 @@ fun BookItemCard(bookItem: Book) {
     }
 }
 
+/**
+ * Composable that aligns each bookItemCard
+ */
 @Composable
 fun BookPage(bookItem: Book) {
     Column(
@@ -97,7 +102,9 @@ fun BookPage(bookItem: Book) {
         Spacer(modifier = Modifier.height(16.dp))
     }
 }
-
+/**
+ * Screen that shows the details of a book when navigated to. The user can add a review or add a book to favorites.
+ */
 @Composable
 fun Details(
     book: Book,
@@ -133,7 +140,7 @@ fun Details(
         item {
             Button(
                 onClick = {
-                    navController.navigateSingleTopTo(com.example.bookcraftapplication.Library.route)
+                    navController.popBackStack()
                 },
                 modifier = Modifier.fillMaxWidth(),
             ) {
@@ -293,6 +300,9 @@ fun Details(
     }
 }
 
+/**
+ * Returns the reviews for the current book
+ */
 suspend fun fetchReviewsForBook(
     book: Book,
     db: FirebaseFirestore,
@@ -320,7 +330,9 @@ suspend fun fetchReviewsForBook(
         Log.e("Details", "Error fetching reviews: ${e.message}")
     }
 }
-
+/**
+ * Adds a book to favorites
+ */
 fun addToFavorites(
     book: Book,
     db: FirebaseFirestore,
@@ -358,7 +370,9 @@ fun addToFavorites(
             Log.e("Details", "Error fetching current favorites: $exception")
         }
 }
-
+/**
+ * Adds a review to the database for the current book.
+ */
 fun submitReview(
     bookName: String,
     review: Review,
@@ -389,6 +403,9 @@ fun submitReview(
     }
 }
 
+/**
+ * Adds nice padding to a reviewItem
+ */
 @Composable
 fun Reviews(
     modifier: Modifier,

@@ -22,44 +22,49 @@ class AuthRepositoryFirebase(private val auth: FirebaseAuth) : AuthRepository {
         return currentUserStateFlow
     }
 
+    /**
+     * Creates a user in the database with the provided email and password
+     */
     override suspend fun signUp(
         email: String,
         password: String,
     ): Boolean {
         return try {
             auth.createUserWithEmailAndPassword(email, password).await()
-            return true
+            true
         } catch (e: Exception) {
-            return false
+            false
         }
     }
-
+    /**
+     * Attempts to sign in to a user with the provided email and password
+     */
     override suspend fun signIn(
         email: String,
         password: String,
     ): Boolean {
         return try {
-            println("Before signInWithEmailAndPassword")
             auth.signInWithEmailAndPassword(email, password).await()
-            println("After signInWithEmailAndPassword")
             true // Authentication successful
         } catch (e: Exception) {
             println("Exception during signIn: ${e.message}")
             false // Authentication failed
         }
     }
-
+    /**
+     * Signs out the current user
+     */
     override fun signOut(): Boolean {
         auth.signOut()
         return true
     }
 
     override suspend fun delete(): Boolean {
-        if (auth.currentUser != null) {
+        return if (auth.currentUser != null) {
             auth.currentUser!!.delete()
-            return true
+            true
         } else {
-            return false
+            false
         }
     }
 
