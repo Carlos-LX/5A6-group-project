@@ -17,50 +17,67 @@ class AuthRepositoryFirebase(private val auth: FirebaseAuth) : AuthRepository {
             currentUserStateFlow.value = firebaseAuth.currentUser?.toUser()
         }
     }
+
     override fun currentUser(): StateFlow<User?> {
         return currentUserStateFlow
     }
-    override suspend fun signUp(email: String, password: String): Boolean {
+
+    /**
+     * Creates a user in the database with the provided email and password
+     */
+    override suspend fun signUp(
+        email: String,
+        password: String,
+    ): Boolean {
         return try {
             auth.createUserWithEmailAndPassword(email, password).await()
-            return true;
+            true
         } catch (e: Exception) {
-            return false;
+            false
         }
     }
-
-    override suspend fun signIn(email: String, password: String): Boolean {
+    /**
+     * Attempts to sign in to a user with the provided email and password
+     */
+    override suspend fun signIn(
+        email: String,
+        password: String,
+    ): Boolean {
         return try {
             auth.signInWithEmailAndPassword(email, password).await()
-            return true;
+            true // Authentication successful
         } catch (e: Exception) {
-            return false;
+            println("Exception during signIn: ${e.message}")
+            false // Authentication failed
         }
     }
-
-    override fun signOut() : Boolean {
+    /**
+     * Signs out the current user
+     */
+    override fun signOut(): Boolean {
         auth.signOut()
         return true
     }
 
-    override suspend fun delete() : Boolean {
-        if (auth.currentUser != null) {
+    override suspend fun delete(): Boolean {
+        return if (auth.currentUser != null) {
             auth.currentUser!!.delete()
-            return true
+            true
         } else {
-            return false
+            false
         }
     }
 
     /** Convert from FirebaseUser to User */
     private fun FirebaseUser?.toUser(): User? {
         return this?.let {
-            if (it.email==null) null else
-            User(
-                email = it.email!!,
-            )
+            if (it.email == null) {
+                null
+            } else {
+                User(
+                    email = it.email!!,
+                )
+            }
         }
     }
-
-
 }

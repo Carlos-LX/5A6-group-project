@@ -29,27 +29,22 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.material3.BottomAppBar
-import androidx.compose.material3.CenterAlignedTopAppBar
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.NavigationBarItem
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
+import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.onClick
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -61,15 +56,22 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.codelab.basics.R
-import com.example.bookcraftapplication.ui.Details.Details
-import com.example.bookcraftapplication.ui.theme.SpotifyCloneTheme
-import com.example.bookcraftapplication.ui.books.BookCollection
-import com.example.bookcraftapplication.ui.settings.Settings
-import com.example.bookcraftapplication.ui.login.LoginScreen
-import com.example.bookcraftapplication.ui.login.SignUpScreen
-import com.example.bookcraftapplication.ui.library.Library
 import com.example.bookcraft.data.focusedBook
+import com.example.bookcraftapplication.auth.AuthRepositoryFirebase
+import com.example.bookcraftapplication.auth.AuthViewModel
+import com.example.bookcraftapplication.ui.aboutUs.AboutUs
+import com.example.bookcraftapplication.ui.books.BookCollection
+import com.example.bookcraftapplication.ui.details.Details
+import com.example.bookcraftapplication.ui.informational.Informational
+import com.example.bookcraftapplication.ui.library.Library
+import com.example.bookcraftapplication.ui.login.AuthLoginScreen
+import com.example.bookcraftapplication.ui.login.AuthSignUpScreen
+import com.example.bookcraftapplication.ui.settings.Settings
+import com.example.bookcraftapplication.ui.theme.BookCraftTheme
+import com.google.firebase.Firebase
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.auth
+import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.*
 
 
@@ -92,13 +94,10 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            var preferences = PreferencesRepository(dataStore, this)
+            var preferences = PreferencesRepository(dataStore)
             var userPrefs by remember { mutableStateOf(UserPrefs(Theme.Light, 12.0f)) }
-
-
-
-
-
+            appModule = AppModule(this, Firebase.auth,
+                FirebaseFirestore.getInstance())
 
             // Collect the Flow and update userPrefs when it changes
             LaunchedEffect(preferences.userPreferencesFlow) {
@@ -107,27 +106,27 @@ class MainActivity : ComponentActivity() {
                 }
             }
 
-                MyApp(
-                    modifier = Modifier.fillMaxSize(),
-                    selectedTheme = userPrefs.selectedTheme,
-                    onThemeChange = { newTheme ->
+            MyApp(
+                modifier = Modifier.fillMaxSize(),
+                selectedTheme = userPrefs.selectedTheme,
+                onThemeChange = { newTheme ->
 
-                        CoroutineScope(Dispatchers.IO).launch {
-                            preferences.setTheme(newTheme)
-                        }
-                    },
-                    userfontSize = userPrefs.fontSize,
-                    onFontChange = { newSize ->
-                        CoroutineScope(Dispatchers.IO).launch {
-                            preferences.setFontSize(newSize)
-                        }
-                    },
-                )
-            }
+                    CoroutineScope(Dispatchers.IO).launch {
+                        preferences.setTheme(newTheme)
+                    }
+                },
+                userfontSize = userPrefs.fontSize,
+                onFontChange = { newSize ->
+                    CoroutineScope(Dispatchers.IO).launch {
+                        preferences.setFontSize(newSize)
+                    }
+                },
+            )
         }
     }
+}
 
-
+val LocalNavController = compositionLocalOf<NavHostController> { error("No NavController found!") }
 
 /**
  * The main composable function that defines the app's UI.
@@ -136,11 +135,17 @@ class MainActivity : ComponentActivity() {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MyApp(modifier: Modifier = Modifier, selectedTheme: Theme, onThemeChange: (Theme) -> Unit, userfontSize: Float, onFontChange: (Float) -> Unit) {
-
-    modifier
-    SpotifyCloneTheme(currentTheme = selectedTheme) {
+    BookCraftTheme(currentTheme = selectedTheme) {
         // Initialize the navigation controller
         val navController = rememberNavController()
+        // Initialize FirebaseAuth
+        val firebaseAuth = FirebaseAuth.getInstance()
+        // Create an instance of AuthRepositoryFirebase and pass the FirebaseAuth instance
+        val authRepository = AuthRepositoryFirebase(firebaseAuth)
+        val db: FirebaseFirestore = FirebaseFirestore.getInstance()
+        // Create an instance of AuthViewModel and pass the AuthRepository instance
+        val authViewModel = AuthViewModel(authRepository)
+        //val userProfileViewModel = UserProfileViewModel(firebaseAuth)
         var selectedOption = false;
         Scaffold(
             modifier = modifier,
@@ -148,70 +153,64 @@ fun MyApp(modifier: Modifier = Modifier, selectedTheme: Theme, onThemeChange: (T
             bottomBar = {
                 BottomAppBar(
                     modifier = Modifier,
+                ) {
+                    // Existing code for navigation items
+                    ReadifyScreens.forEach { readifyDestination ->
+                        NavigationBarItem(
+                            modifier = modifier
+                                .semantics(mergeDescendants = true) {  onClick(label = "Click to navigate to ${readifyDestination.route}", action = null) },
+                            label = { Text(text = readifyDestination.route) },
+                            selected = selectedOption,
+                            onClick = {
+                                selectedOption = true
+                                navController.navigateSingleTopTo(readifyDestination.route)
 
-                    ) {
-                    Row {
-                        // Existing code for navigation items
-                        ReadifyScreens.forEach { readifyDestination ->
-                            NavigationBarItem(
-                                selected = false,
-                                onClick = {
-                                    selectedOption = true
-                                    navController.navigateSingleTopTo(readifyDestination.route)
-
-                                },
-                                icon = {
-                                    val iconTint = if (selectedOption) {
-                                        Color.Green
-                                    } else {
-                                        Color.White
-                                    }
-
-                                    Icon(
-                                        readifyDestination.icon,
-                                        contentDescription = "${readifyDestination.route} icon",
-                                        tint = iconTint
-                                    )
-                                }
-                            )
-                        }
+                            },
+                            icon = {
+                                Icon(
+                                    readifyDestination.icon,
+                                    contentDescription = "${readifyDestination.route} icon",
+                                )
+                            }
+                        )
                     }
                 }
             }
         ) { innerPadding ->
-            // Existing code for navigation
-            NavHost(
-                navController = navController,
-                startDestination = "bookCollection",
-                modifier = Modifier.padding(innerPadding)
-            ) {
-                composable(route = BookCollection.route) {
-                    BookCollection(modifier, navController)
-                }
-                composable(route = Settings.route) {
-                    // Pass selectedTheme and onThemeChange to the Settings composable
-                    Settings(
-                        selectedTheme = selectedTheme,
-                        onThemeChange = onThemeChange,
-                        userfontSize = userfontSize,
-                        onFontChange = onFontChange,
-                        modifier = Modifier.fillMaxSize()
-                    )
-                }
-                composable(route = Library.route) {
-                    Library(navController)
-                }
-                composable(route = Details.route) {
-                    Details(focusedBook, navController)
-                }
-                composable(route = "login") {
-                    LoginScreen(navController = navController)
-                }
-                composable(route = "signUp") {
-                    SignUpScreen(navController = navController)
-                }
-                composable(route = BookReading.route) {
-
+            CompositionLocalProvider(LocalNavController provides navController) {
+                NavHost(
+                    navController = navController,
+                    startDestination = AboutUs.route,
+                    modifier = Modifier.padding(innerPadding)
+                ) {
+                    composable(route = AboutUs.route) {
+                        AboutUs()
+                    }
+                    composable(route = BookCollection.route) {
+                        BookCollection(db = db, modifier)
+                    }
+                    composable(route = Settings.route) {
+                        Settings(
+                            selectedTheme = selectedTheme,
+                            onThemeChange = onThemeChange,
+                            modifier = Modifier.fillMaxSize()
+                        )
+                    }
+                    composable(route = Library.route) {
+                        Library()
+                    }
+                    composable(route = Details.route) {
+                        Details(focusedBook, db = db, navController)
+                    }
+                    composable(route = Login.route) {
+                        AuthLoginScreen(authViewModel = authViewModel, db = db)
+                    }
+                    composable(route = SignUp.route) {
+                        AuthSignUpScreen(authViewModel = authViewModel)
+                    }
+                    composable(route = Informational.route) {
+                        Informational(authViewModel = authViewModel)
+                    }
                 }
             }
         }
@@ -229,8 +228,8 @@ fun NavHostController.navigateSingleTopTo(route: String) =
             saveState = true
         }
 
-            launchSingleTop = true
-            restoreState = true
+        launchSingleTop = true
+        restoreState = true
 
     }
 
@@ -251,19 +250,19 @@ fun NavHostController.navigateSingleTopTo(route: String) =
 fun MyAppPreview() {
     var selectedTheme by remember { mutableStateOf(Theme.Light) }
     var fontSize by remember { mutableStateOf(16f) }
-        MyApp(
-            modifier = Modifier.fillMaxSize(),
-            selectedTheme = selectedTheme,
-            onThemeChange = { newTheme ->
-                selectedTheme = newTheme
-            },
-            userfontSize = fontSize,
-            onFontChange = {
-                    userfontSize ->
-                fontSize = userfontSize
-            }
-        )
-    }
+    MyApp(
+        modifier = Modifier.fillMaxSize(),
+        selectedTheme = selectedTheme,
+        onThemeChange = { newTheme ->
+            selectedTheme = newTheme
+        },
+        userfontSize = fontSize,
+        onFontChange = {
+                userfontSize ->
+            fontSize = userfontSize
+        }
+    )
+}
 
 
 
@@ -278,8 +277,11 @@ fun BookTopAppBar(
     modifier: Modifier = Modifier
 ) {
     Surface(
-        modifier = modifier.fillMaxWidth(),
-    ) {
+        modifier = modifier.fillMaxWidth()
+            .semantics(mergeDescendants = true) {  }
+        ,
+
+        ) {
         CenterAlignedTopAppBar(
             title = {
                 Row(
@@ -303,7 +305,6 @@ fun BookTopAppBar(
                             textAlign = TextAlign.Start,
                             fontFamily = FontFamily.Serif,
                             fontWeight = FontWeight.SemiBold,
-                            color = Color.LightGray
                         )
                     }
                 }

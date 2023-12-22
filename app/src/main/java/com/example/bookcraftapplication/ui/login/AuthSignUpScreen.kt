@@ -1,7 +1,5 @@
 package com.example.bookcraftapplication.ui.login
 
-// import com.example.bookcraftapplication.Informational
-import android.util.Log
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -41,65 +39,69 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.bookcraftapplication.Informational
 import com.example.bookcraftapplication.LocalNavController
+import com.example.bookcraftapplication.Login
 import com.example.bookcraftapplication.R
-import com.example.bookcraftapplication.SignUp
 import com.example.bookcraftapplication.auth.AuthViewModel
 import com.example.bookcraftapplication.auth.AuthViewModelFactory
 import com.example.bookcraftapplication.auth.ResultAuth
-import com.example.bookcraftapplication.data.userEmail
 import com.example.bookcraftapplication.navigateSingleTopTo
-import com.google.firebase.firestore.FirebaseFirestore
 
 /**
- * The screen that the user sees in order to login
+ * The screen that the user sees in order to sign up
  */
 @Composable
- fun AuthLoginScreen(authViewModel: AuthViewModel = viewModel(factory = AuthViewModelFactory()), db: FirebaseFirestore) {
-     val navController = LocalNavController.current
-     var isSubmitted = false
-     val signInResult by authViewModel.signInResult.collectAsState(ResultAuth.Inactive)
+fun AuthSignUpScreen(authViewModel: AuthViewModel = viewModel(factory = AuthViewModelFactory())) {
+    val navController = LocalNavController.current
+    val userState = authViewModel.currentUser().collectAsState()
+    val signUpResult by authViewModel.signUpResult.collectAsState(ResultAuth.Inactive)
+    val (email, setEmail) = remember { mutableStateOf("") }
+    val (password, setPassword) = remember { mutableStateOf("") }
+    val (confirmPassword, setConfirmPassword) = remember { mutableStateOf("") }
+    val snackbarHostState = remember { SnackbarHostState() } // Material 3 approach
 
-     val snackbarHostState = remember { SnackbarHostState() } // Material 3 approach
-     val (email, setEmail) = remember { mutableStateOf("") }
-     val (password, setPassword) = remember { mutableStateOf("") }
-
-     // Show a Snackbar when sign-in is successful
-     LaunchedEffect(signInResult) {
-         signInResult?.let {
-             if (it is ResultAuth.Inactive) {
-                 println("SignIn LaunchedEffect: Inactive")
-                 return@LaunchedEffect
-             }
-             if (it is ResultAuth.InProgress) {
-                 println("SignIn LaunchedEffect: InProgress")
-                 snackbarHostState.showSnackbar("Sign-in In Progress")
-                 return@LaunchedEffect
-             }
-             if (it is ResultAuth.Success && it.data) {
-                 userEmail = email
-                 snackbarHostState.showSnackbar("Sign-in Successful")
-                 checkIfUserExistsInFirestore(email, db)
-                 navController.navigateSingleTopTo(Informational.route)
-             } else if (it is ResultAuth.Failure || it is ResultAuth.Success) {
-                 snackbarHostState.showSnackbar("Sign-in Unsuccessful. Email or password is invalid.")
-             }
-         }
-     }
-    /**
-     * Function that calls the sign in function when it is clicked. Essential because of the Keyboard Options in the text field
-     */
-    fun signInButtonClick() {
-        if (isValidEmail(email) && isValidPassword(password)) {
-            // Valid email and password, proceed with sign-in
-            authViewModel.signIn(email, password)
-            isSubmitted = true
-        } else {
-            isSubmitted = false
+    // Show a Snackbar when sign-up is successful, etc.
+    LaunchedEffect(signUpResult) {
+        signUpResult?.let {
+            if (it is ResultAuth.Inactive) {
+                return@LaunchedEffect
+            }
+            if (it is ResultAuth.InProgress) {
+                snackbarHostState.showSnackbar("Sign-up In Progress")
+                return@LaunchedEffect
+            }
+            if (it is ResultAuth.Success && it.data) {
+                snackbarHostState.showSnackbar("Sign-up Successful")
+                navController.navigateSingleTopTo(Login.route)
+            } else if (it is ResultAuth.Failure || it is ResultAuth.Success) {
+                snackbarHostState.showSnackbar("Sign-up Unsuccessful. Email or password is invalid.")
+            }
         }
     }
 
+    // Show a Snackbar when email is invalid
+    LaunchedEffect(email) {
+        if (!isValidEmail(email)) {
+            snackbarHostState.showSnackbar("Invalid Email")
+        }
+    }
+
+    // Show a Snackbar when password is invalid
+    LaunchedEffect(password) {
+        if (!isValidPassword(password)) {
+            snackbarHostState.showSnackbar("Invalid Password")
+        }
+    }
+
+    /**
+     * Function that calls the sign in function when it is clicked. Essential because of the Keyboard Options in the text field
+     */
+    fun signUpButtonClick() {
+        if (isValidEmail(email) && isValidPassword(password) && password == confirmPassword) {
+            // Valid email and password, proceed with sign-up
+            authViewModel.signUp(email, password)
+        }
+    }
     Box(modifier = Modifier.fillMaxSize()) {
         LazyColumn(
             modifier =
@@ -111,7 +113,7 @@ import com.google.firebase.firestore.FirebaseFirestore
             item {
                 val focusManager = LocalFocusManager.current
                 Text(
-                    text = stringResource(R.string.login),
+                    text = stringResource(R.string.signup),
                     style = MaterialTheme.typography.headlineLarge,
                     fontSize = 24.sp,
                     textAlign = TextAlign.Center,
@@ -123,7 +125,6 @@ import com.google.firebase.firestore.FirebaseFirestore
                             .fillMaxHeight(),
                 )
                 Spacer(modifier = Modifier.size(20.dp))
-
                 OutlinedTextField(
                     value = email,
                     onValueChange = { setEmail(it) },
@@ -146,13 +147,37 @@ import com.google.firebase.firestore.FirebaseFirestore
                             .fillMaxWidth()
                             .fillMaxHeight(),
                 )
-                Spacer(modifier = Modifier.size(24.dp))
+                Spacer(modifier = Modifier.size(20.dp))
                 OutlinedTextField(
                     value = password,
                     onValueChange = { setPassword(it) },
                     label = { Text("Password") },
                     visualTransformation = PasswordVisualTransformation(),
+                    keyboardOptions =
+                        KeyboardOptions.Default.copy(
+                            keyboardType = KeyboardType.Password,
+                            imeAction = ImeAction.Next, // Set Next for the email field
+                        ),
+                    keyboardActions =
+                        KeyboardActions(
+                            onNext = {
+                                // Request focus on the password field when Enter is pressed on the email field
+                                focusManager.moveFocus(FocusDirection.Down)
+                            },
+                        ),
                     isError = !isValidPassword(password),
+                    modifier =
+                        Modifier
+                            .fillMaxWidth()
+                            .fillMaxHeight(),
+                )
+                Spacer(modifier = Modifier.size(20.dp))
+                OutlinedTextField(
+                    value = confirmPassword,
+                    onValueChange = { setConfirmPassword(it) },
+                    label = { Text("Confirm Password") },
+                    visualTransformation = PasswordVisualTransformation(),
+                    isError = !isValidPassword(confirmPassword) || password != confirmPassword,
                     keyboardOptions =
                         KeyboardOptions.Default.copy(
                             imeAction = ImeAction.Done, // Set Done for the password field
@@ -160,8 +185,8 @@ import com.google.firebase.firestore.FirebaseFirestore
                     keyboardActions =
                         KeyboardActions(
                             onDone = {
-                                // Simulate a click on the sign-in button when Enter is pressed on the password field
-                                signInButtonClick()
+                                // Simulate a click on the sign-up button when Enter is pressed on the password field
+                                signUpButtonClick()
                             },
                         ),
                     modifier =
@@ -169,19 +194,19 @@ import com.google.firebase.firestore.FirebaseFirestore
                             .fillMaxWidth()
                             .fillMaxHeight(),
                 )
-                Spacer(modifier = Modifier.size(40.dp))
-                // Sign-in Button
+                Spacer(modifier = Modifier.size(60.dp))
+                // Sign-up Button
                 Button(
                     onClick = {
-                        signInButtonClick()
+                        signUpButtonClick()
                     },
                     modifier =
                         Modifier
                             .fillMaxWidth(),
                 ) {
-                    Text("Sign In")
+                    Text("Sign Up")
                 }
-                Spacer(modifier = Modifier.size(40.dp))
+                Spacer(modifier = Modifier.size(20.dp))
             }
 
             item {
@@ -213,69 +238,42 @@ import com.google.firebase.firestore.FirebaseFirestore
                 }
             }
 
-             item {
-                 Spacer(modifier = Modifier.size(40.dp))
-                 // Sign-up Button
-                 Button(onClick = {
-                     // Navigate to the sign-up screen
-                     navController.navigateSingleTopTo(SignUp.route)
-                 }, modifier = Modifier
-                     .fillMaxWidth()) {
-                     Text("Sign Up")
-                 }
-             }
+            item {
+                Spacer(modifier = Modifier.size(15.dp))
+                // Sign-in Button
+                Button(
+                    onClick = {
+                        // Navigate to the sign-up screen
+                        navController.navigateSingleTopTo(Login.route)
+                    },
+                    modifier =
+                        Modifier
+                            .fillMaxWidth(),
+                ) {
+                    Text("Sign In")
+                }
+            }
+        }
+        SnackbarHost(
+            hostState = snackbarHostState,
+            modifier = Modifier.padding(16.dp),
+        ) { snackbarData ->
+            Snackbar(
+                modifier = Modifier.fillMaxWidth(),
+                snackbarData = snackbarData,
+            )
+        }
+    }
+}
 
-         }
-         SnackbarHost(
-             hostState = snackbarHostState,
-             modifier = Modifier.padding(16.dp)
-         ) { snackbarData ->
-             Snackbar(
-                 modifier = Modifier.fillMaxWidth(),
-                 snackbarData = snackbarData
-             )
-         }
-     }
- }
+// Function to validate the email format using a simple regex
+private fun isValidEmail(email: String): Boolean {
+    val emailRegex = "^[A-Za-z](.*)([@]{1})(.{1,})(\\.)(.{1,})"
+    return email.matches(emailRegex.toRegex())
+}
 
- private fun checkIfUserExistsInFirestore(email: String, db: FirebaseFirestore) {
-     db.collection("user-profile")
-         .whereEqualTo("Email", email)
-         .get()
-         .addOnSuccessListener { documents ->
-             if (documents.isEmpty) {
-                 createUserDocument(email, db)
-             }
-         }
-         .addOnFailureListener { exception ->
-             Log.e("AuthLoginScreen", "Error checking user existence: $exception")
-         }
- }
-
- private fun createUserDocument(email: String, db: FirebaseFirestore) {
-     val newUser = hashMapOf(
-         "Email" to email,
-         "Favorites" to emptyList<String>()
-     )
-
-     db.collection("user-profile")
-         .add(newUser)
-         .addOnSuccessListener { documentReference ->
-             Log.d("AuthLoginScreen", "User document created with ID: ${documentReference.id}")
-         }
-         .addOnFailureListener { e ->
-             Log.e("AuthLoginScreen", "Error creating user document: $e")
-         }
- }
-
- // Function to validate the email format using a simple regex
- private fun isValidEmail(email: String): Boolean {
-     val emailRegex = "^[A-Za-z](.*)([@]{1})(.{1,})(\\.)(.{1,})"
-     return email.matches(emailRegex.toRegex())
- }
-
- // Function to validate the password format using a simple regex
- private fun isValidPassword(password: String): Boolean {
-     val passwordRegex = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=!])(?=\\S+$).{8,}$"
-     return password.matches(passwordRegex.toRegex())
- }
+// Function to validate the password format using a simple regex
+private fun isValidPassword(password: String): Boolean {
+    val passwordRegex = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=!])(?=\\S+$).{8,}$"
+    return password.matches(passwordRegex.toRegex())
+}
