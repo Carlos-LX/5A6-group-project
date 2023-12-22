@@ -65,19 +65,16 @@ android {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
         }
     }
-   lazy {
-        spotless {
-
-            kotlin {
-                ktfmt()
-                ktlint()
-                diktat()
-                prettier()
-            }
-            kotlinGradle {
-                ktlint()
-                diktat()
-            }
+    spotless {
+        kotlin {
+            ktfmt()
+            ktlint()
+            diktat()
+            prettier()
+        }
+        kotlinGradle {
+            ktlint()
+            diktat()
         }
     }
 }
